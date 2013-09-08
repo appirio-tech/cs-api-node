@@ -11,10 +11,14 @@
     "main": "app.js",
     "keywords": "",
     "engines": {
-      "node": ">=0.8.0"
+      "node": ">=0.8.0",
+      "npm": "1.2.x"
     },
     "dependencies": {
-      "actionHero": "6.3.0"
+      "actionHero": "6.3.0",
+      "pg": "*",
+      "forcifier": "*",
+      "underscore": "~1.4.4"
     },
     "devDependencies": {},
     "scripts": {
