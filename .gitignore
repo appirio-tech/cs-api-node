@@ -1,4 +1,4 @@
-log
+*.log
 pids
 node_modules
 .env
