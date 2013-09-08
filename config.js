@@ -62,6 +62,19 @@ configData.logger.transports.push(function(api, winston){
 });
 
 ///////////
+// Redis //
+///////////
+
+configData.redis = {
+  fake: true,
+  host: "127.0.0.1",
+  port: 6379,
+  password: null,
+  options: null,
+  DB: 0,
+};
+
+///////////
 // Postgres //
 ///////////
 
