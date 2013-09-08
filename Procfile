@@ -1,1 +1,1 @@
-web: npm start
+web: node ./node_modules/.bin/actionHero start
