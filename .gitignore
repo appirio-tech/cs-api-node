@@ -1,0 +1,5 @@
+log
+pids
+node_modules
+.env
+.DS_Store
