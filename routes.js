@@ -44,8 +44,8 @@ example:
 exports.routes = {
 
   get: [
-    { path: "/members/:memberName", action: "membersFetch" },    
-    { path: "/members", action: "membersList" },  
+    { path: "/:apiVersion/members/:memberName", action: "membersFetch" },    
+    { path: "/:apiVersion/members", action: "membersList" },  
   ]
 
 };
