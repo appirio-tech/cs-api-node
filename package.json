@@ -1,31 +1,32 @@
 {
-    "author": "Jeff Douglas <jeff@cloudspokes.com>",
-    "name": "cs-api-node",
-    "description": "",
-    "version": "0.0.1",
-    "homepage": "",
-    "repository": {
-      "type": "",
-      "url": ""
-    },
-    "main": "app.js",
-    "keywords": "",
-    "engines": {
-      "node": ">=0.8.0",
-      "npm": "1.2.x"
-    },
-    "dependencies": {
-      "actionHero": "6.3.0",
-      "pg": "*",
-      "forcifier": "*",
-      "underscore": "~1.4.4"
-    },
-    "devDependencies": {},
-    "scripts": {
-      "start": "node ./node_modules/.bin/actionHero start",
-      "startCluster": "node ./node_modules/.bin/actionHero startCluster",
-      "actionHero": "node ./node_modules/.bin/actionHero",
-      "help": "node ./node_modules/.bin/actionHero help"
-    }
+  "author": "Jeff Douglas <jeff@cloudspokes.com>",
+  "name": "cs-api-node",
+  "description": "",
+  "version": "0.0.1",
+  "homepage": "",
+  "repository": {
+    "type": "",
+    "url": ""
+  },
+  "main": "app.js",
+  "keywords": "",
+  "engines": {
+    "node": ">=0.8.0",
+    "npm": "1.2.x"
+  },
+  "dependencies": {
+    "pg": "~2.6.2",
+    "forcifier": "*",
+    "underscore": "~1.4.4",
+    "nforce": "~0.5.1",
+    "async": "~0.2.9",
+    "actionHero": "~6.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node ./node_modules/.bin/actionHero start",
+    "startCluster": "node ./node_modules/.bin/actionHero startCluster",
+    "actionHero": "node ./node_modules/.bin/actionHero",
+    "help": "node ./node_modules/.bin/actionHero help"
   }
-  
+}
