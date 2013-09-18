@@ -17,11 +17,11 @@ exports.members = function(api, next){
       })
     },
 
-    fetch: function(memberName, fields, next) {
+    fetch: function(membername, fields, next) {
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select " + fields+ " from member__c where name = '" +memberName+ "'";
+        var sql = "select " + fields+ " from member__c where name = '" +membername+ "'";
         client.query(sql, function(err, rs) {
           next(rs['rows']);
         })
