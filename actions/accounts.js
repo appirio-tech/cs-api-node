@@ -1,4 +1,23 @@
-exports.action = {
+exports.accountsFind = {
+  name: "accountsFind",
+  description: "Fetches an account by member name",
+  inputs: {
+    required: ['membername'],
+    optional: [],
+  },
+  blockedConnectionTypes: [],
+  outputExample: {},
+  authenticated: false,
+  version: 2.0,
+  run: function(api, connection, next){
+    api.accounts.find(connection.params.membername, function(data){
+      connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};
+
+exports.accountsFindByService = {
   name: "accountsFindByService",
   description: "Fetches an account by service",
   inputs: {
@@ -17,7 +36,7 @@ exports.action = {
   }
 };
 
-exports.action = {
+exports.accountsAuthenticate = {
   name: "accountsAuthenticate",
   description: "Authenticates an account and passed back oauth connection",
   inputs: {
