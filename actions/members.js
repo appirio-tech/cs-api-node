@@ -25,7 +25,7 @@ exports.membersFetch = {
   name: "membersFetch",
   description: "Fetches a specific member",
   inputs: {
-    required: ['memberName'],
+    required: ['membername'],
     optional: ['fields'],
   },
   authenticated: false,
@@ -34,7 +34,7 @@ exports.membersFetch = {
   run: function(api, connection, next){
     // enforce the pass list of field or if null, use the default member list of fields
     var fields =  connection.params.fields != null ? forcifier.enforceList(connection.params.fields) : api.configData.defaults.memberFields;
-    api.members.fetch(connection.params.memberName, fields, function(data){
+    api.members.fetch(connection.params.membername, fields, function(data){
       utils.processResponse(data, connection);
       connection.response.count = data.length;
       next(connection, true);
