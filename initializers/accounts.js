@@ -58,56 +58,57 @@ exports.accounts = function(api, next){
       })
     },    
 
-    // not sure if being used
+    // find a member's account by service and service name
     findByService: function(service, serviceName, next) {
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
 
-        if (service == 'cloudspokes') {
-
+        if (service === 'cloudspokes') {
+          var sql = "select u.username, m.name as membername, m.profile_pic__c, m.email__c, m.account__c, u.isactive, m.time_zone__c " +
+            "from member__c m inner join public.user u on m.sfdc_user__c = u.sfid " +
+            "where m.username__c  = '"+serviceName+"' and u.third_party_username__c is null";
+          var errorMessage = "No user could be found for '"+serviceName+"'."
         } else {
-          // run this query first
-          // select u.username, m.name as membername, m.profile_pic__c, m.email__c, m.account__c from public.user u inner join member__c m on m.sfdc_user__c = u.sfid where u.third_party_account__c = 'google_oauth2' and u.third_party_username__c = 'jdouglas@appirio.com';
-        }
+          var sql = "select u.username, m.name as membername, m.profile_pic__c, m.email__c, m.account__c, u.isactive, m.time_zone__c " +
+            "from public.user u inner join member__c m on m.sfdc_user__c = u.sfid where u.third_party_account__c = '"+service+"' and " +
+            "u.third_party_username__c = '"+serviceName+"'"; 
+          var errorMessage = "No user could be found for the specified service ("+service+") and name ("+serviceName+")."
+        }        
 
-        var sql = "select u.lastlogindate, u.fullphotourl, u.third_party_username__c, u.smallphotourl, u.alias, u.username, u.third_party_account__c, u.isactive, u.sfid as id, m.name as membername, m.account__c, m.profile_pic__c, m.email__c from public.user u inner join member__c m on m.sfdc_user__c = u.sfid where m.name = '" + membername + "'";
         client.query(sql, function(err, rs) {
 
           if (rs['rows'].length == 0) {
             var user = {
               success: false,
-              message: "No user could be found with specified service and member name."
+              message: errorMessage
             }
           } else {
             var user = { 
               success: true, 
-              membername: results[0].membername, 
-              sfdc_username: results[0].username, 
-              profile_pic: results[0].profile_pic__c, 
-              email: results[0].email__c, 
-              accountid: results[0].account__c };            
+              membername: rs['rows'][0].membername, 
+              sfdc_username: rs['rows'][0].username, 
+              profile_pic: rs['rows'][0].profile_pic__c, 
+              email: rs['rows'][0].email__c, 
+              accountid: rs['rows'][0].account__c,
+              isactive: rs['rows'][0].isactive,
+              time_zone: rs['rows'][0].time_zone__c
+            }     
+            // if the users is inactive, activate them
+            if (!user.isactive) {
+              activate(user.membername, function(err, results)  {
+                if (err) { console.log("Could not activate "+user.membername+". Reason: " + err.message); }
+                if (!err) { console.log(user.membername + " successfully activated.") }                
+              })
+            }
           }
-
-          next(user);
+          next(user);       
         })
-
       })
     },
 
-    // not sure if being used
-    findUserByMemberName: function(membername, next) {
-      var client = new pg.Client(api.configData.pg.connString);
-      client.connect(function(err) {
-        if (err) { console.log(err); }
-        var sql = "select u.lastlogindate, u.fullphotourl, u.third_party_username__c, u.smallphotourl, u.alias, u.username, u.third_party_account__c, u.isactive, u.sfid as id, m.name as membername, m.account__c, m.profile_pic__c, m.email__c from public.user u inner join member__c m on m.sfdc_user__c = u.sfid where m.name = '" + membername + "'";
-        client.query(sql, function(err, rs) {
-          next(null, rs['rows']);
-        })
-      })
-    },    
-
   }
+
   next();
 
 
@@ -118,7 +119,8 @@ exports.accounts = function(api, next){
     var client = new pg.Client(api.configData.pg.connString);
     client.connect(function(err) {
       if (err) { console.log(err); }
-      var sql = "select u.username, u.isactive, m.name as membername, m.profile_pic__c, m.email__c, m.account__c, m.time_zone__c from public.user u inner join member__c m on m.sfdc_user__c = u.sfid where m.name = '" + membername + "'";
+      var sql = "select u.username, u.isactive, m.name as membername, m.profile_pic__c, m.email__c, m.account__c, m.time_zone__c " +
+        "from public.user u inner join member__c m on m.sfdc_user__c = u.sfid where m.name = '" + membername + "'";
       client.query(sql, function(err, rs) {
         if (rs['rows'].length != 1) {
           next (new Error("Account not found for " + membername));
