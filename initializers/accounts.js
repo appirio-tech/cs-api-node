@@ -85,7 +85,7 @@ exports.accounts = function(api, next){
     * serviceName - the associated username for the service or their CS member name
     *
     * Returns JSON containing the keys: success, membername, sfdc_username,
-    * profile_pic, email, accountid, isactive, time_zone    
+    * profile_pic, email, accountid, isactive, time_zone     
     */
     findByService: function(service, serviceName, next) {
       var client = new pg.Client(api.configData.pg.connString);
