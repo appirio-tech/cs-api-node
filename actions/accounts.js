@@ -1,6 +1,6 @@
 exports.accountsFind = {
   name: "accountsFindByName",
-  description: "Fetches an account by member name.",
+  description: "Fetches an account by member name. Method: GET",
   inputs: {
     required: ['membername'],
     optional: [],
@@ -19,7 +19,7 @@ exports.accountsFind = {
 
 exports.accountsFindByService = {
   name: "accountsFindByService",
-  description: "Fetches an account by service.",
+  description: "Fetches an account by service. Method: GET",
   inputs: {
     required: ["service", "service_username"],
     optional: [],
@@ -38,7 +38,7 @@ exports.accountsFindByService = {
 
 exports.accountsAuthenticate = {
   name: "accountsAuthenticate",
-  description: "Authenticates an account and passes back the status of the operation and if successful, an oauth token.",
+  description: "Authenticates an account and passes back the status of the operation and if successful, an oauth token. Method: POST",
   inputs: {
     required: ["membername", "password"],
     optional: [],
