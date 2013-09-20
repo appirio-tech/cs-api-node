@@ -4,7 +4,7 @@ var forcifier = require("forcifier")
 
 exports.membersList = {
   name: "membersList",
-  description: "Fetches all members",
+  description: "Fetches all members. Method: GET",
   inputs: {
     required: [],
     optional: [],
@@ -23,13 +23,13 @@ exports.membersList = {
 
 exports.membersFetch = {
   name: "membersFetch",
-  description: "Fetches a specific member",
+  description: "Fetches a specific member. Method: GET",
   inputs: {
     required: ['membername'],
     optional: ['fields'],
   },
   authenticated: false,
-  outputExample: {},
+  outputExample: { id: "a0IK0000007NIQmMAO", name: "jeffdonthemic"},
   version: 2.0,
   run: function(api, connection, next){
     // enforce the pass list of field or if null, use the default member list of fields
