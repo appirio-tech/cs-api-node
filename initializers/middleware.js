@@ -1,5 +1,6 @@
 exports.middleware = function(api, next){
 
+  // authentication is not implemented at this time
   var authenticationMiddleware = function(connection, actionTemplate, next){
     if(actionTemplate.authenticated === true){
 /**    
@@ -8,6 +9,7 @@ exports.middleware = function(api, next){
       //console.log('token: ' + token);
       // TODO - check and see if key matches database 
 **/       
+      next(connection, true);
     }else{
       next(connection, true);
     }
