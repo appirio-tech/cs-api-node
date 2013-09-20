@@ -6,6 +6,11 @@ exports.sponsors = function(api, next){
 
     // methods
 
+    /* 
+    * Returns all accounts where type is 'Sponsor' from pg
+    *
+    * Returns a collection of account records
+    */
     list: function(next) {
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
@@ -17,11 +22,18 @@ exports.sponsors = function(api, next){
       })
     },
 
-    fetch: function(sfid, next) {
+    /* 
+    * Returns a specific account by salesforce id from pg
+    *
+    * id - the salesforce id for the account
+    *
+    * Returns JSON containing the keys: success, message, access_token
+    */
+    fetch: function(id, next) {
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select sfid as id, name, can_admin_challenges__c, funds_available__c, logo__c from account where sfid = '" +sfid+ "'";
+        var sql = "select sfid as id, name, can_admin_challenges__c, funds_available__c, logo__c from account where sfid = '" +id+ "'";
         client.query(sql, function(err, rs) {
           next(rs['rows']);
         })
