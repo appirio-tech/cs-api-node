@@ -4,8 +4,12 @@ var forcifier = require("forcifier")
 function processResponse(data, connection) {
   if (_.isEmpty(data)) {
     send404(connection);
-  } else {
+  } else if (data.length === 1) {
     connection.response.response = forcifier.deforceJson(_.first(data));
+    connection.response.count = 1;
+  } else { 
+    connection.response.response = _.values(forcifier.deforceJson(data));
+    connection.response.count = data.length;
   }
 }
 
