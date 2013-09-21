@@ -8,7 +8,7 @@ function processResponse(data, connection) {
     connection.response.response = forcifier.deforceJson(_.first(data));
     connection.response.count = 1;
   } else { 
-    connection.response.response = _.values(forcifier.deforceJson(data));
+    connection.response.response = forcifier.deforceJson(data);
     connection.response.count = data.length;
   }
 }
