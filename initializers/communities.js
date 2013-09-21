@@ -20,6 +20,20 @@ exports.communities = function(api, next){
           next(rs['rows']);
         })
       })
+    },
+
+    /* 
+    * Returns a specific community by id from the apex rest service
+    *
+    * id - the id for the community
+    *
+    * Returns a community record if it exists
+    */
+    fetch: function(id, next) {
+      api.sfdc.org.apexRest({ uri: '/communities/' + id }, api.sfdc.oauth, function(err, res) {
+        if (err) { console.error(err); }
+        next(res);
+      });
     }
   }
   next();

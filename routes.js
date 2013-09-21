@@ -13,6 +13,7 @@ exports.routes = {
 
     { path: "/:apiVersion/categories", action: "categoriesList" },
 
+    { path: "/:apiVersion/communities/:id", action: "communitiesFetch" },
     { path: "/:apiVersion/communities", action: "communitiesList" },
 
     { path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } , // i mad this a get so it's easier to use for now

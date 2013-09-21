@@ -24,3 +24,21 @@ exports.action = {
     });
   }
 };
+
+exports.communitiesFetch = {
+  name: "communitiesFetch",
+  description: "Fetches a specific community. Method: GET",
+  inputs: {
+    required: ['id'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: [],
+  version: 2.0,
+  run: function(api, connection, next){
+    api.communities.fetch(connection.params.id, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
