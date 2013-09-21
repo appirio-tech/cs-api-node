@@ -19,7 +19,9 @@ exports.nforce = function(api, next){
             org: org, 
             oauth: resp
           }
-          console.log('Access Token: ' + api.sfdc.oauth.access_token);
+          if (api.configData.general.logAccessToken === false) {
+            console.log('Access Token: ' + api.sfdc.oauth.access_token);
+          }
 
           // api.sfdc.org.query('SELECT Id FROM Account LIMIT 1', api.sfdc.oauth, function(err, res) {
           //   if(err) console.error(err);
