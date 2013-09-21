@@ -18,5 +18,8 @@ module.exports = {
             callback();
         });
     }
+    else {
+      callback();
+    }
   }
 };
