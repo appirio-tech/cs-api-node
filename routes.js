@@ -9,7 +9,9 @@ exports.routes = {
     { path: "/:apiVersion/members", action: "membersList" },  
 
     { path: "/:apiVersion/sponsors/:id", action: "sponsorsFetch" },       
-    { path: "/:apiVersion/sponsors", action: "sponsorsList" },      
+    { path: "/:apiVersion/sponsors", action: "sponsorsList" },
+
+    { path: "/:apiVersion/categories", action: "categoriesList" },
 
     { path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } , // i mad this a get so it's easier to use for now
     { path: "/:apiVersion/accounts/find_by_service", action: "accountsFindByService" },     
