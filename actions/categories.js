@@ -8,7 +8,7 @@ exports.action = {
     optional: [],
   },
   authenticated: false,
-  outputExample: ['Google', 'Heroku'],
+  outputExample: ['Code', 'Design', 'First2Finish'],
   version: 2.0,
   run: function(api, connection, next){
     api.categories.list(function(data){
