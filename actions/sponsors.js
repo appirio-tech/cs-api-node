@@ -14,8 +14,7 @@ exports.sponsorsList = {
   version: 2.0,
   run: function(api, connection, next){
     api.sponsors.list(function(data){
-      connection.response.response = _.values(forcifier.deforceJson(data));
-      connection.response.count = data.length;
+      utils.processResponse(data, connection);
       next(connection, true);
     });
   }
@@ -34,7 +33,6 @@ exports.sponsorsFetch = {
   run: function(api, connection, next){
     api.sponsors.fetch(connection.params.id, function(data){
       utils.processResponse(data, connection);
-      connection.response.count = data.length;
       next(connection, true);
     });
   }

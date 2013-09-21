@@ -14,8 +14,7 @@ exports.membersList = {
   version: 2.0,
   run: function(api, connection, next){
     api.members.list(function(data){
-      connection.response.response = _.values(forcifier.deforceJson(data));
-      connection.response.count = data.length;
+      utils.processResponse(data, connection);
       next(connection, true);
     });
   }
@@ -36,7 +35,6 @@ exports.membersFetch = {
     var fields =  connection.params.fields != null ? forcifier.enforceList(connection.params.fields) : api.configData.defaults.memberFields;
     api.members.fetch(connection.params.membername, fields, function(data){
       utils.processResponse(data, connection);
-      connection.response.count = data.length;
       next(connection, true);
     });
   }
