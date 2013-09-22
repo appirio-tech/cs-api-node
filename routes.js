@@ -17,6 +17,17 @@ exports.routes = {
 
     { path: "/:apiVersion/leaderboard", action: "leaderboardList" },
 
+    { path: "/:apiVersion/communities/:id", action: "communitiesFetch" },
+    { path: "/:apiVersion/communities", action: "communitiesList" },
+
+    { path: "/:apiVersion/messages/from/:membername", action: "messagesFrom" },
+    { path: "/:apiVersion/messages/to/:membername", action: "messagesTo" },
+    { path: "/:apiVersion/messages/inbox/:membername", action: "messagesInbox" },
+    { path: "/:apiVersion/messages/:id", action: "messagesFetch" },
+
+    { path: "/:apiVersion/participants/:membername/:challenge_id/deliverables", action: "deliverablesList" },
+    { path: "/:apiVersion/participants/:membername/:challenge_id", action: "participantsStatus" },
+
     { path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } , // i mad this a get so it's easier to use for now
     { path: "/:apiVersion/accounts/find_by_service", action: "accountsFindByService" },     
     { path: "/:apiVersion/accounts/:membername", action: "accountsFindByName" },
