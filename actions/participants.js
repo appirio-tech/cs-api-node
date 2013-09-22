@@ -50,3 +50,39 @@ exports.action = {
     });
   }
 };
+
+exports.participantsFetch = {
+  name: "participantsFetch",
+  description: "Returns a specific participant. Method: GET",
+  inputs: {
+    required: ['participant_id'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "id": 1,
+    "member": "a0IK0000007VVgFMAW",
+    "member_name": "google-jeff",
+    "member_profile_pic": "http://cs-public.s3.amazonaws.com/default_cs_member_image.png",
+    "member_country": null,
+    "challenge": "a0GK0000006i7xIMAQ",
+    "challenge_name": "Yet Another Test Challenge",
+    "challenge_id": "6",
+    "money_awarded": 0,
+    "place": null,
+    "points_awarded": 0,
+    "score": 0,
+    "status": "Registered",
+    "has_submission": false,
+    "completed_scorecards": 0,
+    "submitted_date": null,
+    "send_discussion_emails": true
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.participants.fetch(connection.params, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
