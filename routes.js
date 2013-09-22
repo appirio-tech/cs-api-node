@@ -5,8 +5,9 @@
 exports.routes = {
 
   get: [
-    { path: "/:apiVersion/members/:membername", action: "membersFetch" },   
-    { path: "/:apiVersion/members", action: "membersList" },  
+    { path: "/:apiVersion/members/search", action: "membersSearch" },
+    { path: "/:apiVersion/members/:membername", action: "membersFetch" },
+    { path: "/:apiVersion/members", action: "membersList" },
 
     { path: "/:apiVersion/sponsors/:id", action: "sponsorsFetch" },       
     { path: "/:apiVersion/sponsors", action: "sponsorsList" },

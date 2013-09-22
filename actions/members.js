@@ -7,7 +7,7 @@ exports.membersList = {
   description: "Fetches all members. Method: GET",
   inputs: {
     required: [],
-    optional: [],
+    optional: []
   },
   authenticated: false,
   outputExample: {},
@@ -25,7 +25,7 @@ exports.membersFetch = {
   description: "Fetches a specific member. Method: GET",
   inputs: {
     required: ['membername'],
-    optional: ['fields'],
+    optional: ['fields']
   },
   authenticated: false,
   outputExample: { id: "a0IK0000007NIQmMAO", name: "jeffdonthemic"},
@@ -39,3 +39,27 @@ exports.membersFetch = {
     });
   }
 };
+
+
+exports.membersSearch = {
+    name: "membersSearch",
+    description: "Searches for a member by keyword. Method: GET",
+    inputs: {
+        required: ['keyword'],
+        optional: ['fields']
+    },
+    authenticated: false,
+    outputExample: { id: "a0IK0000007NIQmMAO", name: "jeffdonthemic"},
+    version: 2.0,
+    run: function(api, connection, next){
+        // enforce the pass list of field or if null, use the default member list of fields
+        var fields =  connection.params.fields != null ? forcifier.enforceList(connection.params.fields) : api.configData.defaults.memberFields;
+        api.members.search (connection.params.keyword, fields, function(data){
+            utils.processResponse(data, connection);
+            next(connection, true);
+        });
+    }
+};
+
+
+
