@@ -32,8 +32,10 @@ exports.routes = {
     { path: "/:apiVersion/accounts/find_by_service", action: "accountsFindByService" },     
     { path: "/:apiVersion/accounts/:membername", action: "accountsFindByName" },
 
+    { path: "/:apiVersion/judging/scorecard/:participant_id", action: "judgingScorecardFetch" },
+    { path: "/:apiVersion/judging/outstanding/:membername", action: "judgingOutstandingFetch" },
     { path: "/:apiVersion/judging", action: "judgingList" },
-
+    
     { path: "/:apiVersion/tos/:id", action: "tosFetch" },
     { path: "/:apiVersion/tos", action: "tosList" },
     { path: "/:apiVersion/platforms", action: "platformsList"}
