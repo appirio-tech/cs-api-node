@@ -10,6 +10,12 @@ exports.action = {
   authenticated: false,
   outputExample: [
     {
+      "name": "Another Community",
+      "community_id": "1more",
+      "about": "This my test community.",
+      "members": 2
+    },
+    {
       "name": "Public",
       "community_id": "public",
       "about": "public",
@@ -33,7 +39,22 @@ exports.communitiesFetch = {
     optional: [],
   },
   authenticated: false,
-  outputExample: [],
+  outputExample: {
+    "leaderboard": [],
+    "community": {
+      "attributes": {
+        "type": "Community__c",
+        "url": "/services/data/v24.0/sobjects/Community__c/a12K0000001F6ipIAC"
+      },
+      "name": "Public",
+      "email_domain": "no domain",
+      "id": "a12K0000001F6ipIAC",
+      "about": "public",
+      "public_group": "All Members",
+      "members": 0
+    },
+    "challenges": []
+  },
   version: 2.0,
   run: function(api, connection, next){
     api.communities.fetch(connection.params.id, function(data){
