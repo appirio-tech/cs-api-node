@@ -30,9 +30,9 @@ exports.communities = function(api, next){
     * Returns a community record if it exists
     */
     fetch: function(id, next) {
-      api.sfdc.org.apexRest({ uri: '/communities/' + id }, api.sfdc.oauth, function(err, res) {
+      api.sfdc.org.apexRest({ uri: 'v.9/communities/' + id }, api.sfdc.oauth, function(err, res) {
         if (err) { console.error(err); }
-        next(res);
+        next([res]);
       });
     }
   }
