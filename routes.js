@@ -8,8 +8,6 @@ exports.routes = {
     { path: "/:apiVersion/members/:membername/challenges/past", action: "membersPastChallenges" },
     { path: "/:apiVersion/members/:membername/challenges", action: "membersChallenges" },
     { path: "/:apiVersion/members/:membername/payments", action: "membersPayments" },  
-    { path: "/:apiVersion/members/:membername", action: "membersFetch" },   
-    { path: "/:apiVersion/members", action: "membersList" },  
     { path: "/:apiVersion/members/search", action: "membersSearch" },
     { path: "/:apiVersion/members/:membername", action: "membersFetch" },
 
