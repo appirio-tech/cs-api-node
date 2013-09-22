@@ -17,6 +17,11 @@ module.exports = {
             self.api = api;
             callback();
         });
+    } else {
+      callback();
+    }
+    else {
+      callback();
     }
   }
 };

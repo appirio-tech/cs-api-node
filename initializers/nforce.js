@@ -32,7 +32,7 @@ exports.nforce = function(api, next){
           console.log('Error connecting to Salesforce: ' + err.message);
         }
       });
-      next(); 
+      next();
     }
   };  
   next();
