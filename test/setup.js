@@ -2,7 +2,7 @@ var configData          = require("../config").configData,
     actionHeroPrototype = require("actionHero").actionHeroPrototype;
 
 // Silence logging
-configData.logAccessToken = false;
+configData.general.logAccessToken = false;
 configData.logger.transports = [];
 
 module.exports = {
