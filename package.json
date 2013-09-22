@@ -25,7 +25,8 @@
   "devDependencies": {
     "mocha": "~1.13.0",
     "request": "~2.27.0",
-    "chai": "~1.8.0"
+    "chai": "~1.8.0",
+    "nock": "~0.22.1"
   },
   "scripts": {
     "start": "npm run actionHero start",
