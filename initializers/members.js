@@ -62,8 +62,6 @@ exports.members = function(api, next){
                 + " inner join challenge__c c on p.challenge__c = c.sfid"
                 + " where m.name = '" + membername + "' order by " + orderBy;
 
-        console.log('debug SQL = ', sql)
-
         client.query(sql, function(err, rs) {
           next(rs['rows']);
         })
