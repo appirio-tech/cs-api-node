@@ -1,6 +1,6 @@
 var utils = require("../utils");
 
-exports.judgingList = {
+exports.action = {
   name: "judgingList",
   description: "Fetches challenges that need judges. Method: GET",
   inputs: {
@@ -69,7 +69,6 @@ exports.judgingList = {
     });
   }
 };
-
 exports.judgingScorecardFetch = {
   name: "judgingScorecardFetch",
   description: "Fetches a specific scorecard. Method: GET",
@@ -83,6 +82,25 @@ exports.judgingScorecardFetch = {
   run: function(api, connection, next){
     api.judging.scorecard.fetch(connection.params.participant_id, connection.params.judge_membername, function(data){
       utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
+
+exports.judgingOutstandingFetch = {
+  name: "judgingOutstandingFetch",
+  description: "Fetches challenges that member needs to judge. Method: GET",
+  inputs: {
+    required: ["membername"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {},
+  version: 2.0,
+  run: function(api, connection, next){
+    api.judging.outstanding.fetch(connection.params.membername, function(data){
+      connection.response.response = data;
+      connection.response.count = data.length;
       next(connection, true);
     });
   }

@@ -33,4 +33,22 @@ describe('judging', function () {
             });
         });
     });
+
+    describe('outstanding', function () {
+        describe('fetch by judge name', function () {
+            it('should not be empty', function (done) {
+                //Hardcoded values - once the appropriate routes get in place,
+                //this needs to change
+                var judgeName = 'port2node';
+
+                var url = setup.testUrl + '/judging/outstanding/' + judgeName;
+
+                request.get(url, function (err, response, body) {
+                    body = JSON.parse(body);
+                    assert.ok(body.response.length > 0);
+                    done();
+                });
+            });
+        });
+    });
 });
