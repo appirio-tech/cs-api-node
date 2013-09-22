@@ -19,6 +19,7 @@ exports.routes = {
     { path: "/:apiVersion/communities/:id", action: "communitiesFetch" },
     { path: "/:apiVersion/communities", action: "communitiesList" },
 
+    { path: "/:apiVersion/messages/to/:membername", action: "messagesTo" },
     { path: "/:apiVersion/messages/inbox/:membername", action: "messagesInbox" },
     { path: "/:apiVersion/messages/:id", action: "messagesFetch" },
 
