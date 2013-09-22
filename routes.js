@@ -12,6 +12,7 @@ exports.routes = {
     { path: "/:apiVersion/sponsors", action: "sponsorsList" },
 
     { path: "/:apiVersion/categories", action: "categoriesList" },
+    { path: "/:apiVersion/technologies", action: "technologiesList" },
 
     { path: "/:apiVersion/leaderboard", action: "leaderboardList" },
 
