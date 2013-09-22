@@ -84,7 +84,7 @@ exports.membersChallenges = {
     optional: [],
   },
   authenticated: false,
-  outputExample: { "0" : { "id": "2885", "name": "Port the CloudSpokes API to Node.js", "challenge_type" : "Code", "top_prize": "100" } },
+  outputExample: { "active": { "0" : { "id": "2885", "name": "Port the CloudSpokes API to Node.js", "challenge_type" : "Code", "top_prize": "100" } } },
   version: 2.0,
   run: function(api, connection, next){
     api.members.challenges(connection.params.membername, function(data){
@@ -102,7 +102,7 @@ exports.membersPastChallenges = {
     optional: [],
   },
   authenticated: false,
-  outputExample: { "0" : { "id": "2885", "name": "Port the CloudSpokes API to Node.js", "challenge_type" : "Code", "top_prize": "100" } },
+  outputExample: { "records": { "0" : { "id": "2885", "name": "Port the CloudSpokes API to Node.js", "challenge_type" : "Code", "top_prize": "100" } } },
   version: 2.0,
   run: function(api, connection, next){
     api.members.pastChallenges(connection.params.membername, function(data){
