@@ -66,6 +66,23 @@ exports.members = function(api, next){
           next(rs['rows']);
         })
       })
+    },
+
+    /* 
+    * Returns referrals of a specific member from sfdb by membername
+    *
+    * membername - the name of the member to fetch
+    *
+    * Returns JSON containing the keys specified from the fields
+    */
+    referrals: function(membername, next) {
+      var url = "v.9/referrals/" + escape(membername);
+
+      api.sfdc.org.apexRest({uri: url, method: "GET"}, api.sfdc.oauth, function (err, resp) {
+        if(err) { return next(err); }
+
+        next(resp);
+      });
     }
 
 

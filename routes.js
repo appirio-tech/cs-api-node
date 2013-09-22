@@ -6,6 +6,7 @@ exports.routes = {
 
   get: [
     { path: "/:apiVersion/members/:membername/payments", action: "membersPayments" },  
+    { path: "/:apiVersion/members/:membername/referrals", action: "membersReferrals" },  
     { path: "/:apiVersion/members/:membername", action: "membersFetch" },   
     { path: "/:apiVersion/members", action: "membersList" },  
 
