@@ -28,7 +28,7 @@ exports.tos = function(api, next){
     *
     * id - the salesforce id for the account
     *
-    * Returns JSON containing the keys: success, message, access_token
+    * Returns JSON containing the keys: id, name, terms, default_tos
     */
     fetch: function(id, next) {
       var client = new pg.Client(api.configData.pg.connString);
