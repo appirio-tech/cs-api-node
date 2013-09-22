@@ -54,3 +54,35 @@ exports.accountsAuthenticate = {
     });
   }
 };
+
+exports.accountsGetPreferences = {
+  name: "accountsGetPreferences",
+  description: "Fetches preferences of an account. Method: GET",
+  inputs: {
+  	required: ["membername"],
+  	optional: []
+  },
+  blockedConnectionTypes: [],
+  outputExample: {
+  	success: true,
+  	// preferences is an array of objects following this format...
+  	preferences: [ { attributes:
+			{	type: 'Notification_Settings__c',
+				url: '/services/data/v27.0/sobjects/Notification_Settings__c/a17K0000000lk3gIAA' },
+			event: 'Challenge Ending in 24 Hours',
+			event_per_member: 'Challenge Ending in 24 Hoursa0IK0000007WlmQ',
+			notification_method: 'Site;Email',
+			member: 'a0IK0000007WlmQMAS',
+			do_not_notify: false,
+			id: 'a17K0000000lk3gIAA'
+		}]
+  },
+  authenticated: true,
+  version: 2.0,
+  run: function(api, connection, next){
+  	api.accounts.getPreferences( connection.params.membername, function(data){
+      connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};
