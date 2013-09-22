@@ -1,6 +1,6 @@
 var forcifier = require("forcifier")
   , utils = require("../utils")
-  , _ = require("underscore")  
+  , _ = require("underscore")
 
 exports.membersList = {
   name: "membersList",
@@ -70,6 +70,42 @@ exports.membersPayments = {
     var fields =  connection.params.fields != null ? forcifier.enforceList(connection.params.fields) : api.configData.defaults.paymentFields;
     var orderBy =  connection.params.order_by || "id";
     api.members.payments(connection.params.membername, fields, orderBy, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
+
+exports.membersChallenges = {
+  name: "membersChallenges",
+  description: "Fetches a specific member's challenges. Method: GET",
+  inputs: {
+    required: ['membername'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: { "active": { "0" : { "id": "2885", "name": "Port the CloudSpokes API to Node.js", "challenge_type" : "Code", "top_prize": "100" } } },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.members.challenges(connection.params.membername, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
+
+exports.membersPastChallenges = {
+  name: "membersPastChallenges",
+  description: "Fetches a specific member's past challenges. Method: GET",
+  inputs: {
+    required: ['membername'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: { "records": { "0" : { "id": "2885", "name": "Port the CloudSpokes API to Node.js", "challenge_type" : "Code", "top_prize": "100" } } },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.members.pastChallenges(connection.params.membername, function(data){
       utils.processResponse(data, connection);
       next(connection, true);
     });
