@@ -43,3 +43,17 @@ describe('GET /messages/to/:membername', function () {
         });
     });
 });
+
+describe('GET /messages/from/:membername', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should return at least 1 message', function (done) {
+        request.get(setup.testUrl + '/messages/from/chang', function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response);
+            done();
+        });
+    });
+});
