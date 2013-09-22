@@ -7,7 +7,7 @@ describe('GET /communities', function () {
         setup.init(done);
     });
 
-    it('should not be empty', function (done) {
+    it('should return at least one community', function (done) {
         request.get(setup.testUrl + '/communities', function (err, response, body) {
             body = JSON.parse(body);
             assert.ok(body.response.length > 0);
@@ -21,10 +21,10 @@ describe('GET /communities/:id', function () {
         setup.init(done);
     });
 
-    it('should not be empty', function (done) {
+    it('should return 1 result', function (done) {
         request.get(setup.testUrl + '/communities/public', function (err, response, body) {
             body = JSON.parse(body);
-            assert.ok(body.response.length > 0);
+            assert.ok(body.response);
             done();
         });
     });
