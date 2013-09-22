@@ -27,6 +27,7 @@ exports.routes = {
     { path: "/:apiVersion/participants/:membername/:challenge_id/current_submissions", action: "deliverablesCurrentSubmissions" },
     { path: "/:apiVersion/participants/:membername/:challenge_id/deliverables", action: "deliverablesList" },
     { path: "/:apiVersion/participants/:membername/:challenge_id", action: "participantsStatus" },
+    { path: "/:apiVersion/participants/:participant_id", action: "participantsFetch" },
 
     { path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } , // i mad this a get so it's easier to use for now
     { path: "/:apiVersion/accounts/find_by_service", action: "accountsFindByService" },     
