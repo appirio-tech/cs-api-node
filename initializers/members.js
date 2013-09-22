@@ -90,6 +90,27 @@ exports.members = function(api, next){
         if (err) { console.error(err); }
         next(res);
       });
+    },
+
+    /*
+     *Searches for a member from pg by keywords search
+     *
+     * keyword - the keyword used in the search
+     * fields - the list of fields to return.  If no fields are specified then the default
+     * are passed in form the action.
+     *
+     * Returns JSON containing the keys specified from the fields
+     */
+    search: function(keyword, fields, next) {
+        var client = new pg.Client(api.configData.pg.connString);
+        client.connect(function(err) {
+            if (err) { console.log(err); }
+            var sql = "select " + fields+ " from member__c where name LIKE '" +keyword+ "%'";
+              console.log('$$$$ sql ', sql);
+            client.query(sql, function(err, rs) {
+                next(rs['rows']);
+            })
+        })
     }
 
   }
