@@ -37,3 +37,36 @@ exports.action = {
     });
   }
 };
+
+exports.messagesInbox = {
+  name: "messagesInbox",
+  description: "Fetches all messages from a member's inbox. Use the /messages/:id endpoint to retrieve every message's body. Method: GET",
+  inputs: {
+    required: ['membername'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "id": "a1FK0000004Ey9xMAC",
+    "name": "PVTM-1925",
+    "created_date": "2013-08-03T01:27:58.000Z",
+    "last_modified_date": "2013-08-17T09:32:08.000Z",
+    "to_id": "a0IK0000007NIQmMAO",
+    "to_name": "jeffdonthemic",
+    "to_profile_pic": "http://res.cloudinary.com/hz2trkcbb/image/upload/c_fill,h_125,w_125/v1377567951/jeffdonthemic.jpg",
+    "from_id": "a0IK0000007SVSeMAO",
+    "from_name": "chang",
+    "from_profile_pic": "http://cs-public.s3.amazonaws.com/default_cs_member_image.png",
+    "subject": "hi",
+    "status_from": "Read",
+    "status_to": "Read",
+    "replies": 0
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.messages.inbox(connection.params.membername, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
