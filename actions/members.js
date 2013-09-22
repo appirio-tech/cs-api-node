@@ -75,3 +75,33 @@ exports.membersPayments = {
     });
   }
 };
+
+
+exports.membersReferrals = {
+  name: "membersReferrals",
+  description: "Fetches referrals of a specific member. Method: GET",
+  inputs: {
+    required: ['membername'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: [
+    {
+        "signup_date": "2013-01-07T20:58:48.000Z",
+        "referral_money": 0,
+        "referral_id": "a11U0000000UpzSIAS",
+        "profile_pic": "http://res.cloudinary.com/hnep56ea0/image/upload/c_fill,h_125,w_125/timhicks24.jpg",
+        "membername": "timhicks24",
+        "first_year_money": 0
+    }
+  ],
+  version: 2.0,
+  run: function(api, connection, next){
+    api.members.referrals(connection.params.membername, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
+
+

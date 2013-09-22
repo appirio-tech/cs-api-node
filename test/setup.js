@@ -15,7 +15,8 @@ module.exports = {
         self.server = new actionHeroPrototype();
         self.server.start({configChanges: configData}, function(err, api){
             self.api = api;
-            callback();
+            // wait for sfdc connection. TODO : It's a temporary quick patch.
+            setTimeout(callback, 2000);
         });
     } else {
       callback();
