@@ -23,7 +23,8 @@ exports.routes = {
     { path: "/:apiVersion/judging", action: "judgingList" },
 
     { path: "/:apiVersion/tos/:id", action: "tosFetch" },
-    { path: "/:apiVersion/tos", action: "tosList" }
+    { path: "/:apiVersion/tos", action: "tosList" },
+    { path: "/:apiVersion/platforms", action: "platformsList"}
 
   ],
 
