@@ -106,7 +106,7 @@ exports.members = function(api, next){
         client.connect(function(err) {
             if (err) { console.log(err); }
             var sql = "select " + fields+ " from member__c where name LIKE '" +keyword+ "%'";
-              console.log('$$$$ sql ', sql);
+            // console.log('$$$$ sql ', sql);
             client.query(sql, function(err, rs) {
                 next(rs['rows']);
             })
