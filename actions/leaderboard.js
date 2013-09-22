@@ -5,7 +5,7 @@ exports.action = {
   description: "Fetches the leaderboard. Method: GET",
   inputs: {
     required: [],
-    optional: [],
+    optional: ["limit"],
   },
   authenticated: false,
   outputExample: {
