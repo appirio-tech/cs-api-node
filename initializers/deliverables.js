@@ -46,6 +46,24 @@ exports.deliverables = function(api, next){
           }
         })
       })
+    },
+
+    /* 
+    * Return a specific submission from pg
+    *
+    * params - { membername, challenge_id, submission_id }
+    *
+    * Returns a submission record
+    */
+    fetch: function(params, next) {
+      var client = new pg.Client(api.configData.pg.connString);
+      client.connect(function(err) {
+        if (err) { console.log(err); }
+        var sql = "select sfid as id, comments__c, type__c, url__c, username__c, language__c from challenge_submission__c where sfid = '" + params.submission_id + "' and username__c = '" + params.membername + "' and challenge__c = (select sfid from challenge__c where id = '" + params.challenge_id + "')";
+        client.query(sql, function(err, res) {
+          next(res['rows']);
+        })
+      })
     }
   }
   next();

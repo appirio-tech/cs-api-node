@@ -83,6 +83,38 @@ exports.messages = function(api, next){
           next(rs['rows']);
         })
       })
+    },
+
+    /* 
+    * Creates a new message
+    *
+    * data - { from, to, subject, body }
+    *
+    * Returns the message with other info (e.g. date) included
+    */
+    create: function(data, next) {
+      var client = new pg.Client(api.configData.pg.connString);
+      client.connect(function(err) {
+        if (err) { console.log(err); }
+        var sql = "select (select sfid from member__c where name = '" + data.from + "') as from_id, (select sfid from member__c where name = '" + data.to + "') as to_id";
+        client.query(sql, function(err, rs) {
+          if (!rs['rows'][0] || !rs['rows']) { next([]); }
+          else {
+            var body = {
+              fromId: rs.rows[0].from_id,
+              toId: rs.rows[0].to_id,
+              event: 'Private Message',
+              subject: data.subject,
+              body: data.body
+            };
+            api.sfdc.org.apexRest({ uri: 'v.9/notifications', method: 'POST', body: body }, api.sfdc.oauth, function(err, res) {
+              if (err) { console.error(err); }
+              res.Success = res.Success == "true";
+              next(res);
+            });
+          }
+        })
+      })
     }
   }
   next();
