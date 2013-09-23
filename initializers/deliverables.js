@@ -64,6 +64,35 @@ exports.deliverables = function(api, next){
           next(res['rows']);
         })
       })
+    },
+
+    /* 
+    * Deletes the specified submission
+    *
+    * params - { membername, challenge_id, submission_id }
+    *
+    * Returns a status message
+    */
+    deleteSubmission: function(params, next) {
+      var client = new pg.Client(api.configData.pg.connString);
+      client.connect(function(err) {
+        if (err) { console.log(err); }
+        var sql = "update challenge_submission__c set deleted__c = true where sfid = '" + params.submission_id + "' and username__c = '" + params.membername + "' and challenge__c = (select sfid from challenge__c where id = '" + params.challenge_id + "')";
+        client.query(sql, function(err, res) {
+          if (!err) {
+            res = {
+              success: true,
+              message: "Submission removed successfully."
+            }
+          } else {
+            res = {
+              success: false,
+              message: "Submission couldn't be removed."
+            }
+          }
+          next(res);
+        })
+      })
     }
   }
   next();

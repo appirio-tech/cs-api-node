@@ -30,9 +30,11 @@ exports.routes = {
     { path: "/:apiVersion/messages/inbox/:membername", action: "messagesInbox" },
     { path: "/:apiVersion/messages/:id", action: "messagesFetch" },
 
+
     { path: "/:apiVersion/participants/:membername/:challenge_id/submission/:submission_id", action: "deliverablesFetch" },
     { path: "/:apiVersion/participants/:membername/:challenge_id/current_submissions", action: "deliverablesCurrentSubmissions" },
     { path: "/:apiVersion/participants/:membername/:challenge_id/deliverables", action: "deliverablesList" },
+    { path: "/:apiVersion/participants/:membername/:challenge_id/delete_submission_url_file", action: "deliverablesDeleteSubmission" },
     { path: "/:apiVersion/participants/:membername/:challenge_id", action: "participantsStatus" },
     { path: "/:apiVersion/participants/:participant_id", action: "participantsFetch" },
 

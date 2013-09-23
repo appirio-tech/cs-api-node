@@ -101,3 +101,24 @@ exports.deliverablesFetch = {
     });
   }
 };
+
+exports.deliverablesDeleteSubmission = {
+  name: "deliverablesDeleteSubmission",
+  description: "Deletes the specified submission. Method: GET",
+  inputs: {
+    required: ['membername', 'challenge_id', 'submission_id'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Submission removed successfully."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.deliverables.deleteSubmission(connection.params, function(data){
+      connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};
