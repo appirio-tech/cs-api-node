@@ -1,3 +1,5 @@
+var _ = require("underscore");
+
 exports.judging = function(api, next){
 
   api.judging = {
@@ -26,6 +28,66 @@ exports.judging = function(api, next){
           next(resp.records);
         }
       });
+    },
+
+    //An object that has all the scorecard-related initializers
+    scorecard: {
+      // methods
+
+      /*
+      * Returns a specific scorecard from apex rest service
+      */
+
+      fetch: function (participant_id, judge_membername, next) {
+
+       var url = 'v.9/scorecard/' + participant_id;
+
+        var params = [{key: 'reviewer', value: judge_membername}];
+        api.sfdc.org.apexRest({uri: url, method: 'GET', urlParams: params}, api.sfdc.oauth, function (err, resp) {
+          if (resp) {
+            next(resp[_.first(_.keys(resp))]);
+          }
+        });
+      }
+    },
+
+    outstanding: {
+      /*
+      * Returns all challenges that member needs to judge
+      *
+      * Returns a collection of challenge records
+      */
+      fetch: function (membername, next) {
+        function removeAttributes(data) {
+          var fixed = _.isArray(data) ? [] : {};
+          for (key in data) {
+            if (key === 'attributes') continue;
+
+            if (_.isObject(data[key])) {
+              if (_.isArray(data)) {
+                fixed.push(removeAttributes(data[key]));
+              } else {
+                fixed[key] = removeAttributes(data[key]);
+              }
+            } else {
+              fixed[key] = data[key];
+            }
+          }
+          return fixed;
+        }
+
+        var org   = api.sfdc.org,
+            oauth = api.sfdc.oauth;
+
+        var url = "v1/members/" + membername + "/outstandingscorecards";
+
+        org.apexRest({uri: url, method: "GET"}, oauth, function (err, resp) {
+          if (!err && resp) {
+            resp = removeAttributes(resp);
+            next(resp);
+          }
+        });
+      }
     }
   }
   next();

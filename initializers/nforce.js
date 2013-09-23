@@ -19,7 +19,7 @@ exports.nforce = function(api, next){
             org: org, 
             oauth: resp
           }
-          if (api.configData.general.logAccessToken === false) {
+          if (api.configData.general.logAccessToken !== false) {
             console.log('Access Token: ' + api.sfdc.oauth.access_token);
           }
 

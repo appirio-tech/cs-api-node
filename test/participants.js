@@ -22,7 +22,7 @@ describe('GET /participants/:participant_id"', function () {
     });
 
     it('should return 1 result', function (done) {
-        request.get(setup.testUrl + '/participants/1', function (err, response, body) {
+        request.get(setup.testUrl + '/participants/a0AK000000BhvmmMAB', function (err, response, body) {
             body = JSON.parse(body);
             assert.ok(body.response);
             done();
