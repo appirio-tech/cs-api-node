@@ -7,7 +7,8 @@ exports.challenges = function(api, next){
     /*
     * Returns a specific challenge from apex rest service
     *
-    * TODO: List returned object keys
+    * Returns an object with keys name, id, attributes, challenge_reviewers__r,
+    * challenge_comment_notifiers__r and asserts__r
     */
     fetch: function(challenge_id, for_admin, next) {
       var org = api.sfdc.org, oauth = api.sfdc.oauth;
@@ -31,7 +32,6 @@ exports.challenges = function(api, next){
                     "where challenge__r.challenge_id__c = '" + challenge_id + "'";
                   org.query(query, oauth, function (err, data) {
                     resp[0].assets__r = data.records;
-                    // console.log(resp);
                     next(resp);
                   });
                 });
@@ -42,6 +42,29 @@ exports.challenges = function(api, next){
           }
         };
       });
+    },
+
+    participants: {
+      /*
+      * Return a specific challenge's participants from apex rest service
+      */
+      list: function (challenge_id, next) {
+        var org = api.sfdc.org, oauth = api.sfdc.oauth;
+
+        var url = "v.9/participants?challengeid=" + challenge_id;
+
+        var params = [];
+        var fields = "Member__r.Profile_Pic__c,Member__r.Name,Member__r.Total_Wins__c,Member__r.Total_Money__c,Member__r.Country__c,Member__r.summary_bio__c,Status__c,has_submission__c";
+        params.push({key: 'fields', value: fields});
+        params.push({key: 'limit', value: 250});
+        params.push({key: 'orderby', value: 'member__r.name'});
+
+        org.apexRest({uri: url, method: "GET", urlParams: params}, oauth, function (err, resp) {
+          if (!err && resp) {
+            next(resp);
+          }
+        });
+      }
     }
   }
   next();

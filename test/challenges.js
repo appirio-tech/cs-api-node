@@ -34,4 +34,18 @@ describe('challenges', function () {
             });
         });
     });
+
+    describe('participants', function () {
+        it('should not error', function (done) {
+            //Hardcoded value - once the appropriate routes get in place,
+            //this needs to change
+            var id = 'a0GK0000008OIRAMA4';
+
+            request.get(setup.testUrl + '/challenges/' + id + '/participants', function (err, response, body) {
+                body = JSON.parse(body);
+                assert.ok(body.response);
+                done();
+            });
+        });
+    });
 });
