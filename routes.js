@@ -33,7 +33,7 @@ exports.routes = {
   ],
 
   post: [
-
+	{ path: "/:apiVersion/accounts/create", action: "accountsCreate" }
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 
 
   ]  

@@ -86,3 +86,27 @@ exports.accountsGetPreferences = {
     });
   }
 };
+
+exports.accountsCreate = {
+  name: "accountsCreate",
+  description: "Creates a new account. Method: POST",
+  inputs: {
+  	required: ["username", "email"],
+  	optional: ["password", "provider", "provider_username", "name" ]
+  },
+  blockedConnectionTypes: [],
+  outputExample: {
+  	success: true,
+    username: 'username',
+    sfdc_username: 'sfdc_username',
+    message: 'message'
+  },
+  authenticated: true,
+  version: 2.0,
+  run: function(api, connection, next){
+  	api.accounts.create( connection.params, function(data){
+      connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};

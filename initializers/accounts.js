@@ -1,5 +1,6 @@
 var pg = require("pg").native
   , forcifier = require("forcifier")
+  , _ = require("underscore")
   , async = require("async");
 
 exports.accounts = function(api, next){
@@ -141,6 +142,19 @@ exports.accounts = function(api, next){
         	if (err) { next( { success: false, message: err.message } ); }
         	if (!err) { next(preferences); }
 		});
+	},
+	
+	create: function( params, next ){
+		createOptions( params, function( err, options ){
+			if(err) { next( { success: false, message: err.message }); };
+			if(!err) {
+				createAccount( options, function( err, response ){
+					console.log(err);
+					console.log(response);
+					next();
+				});
+			}
+		});
 	}
   } // end api.accounts
 
@@ -260,6 +274,110 @@ exports.accounts = function(api, next){
 					preferences.push( forcifier.deforceJson(item) );
 				});
 				next(null, preferences);
+			}
+		})
+	 };
+	 
+	 /*
+	  * Sanitizes and prepares data for account registration
+	  *
+	  * params - hash containing values to use for new user
+	  *		- for third-party: provider, provider_username, username, email, name (can be blank)
+	  *		- for cloudspokes: username, email, password
+	  *
+	  * Returns JSON containing the keys: body.username__c, body.email__c,
+	  *		[ 	body.password || body.first_name__c, body.last_name__c,
+	  *			body.third_party_account__c, third_party_username__c	]
+	  */
+	 var createOptions = function( params, next ){
+	 	var options = {
+        	username__c: params.username,
+        	email__c: params.email
+		};
+		
+		var error, new_options;
+		
+		// third party
+		if( params.provider ) {
+			
+			// sanitize data...
+			if ( _.isUndefined(params.provider_username) ) {
+				error = new Error("Third parties need to provide provider_username.");
+			} else {
+		    	var names, first_name, last_name;
+		    	
+				// if the name is blank
+				if( params.name ) {
+					// split up the name into a first and last
+					names = params.name.split;
+					first_name = names[0];
+					last_name = names.length > 1 ? names[1] : first_name;
+				} else {
+					first_name = params.username;
+					last_name = params.username;
+				}
+				
+				new_options = {
+					"first_name__c": first_name,
+					"last_name__c": last_name,
+					"third_party_account__c": params.provider,
+					"third_party_username__c":params.provider_username
+				}
+			}
+      	}
+      	
+      	// cloudspokes
+		else {
+			// sanitize data...
+			if ( _.isUndefined(params.password) ) {
+				error = new Error("Creation of account as cloudspokes needs a password.");
+			} else {
+				new_options = {
+					first_name__c: params.username,
+					last_name__c: params.username,
+					password: params.password
+				}
+			}
+        }
+		
+		if( !_.isUndefined( new_options ) )
+			_.extend(options, new_options);
+		
+		var result;
+		
+		// if no error so far, convert object into string of "key1=value1, key2=value2"...
+		if( _.isUndefined( error ) ) {
+			var pairs = _.pairs(options);
+			result = "";
+			
+			pairs.forEach( function(item) {
+				result += item[0].toString() + "=" + item[1].toString() + "&";
+			});
+			
+			//result = result.substr(0,result.length-1);
+			console.log(result);
+		}
+		
+		next( error, result );
+	 };
+	 
+	 var createAccount = function( options, next ) {
+	 	//options = "username__c=jeffdonthemic&email__c=test@test.com&first_name__c=jeff&last_name__c=douglas&password=1234";
+	 	api.sfdc.org.apexRest({uri:"v.9/members", method: 'POST', body: options}, api.sfdc.oauth, function(err,sfdc_resp){
+			if(err) {
+				// default to a generic error in case no useful response...
+				var error = new Error("Error creating account!");
+				
+				if( !_.isArray(sfdc_resp) && _.has(sfdc_resp[0], "message") )
+					error.message = sfdc_resp[0]['message'];
+				
+				console.log(error);
+				next(error);
+				
+			}else{
+				console.log(sfdc_resp);
+				var response = forcifier.deforceJson(sfdc_resp);
+				next(null, response);
 			}
 		})
 	 };
