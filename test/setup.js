@@ -5,7 +5,7 @@ var nock = require('nock');
 // Silence logging
 // configData.logAccessToken = false;
 configData.logger.transports = [];
-configData.servers.web.port = 3002;
+configData.servers.web.port = process.env.PORT;
 
 module.exports = {
   testUrl: "http://localhost:" + configData.servers.web.port + "/v1",
