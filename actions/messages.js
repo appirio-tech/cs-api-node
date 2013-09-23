@@ -1,4 +1,5 @@
-var utils = require("../utils")
+var forcifier = require("forcifier")
+  , utils = require("../utils")
 
 exports.action = {
   name: "messagesFetch",
@@ -152,8 +153,8 @@ exports.messagesCreate = {
   version: 2.0,
   run: function(api, connection, next){
     api.messages.create(connection.params, function(data){
+      connection.response.response = forcifier.deforceJson(data);
       connection.rawConnection.responseHttpCode = 201;  
-      utils.processResponse(data, connection);
       next(connection, true);
     });
   }
@@ -174,8 +175,8 @@ exports.messagesReply = {
   version: 2.0,
   run: function(api, connection, next){
     api.messages.reply(connection.params, function(data){
+      connection.response.response = forcifier.deforceJson(data);
       connection.rawConnection.responseHttpCode = 201;  
-      utils.processResponse(data, connection);
       next(connection, true);
     });
   }
@@ -196,7 +197,7 @@ exports.messagesUpdate = {
   version: 2.0,
   run: function(api, connection, next){
     api.messages.update(connection.params, function(data){
-      utils.processResponse(data, connection);
+      connection.response.response = forcifier.deforceJson(data);
       next(connection, true);
     });
   }

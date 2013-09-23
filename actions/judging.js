@@ -1,4 +1,5 @@
-var utils = require("../utils");
+var forcifier = require("forcifier")
+  , utils = require("../utils");
 
 exports.action = {
   name: "judgingList",
@@ -121,8 +122,8 @@ exports.judgingCreate = {
   version: 2.0,
   run: function(api, connection, next){
     api.judging.create(connection.params, function(data){
+      connection.response.response = forcifier.deforceJson(data);
       connection.rawConnection.responseHttpCode = 201;
-      utils.processResponse(data, connection);
       next(connection, true);
     });
   }
