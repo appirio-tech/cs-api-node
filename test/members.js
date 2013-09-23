@@ -107,14 +107,6 @@ describe("GET /members/:membername/referrals", function() {
             });
         });
 
-        it("returns 1 referral object", function(done) {
-            request.get(setup.testUrl + '/members/mess/referrals', function (err, response, body) {
-                body = JSON.parse(body);
-                assert.isNotArray(body.response);
-                done();
-            });
-        });
-
         it("returned object has fields", function(done) {
             request.get(setup.testUrl + '/members/mess/referrals', function (err, response, body) {
                 body = JSON.parse(body);
@@ -141,10 +133,11 @@ describe("GET /members/:membername/referrals", function() {
             done();
         });
 
-        it('it returns error, not_found', function (done) {
+        it('it returns an empty array', function (done) {
             request.get(setup.testUrl + '/members/jeffdonthemic/referrals', function (err, response, body) {
                 body = JSON.parse(body);
-                assert.equal(body.error, "not_found");
+                assert.isArray(body.response);
+                assert.equal(body.count,0);
                 done();
             });
         });

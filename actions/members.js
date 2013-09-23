@@ -133,7 +133,7 @@ exports.membersReferrals = {
   version: 2.0,
   run: function(api, connection, next){
     api.members.referrals(connection.params.membername, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, false);
       next(connection, true);
     });
   }
