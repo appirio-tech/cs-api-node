@@ -23,22 +23,20 @@ exports.challengesList = {
 };
 
 
-exports.challengesFetch = {
-    name: "challengesFetch",
-    description: "Searches for a challenge by keyword. Method: GET",
+exports.challengesComments = {
+    name: "challengesComments",
+    description: "Fetches all comments for a challenge. Method: GET",
     inputs: {
-        required: [],
+        required: ["id"],
         optional: []
     },
     authenticated: false,
     outputExample: {},
     version: 2.0,
     run: function(api, connection, next){
-        // // enforce the pass list of field or if null, use the default member list of fields
-        // var fields =  connection.params.fields != null ? forcifier.enforceList(connection.params.fields) : api.configData.defaults.memberFields;
-        // api.members.search (connection.params.keyword, fields, function(data){
-        //     utils.processResponse(data, connection);
-        //     next(connection, true);
-        // });
+    api.challenges.comments(connection.params.id.trim(), function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
     }
 };

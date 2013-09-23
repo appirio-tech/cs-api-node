@@ -6,7 +6,7 @@ var request = require('request'),
   querystring = require("querystring");
 
 
-describe("GET /challenges", function() {
+xdescribe("GET /challenges", function() {
   before(function(done) {
     setup.init(done);
   });
@@ -102,7 +102,9 @@ describe("GET /challenges", function() {
   describe("order_by parameter test", function() {
 
     it("default value is end_date__c", function(done) {
-      sfdcReq = sfdcNock({orderby: "end_date__c"});
+      sfdcReq = sfdcNock({
+        orderby: "end_date__c"
+      });
       request.get(setup.testUrl + '/challenges', function(err, response, body) {
         body = JSON.parse(body);
         sfdcReq.done(); // make sure that the sfdc api call occured with orderby option.
@@ -111,7 +113,9 @@ describe("GET /challenges", function() {
     });
 
     it("forcifies order_by parameter when sending sfdc request", function(done) {
-      sfdcReq = sfdcNock({orderby: "registered_members__c"});
+      sfdcReq = sfdcNock({
+        orderby: "registered_members__c"
+      });
       request.get(setup.testUrl + '/challenges?order_by=registered_members', function(err, response, body) {
         body = JSON.parse(body);
         sfdcReq.done();
@@ -120,7 +124,9 @@ describe("GET /challenges", function() {
     });
 
     it("order_by parameter can have 'desc' or 'asc'", function(done) {
-      sfdcReq = sfdcNock({orderby: "registered_members__c desc"});
+      sfdcReq = sfdcNock({
+        orderby: "registered_members__c desc"
+      });
       request.get(setup.testUrl + '/challenges?order_by=registered_members desc', function(err, response, body) {
         body = JSON.parse(body);
         sfdcReq.done();
@@ -132,7 +138,9 @@ describe("GET /challenges", function() {
 
   describe("open parameter test", function() {
     it("default value is true", function(done) {
-      sfdcReq = sfdcNock({open: "true"});
+      sfdcReq = sfdcNock({
+        open: "true"
+      });
       request.get(setup.testUrl + '/challenges', function(err, response, body) {
         body = JSON.parse(body);
         sfdcReq.done(); // make sure that the sfdc api call occured with orderby option.
@@ -141,7 +149,9 @@ describe("GET /challenges", function() {
     });
 
     it("able to set open parameter as false", function(done) {
-      sfdcReq = sfdcNock({open: "false"});
+      sfdcReq = sfdcNock({
+        open: "false"
+      });
       request.get(setup.testUrl + '/challenges?open=false', function(err, response, body) {
         body = JSON.parse(body);
         sfdcReq.done(); // make sure that the sfdc api call occured with orderby option.
@@ -152,7 +162,9 @@ describe("GET /challenges", function() {
   }); // end of open parameter test
 
   it("able to set technology parameter", function(done) {
-    sfdcReq = sfdcNock({technology: "ruby"});
+    sfdcReq = sfdcNock({
+      technology: "ruby"
+    });
     request.get(setup.testUrl + '/challenges?technology=ruby', function(err, response, body) {
       body = JSON.parse(body);
       sfdcReq.done(); // make sure that the sfdc api call occured with orderby option.
@@ -160,7 +172,9 @@ describe("GET /challenges", function() {
     });
   });
   it("able to set platform parameter", function(done) {
-    sfdcReq = sfdcNock({platform: "heroku"});
+    sfdcReq = sfdcNock({
+      platform: "heroku"
+    });
     request.get(setup.testUrl + '/challenges?platform=heroku', function(err, response, body) {
       body = JSON.parse(body);
       sfdcReq.done(); // make sure that the sfdc api call occured with orderby option.
@@ -168,7 +182,9 @@ describe("GET /challenges", function() {
     });
   });
   it("able to set category parameter", function(done) {
-    sfdcReq = sfdcNock({category: "code"});
+    sfdcReq = sfdcNock({
+      category: "code"
+    });
     request.get(setup.testUrl + '/challenges?category=code', function(err, response, body) {
       body = JSON.parse(body);
       sfdcReq.done(); // make sure that the sfdc api call occured with orderby option.
@@ -200,5 +216,49 @@ describe("GET /challenges", function() {
     });
 
   });
+
+});
+
+
+describe("GET /challenges/:id/comments", function() {
+  before(function(done) {
+    setup.init(done);
+  });
+
+  beforeEach(function(done) {
+    nock('https://cs9.salesforce.com:443')
+      .get('/services/apexrest/v.9/comments/65')
+      .reply(200, "[{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jUvjIAE\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-12T15:19:17.000+0000\",\"Id\":\"a09K0000009jUvjIAE\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jWd4IAE\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A submission has been scored but did not pass successfully. The next submission in the queue will now be evaulated.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-12T15:55:55.000+0000\",\"Id\":\"a09K0000009jWd4IAE\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jYzEIAU\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-12T18:40:59.000+0000\",\"Id\":\"a09K0000009jYzEIAU\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jYzJIAU\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A submission has been scored but did not pass successfully. The next submission in the queue will now be evaulated.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-12T18:42:00.000+0000\",\"Id\":\"a09K0000009jYzJIAU\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jZaeIAE\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-12T20:00:37.000+0000\",\"Id\":\"a09K0000009jZaeIAE\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jZayIAE\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-12T20:13:43.000+0000\",\"Id\":\"a09K0000009jZayIAE\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jZbNIAU\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A submission has been scored but did not pass successfully. The next submission in the queue will now be evaulated if one exists.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-12T20:48:19.000+0000\",\"Id\":\"a09K0000009jZbNIAU\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jZbSIAU\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-12T20:48:44.000+0000\",\"Id\":\"a09K0000009jZbSIAU\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jZbXIAU\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-12T20:50:50.000+0000\",\"Id\":\"a09K0000009jZbXIAU\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jaOMIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-12T21:17:18.000+0000\",\"Id\":\"a09K0000009jaOMIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdOMIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T14:38:19.000+0000\",\"Id\":\"a09K0000009jdOMIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdORIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T14:38:26.000+0000\",\"Id\":\"a09K0000009jdORIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdOWIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T14:38:34.000+0000\",\"Id\":\"a09K0000009jdOWIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdOgIAI\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A submission has been scored but did not pass successfully. The next submission in the queue will now be evaulated if one exists.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T15:04:11.000+0000\",\"Id\":\"a09K0000009jdOgIAI\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdOhIAI\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T15:04:11.000+0000\",\"Id\":\"a09K0000009jdOhIAI\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdOlIAI\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T15:11:10.000+0000\",\"Id\":\"a09K0000009jdOlIAI\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdQSIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T15:56:50.000+0000\",\"Id\":\"a09K0000009jdQSIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdTJIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T16:31:47.000+0000\",\"Id\":\"a09K0000009jdTJIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdTAIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T16:32:27.000+0000\",\"Id\":\"a09K0000009jdTAIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdTYIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T16:32:52.000+0000\",\"Id\":\"a09K0000009jdTYIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdTdIAI\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T16:37:22.000+0000\",\"Id\":\"a09K0000009jdTdIAI\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdUWIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T16:47:14.000+0000\",\"Id\":\"a09K0000009jdUWIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdUbIAI\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A submission has been scored but did not pass successfully. The next submission in the queue will now be evaulated if one exists.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T16:47:32.000+0000\",\"Id\":\"a09K0000009jdUbIAI\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdUcIAI\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T16:47:32.000+0000\",\"Id\":\"a09K0000009jdUcIAI\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdXNIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T18:17:19.000+0000\",\"Id\":\"a09K0000009jdXNIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdXSIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A submission has been scored but did not pass successfully. The next submission in the queue will now be evaulated if one exists.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T18:20:37.000+0000\",\"Id\":\"a09K0000009jdXSIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"},{\"attributes\":{\"type\":\"Challenge_Comment__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Comment__c/a09K0000009jdXTIAY\"},\"From_Challenge_Admin__c\":false,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007RjcqMAC\"},\"Name\":\"clyde\",\"Id\":\"a0IK0000007RjcqMAC\",\"Profile_Pic__c\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\"},\"Comment__c\":\"A new submission has been uploaded for this challenge.\",\"Member__c\":\"a0IK0000007RjcqMAC\",\"CreatedDate\":\"2013-09-16T18:20:38.000+0000\",\"Id\":\"a09K0000009jdXTIAY\",\"Challenge__c\":\"a0GK0000008orZvMAI\"}]", {
+        date: 'Mon, 23 Sep 2013 19:12:19 GMT',
+        'content-type': 'application/json;charset=UTF-8',
+        'transfer-encoding': 'chunked'
+      });
+    done();
+  });
+
+  it('returned count is 27', function(done) {
+    request.get(setup.testUrl + '/challenges/65/comments', function(err, response, body) {
+      body = JSON.parse(body);
+      assert.lengthOf(body.response, 27);
+      assert.equal(body.count, 27);
+      done();
+    });
+  });
+
+
+  it("responsed object has proper fields", function(done) {
+    request.get(setup.testUrl + '/challenges/65/comments', function(err, response, body) {
+      body = JSON.parse(body);
+      var comment = body.response[0];
+      assert.propertyVal(comment, "from_challenge_admin");
+      assert.propertyVal(comment, "comment");
+      assert.propertyVal(comment, "member");
+      assert.propertyVal(comment, "createddate");
+      assert.propertyVal(comment, "id");
+      assert.propertyVal(comment, "challenge");
+      assert.propertyVal(comment, "member__r");
+      done();
+    });
+  })
 
 });

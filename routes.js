@@ -12,6 +12,7 @@ exports.routes = {
     { path: "/:apiVersion/members/search", action: "membersSearch" },
     { path: "/:apiVersion/members/:membername", action: "membersFetch" },    
     
+    { path: "/:apiVersion/challenges/:id/comments", action: "challengesComments" },
     { path: "/:apiVersion/challenges", action: "challengesList" },
 
     { path: "/:apiVersion/sponsors/:id", action: "sponsorsFetch" },       
