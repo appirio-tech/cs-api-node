@@ -146,7 +146,7 @@ exports.messagesCreate = {
   },
   authenticated: false,
   outputExample: {
-    "success": "true",
+    "success": true,
     "message": "Notification successfully sent."
   },
   version: 2.0,
@@ -168,7 +168,7 @@ exports.messagesReply = {
   },
   authenticated: false,
   outputExample: {
-    "success": "true",
+    "success": true,
     "message": "Notification successfully sent."
   },
   version: 2.0,
