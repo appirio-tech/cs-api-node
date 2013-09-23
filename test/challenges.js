@@ -25,7 +25,7 @@ describe('challenges', function () {
                 body = JSON.parse(body);
 
                 assert.ok(body.response);
-                
+
                 assert.ok(body.response.challenge_reviewers__r);
                 assert.ok(body.response.challenge_comment_notifiers__r);
                 assert.ok(body.response.assets__r);
