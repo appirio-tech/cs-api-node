@@ -7,7 +7,7 @@ describe('accounts', function () {
         setup.init(done);
     });
     
-    it('should be array, should have 22 elements', function (done) {
+    it('preferences should be array', function (done) {
         request.get(setup.testUrl + '/accounts/port2node/preferences', function (err, response, body) {
             body = JSON.parse(body);
             assert.isArray( body.response );
@@ -15,7 +15,7 @@ describe('accounts', function () {
         });
     });
     
-    it('each element should be well-formed', function(done) {
+    it('each preference element should be well-formed', function(done) {
     	request.get(setup.testUrl + '/accounts/port2node/preferences', function (err, response, body) {
             body = JSON.parse(body);
             
