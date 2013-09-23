@@ -18,7 +18,6 @@ exports.routes = {
     { path: "/:apiVersion/categories", action: "categoriesList" },
     { path: "/:apiVersion/technologies", action: "technologiesList" },
 
-
     { path: "/:apiVersion/leaderboard/referral", action: "leaderboardReferralList" },
     { path: "/:apiVersion/leaderboard", action: "leaderboardList" },
 
@@ -49,6 +48,7 @@ exports.routes = {
     { path: "/:apiVersion/tos", action: "tosList" },
     { path: "/:apiVersion/platforms", action: "platformsList"},
 
+    { path: "/:apiVersion/challenges/:challenge_id/participants", action: "challengesParticipantsList" },
     { path: "/:apiVersion/challenges/:challenge_id", action: "challengesFetch"}
 
   ],
