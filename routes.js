@@ -44,7 +44,9 @@ exports.routes = {
     
     { path: "/:apiVersion/tos/:id", action: "tosFetch" },
     { path: "/:apiVersion/tos", action: "tosList" },
-    { path: "/:apiVersion/platforms", action: "platformsList"}
+    { path: "/:apiVersion/platforms", action: "platformsList"},
+
+    { path: "/:apiVersion/challenges/:challenge_id", action: "challengesFetch"}
 
   ],
 
