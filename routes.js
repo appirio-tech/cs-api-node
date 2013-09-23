@@ -18,6 +18,8 @@ exports.routes = {
     { path: "/:apiVersion/categories", action: "categoriesList" },
     { path: "/:apiVersion/technologies", action: "technologiesList" },
 
+
+    { path: "/:apiVersion/leaderboard/referral", action: "leaderboardRefferalList" },
     { path: "/:apiVersion/leaderboard", action: "leaderboardList" },
 
     { path: "/:apiVersion/communities/:id", action: "communitiesFetch" },

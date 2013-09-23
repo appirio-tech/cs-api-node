@@ -1,6 +1,6 @@
 var utils = require("../utils");
 
-exports.action = {
+exports.leaderboardList = {
   name: "leaderboardList",
   description: "Fetches the leaderboard. Method: GET",
   inputs: {
@@ -49,6 +49,24 @@ exports.action = {
     var limit = params.limit;
     
     api.leaderboard.list(limit, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
+
+exports.leaderboardRefferalList = {
+  name: "leaderboardRefferalList",
+  description: "Fetches the leaderboard sorted by referrals. Method: GET",
+  inputs: {
+    required: [],
+    optional: []
+  },
+  authenticated: false,
+  outputExample: {},
+  version: 2.0,
+  run: function(api, connection, next){
+    api.leaderboard.referral.list(function(data){
       utils.processResponse(data, connection);
       next(connection, true);
     });
