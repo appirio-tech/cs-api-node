@@ -77,3 +77,41 @@ describe('POST /messages', function () {
         });
     });
 });
+
+describe('POST /messages/:id/reply', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should send a reply message successfully', function (done) {
+        var reqBody = {
+          from: "chang",
+          body: "Mocha Test reply body"
+        };
+        request.post({ url: setup.testUrl + '/messages/a1FK0000004Ey9xMAC/reply', form: reqBody },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});
+
+describe('PUT /messages/:id', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should update message successfully', function (done) {
+        var reqBody = {
+          to: "jeffdonthemic",
+          from: "chang",
+          subject: "Mocha Test update",
+          body: "Mocha Test update"
+        };
+        request.put({ url: setup.testUrl + '/messages/a1FK0000004Jy4dMAC', form: reqBody },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});

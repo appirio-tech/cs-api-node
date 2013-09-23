@@ -30,9 +30,11 @@ exports.routes = {
     { path: "/:apiVersion/messages/inbox/:membername", action: "messagesInbox" },
     { path: "/:apiVersion/messages/:id", action: "messagesFetch" },
 
+
     { path: "/:apiVersion/participants/:membername/:challenge_id/submission/:submission_id", action: "deliverablesFetch" },
     { path: "/:apiVersion/participants/:membername/:challenge_id/current_submissions", action: "deliverablesCurrentSubmissions" },
     { path: "/:apiVersion/participants/:membername/:challenge_id/deliverables", action: "deliverablesList" },
+    { path: "/:apiVersion/participants/:membername/:challenge_id/delete_submission_url_file", action: "deliverablesDeleteSubmission" },
     { path: "/:apiVersion/participants/:membername/:challenge_id", action: "participantsStatus" },
     { path: "/:apiVersion/participants/:participant_id", action: "participantsFetch" },
 
@@ -49,16 +51,21 @@ exports.routes = {
     { path: "/:apiVersion/tos", action: "tosList" },
     { path: "/:apiVersion/platforms", action: "platformsList"},
 
+    { path: "/:apiVersion/challenges/:challenge_id/submission_deliverables", action: "challengesListSubmissions" },
     { path: "/:apiVersion/challenges/:challenge_id", action: "challengesFetch"}
 
   ],
 
   put: [
-  
+    { path: "/:apiVersion/messages/:id", action: "messagesUpdate" }
+
   ],
 
   post: [
+    { path: "/:apiVersion/messages/:id/reply", action: "messagesReply" },
     { path: "/:apiVersion/messages", action: "messagesCreate" },
+    
+    { path: "/:apiVersion/judging", action: "judgingCreate" },
 
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 
 

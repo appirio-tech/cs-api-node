@@ -43,3 +43,17 @@ describe('GET /participants/:membername/:challenge_id/deliverables', function ()
         });
     });
 });
+
+describe('GET /participants/:membername/:challenge_id/delete_submission_url_file', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should delete submission successfully', function (done) {
+        request.get(setup.testUrl + '/participants/jeffdonthemic/25/delete_submission_url_file?submission_id=a0DK000000B7ekAMAR', function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});

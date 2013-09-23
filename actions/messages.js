@@ -1,4 +1,5 @@
-var utils = require("../utils")
+var forcifier = require("forcifier")
+  , utils = require("../utils")
 
 exports.action = {
   name: "messagesFetch",
@@ -146,14 +147,57 @@ exports.messagesCreate = {
   },
   authenticated: false,
   outputExample: {
-    "success": "true",
+    "success": true,
     "message": "Notification successfully sent."
   },
   version: 2.0,
   run: function(api, connection, next){
     api.messages.create(connection.params, function(data){
-      utils.processResponse(data, connection);
+      connection.response.response = forcifier.deforceJson(data);
       connection.rawConnection.responseHttpCode = 201;  
+      next(connection, true);
+    });
+  }
+};
+
+exports.messagesReply = {
+  name: "messagesReply",
+  description: "Reply to a specific private message. Method: POST",
+  inputs: {
+    required: ['id', 'from', 'body'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Notification successfully sent."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.messages.reply(connection.params, function(data){
+      connection.response.response = forcifier.deforceJson(data);
+      connection.rawConnection.responseHttpCode = 201;  
+      next(connection, true);
+    });
+  }
+};
+
+exports.messagesUpdate = {
+  name: "messagesUpdate",
+  description: "Updates a specific private message. Method: PUT",
+  inputs: {
+    required: ['id', 'from', 'to', 'subject', 'body'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Message updated successfully."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.messages.update(connection.params, function(data){
+      connection.response.response = forcifier.deforceJson(data);
       next(connection, true);
     });
   }

@@ -2,6 +2,20 @@ var request = require('request'),
     assert  = require('chai').assert,
     setup   = require('./setup.js');
 
+describe('GET /challenges/:challenge_id/submission_deliverables', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should return at least one submission', function (done) {
+        request.get(setup.testUrl + '/challenges/22/submission_deliverables', function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.length > 0);
+            done();
+        });
+    });
+});
+
 describe('challenges', function () {
     before(function (done) {
         setup.init(done);
