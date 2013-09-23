@@ -136,3 +136,25 @@ exports.messagesFrom = {
     });
   }
 };
+
+exports.messagesCreate = {
+  name: "messagesCreate",
+  description: "Creates a new message. Method: POST",
+  inputs: {
+    required: ['to', 'from', 'subject', 'body'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": "true",
+    "message": "Notification successfully sent."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.messages.create(connection.params, function(data){
+      utils.processResponse(data, connection);
+      connection.rawConnection.responseHttpCode = 201;  
+      next(connection, true);
+    });
+  }
+};

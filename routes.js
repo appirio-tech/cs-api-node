@@ -45,6 +45,7 @@ exports.routes = {
   ],
 
   post: [
+    { path: "/:apiVersion/messages", action: "messagesCreate" },
 
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 
 
