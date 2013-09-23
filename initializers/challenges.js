@@ -31,7 +31,7 @@ exports.challenges = function(api, next){
                     "where challenge__r.challenge_id__c = '" + challenge_id + "'";
                   org.query(query, oauth, function (err, data) {
                     resp[0].assets__r = data.records;
-                    console.log(resp);
+                    // console.log(resp);
                     next(resp);
                   });
                 });
