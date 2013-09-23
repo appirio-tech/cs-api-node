@@ -19,5 +19,21 @@ function send404(connection) {
   connection.rawConnection.responseHttpCode = 404;  
 }
 
+// enforce orderBy params.
+// for 'orderBy' params, it could be passed as 'wins desc'
+// so need to enforce 'wins' and not desc
+function enforceOrderByParam(orderBy, defaultValue) {
+  if(!orderBy) { return defaultValue; }
+
+  if(orderBy.indexOf(' ') > 0) {
+    // if orderBu is something like 'wins desc'
+    return orderBy.replace(' ', '__c ');
+  }
+  else {
+    return orderBy + "__c";
+  }
+}
+
 exports.processResponse = processResponse;
 exports.send404 = send404;
+exports.enforceOrderByParam = enforceOrderByParam;
