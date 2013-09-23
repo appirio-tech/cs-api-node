@@ -55,8 +55,8 @@ exports.leaderboardList = {
   }
 };
 
-exports.leaderboardRefferalList = {
-  name: "leaderboardRefferalList",
+exports.leaderboardReferralList = {
+  name: "leaderboardReferralList",
   description: "Fetches the leaderboard sorted by referrals. Method: GET",
   inputs: {
     required: [],

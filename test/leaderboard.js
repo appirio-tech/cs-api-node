@@ -28,10 +28,10 @@ describe('leaderboard', function () {
         });
     });
 
-    describe('refferals', function () {
+    describe('referrals', function () {
         describe('list', function () {
             it('should not be empty', function (done) {
-                request.get(setup.testUrl + '/leaderboard/refferals', function (err, response, body) {
+                request.get(setup.testUrl + '/leaderboard/referrals', function (err, response, body) {
                     body = JSON.parse(body);
                     assert.ok(body.response);
                     assert.ok(_.isArray(body.response) && body.response.length > 0 ||
