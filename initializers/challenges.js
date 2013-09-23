@@ -42,6 +42,20 @@ exports.challenges = function(api, next){
           }
         };
       });
+    },
+
+    /* 
+    * Returns a collection of submissions for a challenge
+    *
+    * challenge_id - the id of the challenge
+    *
+    * Returns a collection of submissions
+    */
+    listSubmissions: function(challenge_id, next) {
+      api.sfdc.org.apexRest({ uri: 'v.9/submissions?challengeid=' + challenge_id + '&fields=id,name,challenge__r.name,url__c,comments__c,type__c,username__c,challenge_participant__r.place__c,challenge_participant__c&orderby=username__c' }, api.sfdc.oauth, function(err, res) {
+        if (err) { console.error(err); }
+        next(res);
+      });
     }
   }
   next();

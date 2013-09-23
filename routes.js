@@ -51,6 +51,7 @@ exports.routes = {
     { path: "/:apiVersion/tos", action: "tosList" },
     { path: "/:apiVersion/platforms", action: "platformsList"},
 
+    { path: "/:apiVersion/challenges/:challenge_id/submission_deliverables", action: "challengesListSubmissions" },
     { path: "/:apiVersion/challenges/:challenge_id", action: "challengesFetch"}
 
   ],
