@@ -38,3 +38,41 @@ exports.action = {
     });
   }
 };
+
+exports.deliverablesCurrentSubmissions = {
+  name: "deliverablesCurrentSubmissions",
+  description: "Returns a member's submissions for a specific challenge. Method: GET",
+  inputs: {
+    required: ['membername', 'challenge_id'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "attributes": {
+      "type": "Challenge_Submission__c",
+      "url": "/services/data/v22.0/sobjects/Challenge_Submission__c/a0DK00000095XjUMAU"
+    },
+    "challenge__r": {
+      "attributes": {
+        "type": "Challenge__c",
+        "url": "/services/data/v22.0/sobjects/Challenge__c/a0GK0000006k4wjMAA"
+      },
+      "name": "First2Finish - Test Upload",
+      "id": "a0GK0000006k4wjMAA"
+    },
+    "name": "CS-29673",
+    "url": "https://s3.amazonaws.com/cs-sandbox/challenges/22/jeffdonthemic/builder.png",
+    "comments": "test",
+    "type": "Code",
+    "id": "a0DK00000095XjUMAU",
+    "username": "jeffdonthemic",
+    "challenge": "a0GK0000006k4wjMAA"
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.deliverables.current_submissions(connection.params, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
