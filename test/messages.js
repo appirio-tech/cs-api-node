@@ -77,3 +77,21 @@ describe('POST /messages', function () {
         });
     });
 });
+
+describe('POST /messages/:id/reply', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should send a reply message successfully', function (done) {
+        var reqBody = {
+          from: "chang",
+          body: "Mocha Test reply body"
+        };
+        request.post({ url: setup.testUrl + '/messages/a1FK0000004Ey9xMAC/reply', form: reqBody },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});

@@ -158,3 +158,25 @@ exports.messagesCreate = {
     });
   }
 };
+
+exports.messagesReply = {
+  name: "messagesReply",
+  description: "Reply to a specific private message. Method: POST",
+  inputs: {
+    required: ['id', 'from', 'body'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": "true",
+    "message": "Notification successfully sent."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.messages.reply(connection.params, function(data){
+      connection.rawConnection.responseHttpCode = 201;  
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
