@@ -105,3 +105,25 @@ exports.judgingOutstandingFetch = {
     });
   }
 };
+
+exports.judgingCreate = {
+  name: "judgingCreate",
+  description: "Adds a member as a judge to a challenge. Method: POST",
+  inputs: {
+    required: ["membername", "challenge_id"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Thank you! You are now a judge for this challenge."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.judging.create(connection.params, function(data){
+      connection.rawConnection.responseHttpCode = 201;
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};

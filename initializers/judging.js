@@ -88,6 +88,25 @@ exports.judging = function(api, next){
           }
         });
       }
+    },
+    
+    /*
+    * Adds a member as a judge to a challenge
+    *
+    * params - { membername, challenge_id }
+    *
+    * Returns a status message
+    */
+    create: function(params, next) {
+      var body = {
+        challenge_id: params.challenge_id,
+        memberName: params.membername
+      };
+      api.sfdc.org.apexRest({ uri: 'v.9/judging', method: 'POST', body: body }, api.sfdc.oauth, function(err, res) {
+        if (err) { console.error(err); }
+        res.Success = res.Success == "true";
+        next(res);
+      });
     }
   }
   next();

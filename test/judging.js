@@ -51,4 +51,22 @@ describe('judging', function () {
             });
         });
     });
+
+    describe('POST /judging', function () {
+        before(function (done) {
+            setup.init(done);
+        });
+
+        it('should add a member as a judge successfully or return an "already added" message', function (done) {
+            var reqBody = {
+              challenge_id: "23",
+              membername: "chang"
+            };
+            request.post({ url: setup.testUrl + '/judging', form: reqBody },  function (err, response, body) {
+                body = JSON.parse(body);
+                assert.ok(body.response.success || body.response.message == "Unable to add you as a judge. You are already a judge for this challenge.");
+                done();
+            });
+        });
+    });
 });

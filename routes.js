@@ -60,6 +60,8 @@ exports.routes = {
   post: [
     { path: "/:apiVersion/messages", action: "messagesCreate" },
 
+    { path: "/:apiVersion/judging", action: "judgingCreate" },
+
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 
 
   ]  
