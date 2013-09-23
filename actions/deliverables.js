@@ -76,3 +76,28 @@ exports.deliverablesCurrentSubmissions = {
     });
   }
 };
+
+exports.deliverablesFetch = {
+  name: "deliverablesFetch",
+  description: "Returns the specific submission. Method: GET",
+  inputs: {
+    required: ['membername', 'challenge_id', 'submission_id'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "id": "a0DK000000B7ekAMAR",
+    "comments": "test",
+    "type": "Video",
+    "url": "https://s3.amazonaws.com/cs-sandbox/challenges/3/jeffdonthemic/sfdc-thurgood-src.zip",
+    "username": "jeffdonthemic",
+    "language": null
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.deliverables.fetch(connection.params, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};

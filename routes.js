@@ -24,6 +24,7 @@ exports.routes = {
     { path: "/:apiVersion/messages/inbox/:membername", action: "messagesInbox" },
     { path: "/:apiVersion/messages/:id", action: "messagesFetch" },
 
+    { path: "/:apiVersion/participants/:membername/:challenge_id/submission/:submission_id", action: "deliverablesFetch" },
     { path: "/:apiVersion/participants/:membername/:challenge_id/current_submissions", action: "deliverablesCurrentSubmissions" },
     { path: "/:apiVersion/participants/:membername/:challenge_id/deliverables", action: "deliverablesList" },
     { path: "/:apiVersion/participants/:membername/:challenge_id", action: "participantsStatus" },
