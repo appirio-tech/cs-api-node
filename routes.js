@@ -54,7 +54,8 @@ exports.routes = {
   ],
 
   put: [
-  
+    { path: "/:apiVersion/messages/:id", action: "messagesUpdate" }
+
   ],
 
   post: [

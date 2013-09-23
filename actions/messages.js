@@ -180,3 +180,24 @@ exports.messagesReply = {
     });
   }
 };
+
+exports.messagesUpdate = {
+  name: "messagesUpdate",
+  description: "Updates a specific private message. Method: PUT",
+  inputs: {
+    required: ['id', 'from', 'to', 'subject', 'body'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Message updated successfully."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.messages.update(connection.params, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};

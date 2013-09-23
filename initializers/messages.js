@@ -148,6 +148,36 @@ exports.messages = function(api, next){
           }
         })
       })
+    },
+
+    /* 
+    * Updates a specific private message
+    *
+    * data - { id, from, to, subject, body }
+    *
+    * Returns a status message
+    */
+    update: function(data, next) {
+      var client = new pg.Client(api.configData.pg.connString);
+      client.connect(function(err) {
+        if (err) { console.log(err); }
+        var sql = "update private_message__c set from__c = (select sfid from member__c where name = '" + data.from + "'), to__c = (select sfid from member__c where name = '" + data.to + "'), subject__c = '" + data.subject + "' where sfid = '" + data.id + "'; update private_message_text__c set body__c = '" + data.body + "' where private_message__c = '" + data.id + "'";
+        client.query(sql, function(err, res) {
+          if (!err) {
+            res = {
+              success: true,
+              message: "Message updated successfully."
+            };
+          } else {
+            res = {
+              success: false,
+              message: "Message not updated."
+            };
+            console.log(err);
+          }
+          next(res);
+        })
+      })
     }
   }
   next();

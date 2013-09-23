@@ -95,3 +95,23 @@ describe('POST /messages/:id/reply', function () {
         });
     });
 });
+
+describe('PUT /messages/:id', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should update message successfully', function (done) {
+        var reqBody = {
+          to: "jeffdonthemic",
+          from: "chang",
+          subject: "Mocha Test update",
+          body: "Mocha Test update"
+        };
+        request.put({ url: setup.testUrl + '/messages/a1FK0000004Jy4dMAC', form: reqBody },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});
