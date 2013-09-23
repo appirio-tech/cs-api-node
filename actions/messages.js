@@ -152,8 +152,8 @@ exports.messagesCreate = {
   version: 2.0,
   run: function(api, connection, next){
     api.messages.create(connection.params, function(data){
-      utils.processResponse(data, connection);
       connection.rawConnection.responseHttpCode = 201;  
+      utils.processResponse(data, connection);
       next(connection, true);
     });
   }

@@ -90,7 +90,7 @@ exports.messages = function(api, next){
     *
     * data - { from, to, subject, body }
     *
-    * Returns the message with other info (e.g. date) included
+    * Returns a status message
     */
     create: function(data, next) {
       var client = new pg.Client(api.configData.pg.connString);
