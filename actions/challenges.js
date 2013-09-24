@@ -44,6 +44,7 @@ exports.challengesParticipantsList = {
       next(connection, true);
     });
   }
+};
 
 exports.challengesFetch = {
     name: "challengesFetch",

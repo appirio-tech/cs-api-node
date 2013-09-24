@@ -37,7 +37,6 @@ describe('challenges', function () {
             });
         });
     });
-<<<<<<< HEAD
 
     describe('participants', function () {
         it('should not error', function (done) {
@@ -52,7 +51,6 @@ describe('challenges', function () {
             });
         });
     });
-=======
 });
 
 describe("GET /challenges", function() {
@@ -250,5 +248,4 @@ describe("GET /challenges", function() {
 
   });
 
->>>>>>> master
 });
