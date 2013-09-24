@@ -7,15 +7,17 @@ describe('accounts', function () {
         setup.init(done);
     });
     
-    it('should be array, should have "count" elements', function (done) {
+    it('should be array, should have "count" number of elements', function (done) {
         request.get(setup.testUrl + '/accounts/port2node/preferences', function (err, response, body) {
             body = JSON.parse(body);
             // simplify reference to response...
             body = body.response;
             
+            assert.property( body, 'success' );
             assert.property( body, 'response' );
             assert.property( body, 'count' );
             
+            assert.ok( body.success );
             assert.isArray( body.response );
             assert.lengthOf( body.response, body.count );
             

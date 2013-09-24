@@ -139,7 +139,7 @@ exports.accounts = function(api, next){
 	getPreferences: function(membername, next){
 		getPreferences(membername, function(err, preferences)  {
         	if (err) { next( { success: false, message: err.message } ); }
-        	if (!err) { next(preferences); }
+        	if (!err) { next( { success: true, response:preferences, count:preferences.length } ); }
 		});
 	}
   } // end api.accounts
