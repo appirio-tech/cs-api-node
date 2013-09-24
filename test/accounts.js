@@ -2,7 +2,7 @@ var request = require('request'),
     assert  = require('chai').assert,
     setup   = require('./setup.js');
 
-describe('accounts', function () {
+describe('GET /accounts/:membername/preferences', function () {
     before(function (done) {
         setup.init(done);
     });
