@@ -177,3 +177,21 @@ exports.challengesListSubmissions = {
     });
   }
 };
+
+exports.challengesComments = {
+  name: "challengesComments",
+  description: "Fetches all comments for a challenge. Method: GET",
+  inputs: {
+    required: ["id"],
+    optional: []
+  },
+  authenticated: false,
+  outputExample: {},
+  version: 2.0,
+  run: function(api, connection, next){
+  api.challenges.comments(connection.params.id.trim(), function(data){
+    utils.processResponse(data, connection);
+    next(connection, true);
+  });
+  }
+};

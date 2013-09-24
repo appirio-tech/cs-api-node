@@ -149,7 +149,28 @@ exports.challenges = function(api, next){
         if (err) { console.error(err); }
         next(res);
       });
-    }    
+    } ,   
+
+    /*
+     * Returns all comments of a challenges from from sfdc
+     *
+     * id - challenge id
+     *
+     * Returns a collection of comments records
+     */
+
+    comments: function(id, next) {
+      api.sfdc.org.apexRest({uri: 'v.9/comments/' + id}, api.sfdc.oauth, function(err, res) {
+        if (err) {
+          console.log(err);
+          return next(err);
+        }
+
+        next(res);
+      });
+    }
+    
+
   }
   next();
 }
