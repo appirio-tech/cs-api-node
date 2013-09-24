@@ -50,7 +50,9 @@ exports.challenges = function(api, next) {
      */
 
     comments: function(id, next) {
-      api.sfdc.org.apexRest({uri: 'v.9/comments/' + id}, api.sfdc.oauth, function(err, res) {
+      api.sfdc.org.apexRest({
+        uri: 'v.9/comments/' + id
+      }, api.sfdc.oauth, function(err, res) {
         if (err) {
           console.log(err);
           return next(err);
@@ -60,6 +62,48 @@ exports.challenges = function(api, next) {
       });
     },
 
+    /*
+     * Returns all scorecards of a challenges from from sfdc
+     *
+     * id - challenge id
+     *
+     * Returns a collection of scorecards records
+     */
+
+    scorecards: function(id, next) {
+
+      api.sfdc.org.apexRest({
+        uri: 'v.9/challenges/' + id + "/scorecards?fields=id,name,member__r.name,member__r.profile_pic__c,member__r.country__c,challenge__c,money_awarded__c,prize_awarded__c,place__c,score__c,submitted_date__c"
+      }, api.sfdc.oauth, function(err, res) {
+        if (err) {
+          console.log(err);
+          return next(err);
+        }
+
+        next(res);
+      });
+    },
+
+    /*
+     * Returns scorecard of a challenges from from sfdc
+     *
+     * id - challenge id
+     *
+     * Returns a collection of scorecard records
+     */
+
+    scorecard: function(id, next) {
+      api.sfdc.org.apexRest({
+        uri: 'v.9/scorecard/' + id + "/questions"
+      }, api.sfdc.oauth, function(err, res) {
+        if (err) {
+          console.log(err);
+          return next(err);
+        }
+
+        next(res);
+      });
+    }
 
   }
   next();

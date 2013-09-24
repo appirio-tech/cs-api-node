@@ -6,7 +6,7 @@ var request = require('request'),
   querystring = require("querystring");
 
 
-xdescribe("GET /challenges", function() {
+describe("GET /challenges", function() {
   before(function(done) {
     setup.init(done);
   });
@@ -259,6 +259,88 @@ describe("GET /challenges/:id/comments", function() {
       assert.propertyVal(comment, "member__r");
       done();
     });
-  })
+  });
 
+});
+
+
+
+describe("GET /challenges/:id/scorecards", function() {
+  before(function(done) {
+    setup.init(done);
+  });
+
+  beforeEach(function(done) {
+    nock('https://cs9.salesforce.com:443')
+      .get('/services/apexrest/v.9/challenges/65/scorecards?fields=id,name,member__r.name,member__r.profile_pic__c,member__r.country__c,challenge__c,money_awarded__c,prize_awarded__c,place__c,score__c,submitted_date__c')
+      .reply(200, "[{\"attributes\":{\"type\":\"Challenge_Participant__c\",\"url\":\"/services/data/v22.0/sobjects/Challenge_Participant__c/a0AK000000BTelZMAT\"},\"Name\":\"CP-72503\",\"Submitted_Date__c\":\"2013-09-12T15:19:15.000+0000\",\"Money_Awarded__c\":0.00,\"Score__c\":27.5,\"Member__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007NIQmMAO\"},\"Name\":\"jeffdonthemic\",\"Country__c\":\"United States\",\"Id\":\"a0IK0000007NIQmMAO\",\"Profile_Pic__c\":\"http://res.cloudinary.com/hz2trkcbb/image/upload/c_fill,h_125,w_125/v1377567951/jeffdonthemic.jpg\"},\"Member__c\":\"a0IK0000007NIQmMAO\",\"Id\":\"a0AK000000BTelZMAT\",\"Scorecard__r\":{\"totalSize\":1,\"done\":true,\"records\":[{\"attributes\":{\"type\":\"QwikScore_Scorecard__c\",\"url\":\"/services/data/v22.0/sobjects/QwikScore_Scorecard__c/a0OK0000002OYF3MAO\"},\"Challenge_Participant__c\":\"a0AK000000BTelZMAT\",\"Reviewer__r\":{\"attributes\":{\"type\":\"Member__c\",\"url\":\"/services/data/v22.0/sobjects/Member__c/a0IK0000007NIQoMAO\"},\"Name\":\"mess\",\"Id\":\"a0IK0000007NIQoMAO\"},\"Final_Score__c\":27.500,\"Reviewer__c\":\"a0IK0000007NIQoMAO\",\"Id\":\"a0OK0000002OYF3MAO\",\"Total_Raw_Score__c\":6.00}]},\"Challenge__c\":\"a0GK0000008orZvMAI\"}]", {
+        date: 'Mon, 23 Sep 2013 23:45:50 GMT',
+        'content-type': 'application/json;charset=UTF-8',
+        'transfer-encoding': 'chunked'
+      });
+    done();
+  });
+
+  it('returned count is 1', function(done) {
+    request.get(setup.testUrl + '/challenges/65/scorecards', function(err, response, body) {
+      body = JSON.parse(body);
+      assert.equal(body.count, 1);
+      done();
+    });
+  });
+
+  it("responsed object has proper fields", function(done) {
+    request.get(setup.testUrl + '/challenges/65/scorecards', function(err, response, body) {
+      body = JSON.parse(body);
+      var scorecard = body.response;
+      assert.propertyVal(scorecard, "name");
+      assert.propertyVal(scorecard, "submitted_date");
+      assert.propertyVal(scorecard, "money_awarded");
+      assert.propertyVal(scorecard, "score");
+      assert.propertyVal(scorecard, "member");
+      assert.propertyVal(scorecard, "id");
+      assert.propertyVal(scorecard, "challenge");
+      assert.propertyVal(scorecard, "scorecard__r");
+      assert.propertyVal(scorecard, "member__r");
+      done();
+    });
+  });
+});
+
+describe("GET /challenges/:id/scorecard", function() {
+  before(function(done) {
+    setup.init(done);
+  });
+
+  beforeEach(function(done) {
+    nock('https://cs9.salesforce.com:443')
+      .get('/services/apexrest/v.9/scorecard/65/questions')
+      .reply(200, "[{\"attributes\":{\"type\":\"QwikScore_Question_Group__c\",\"url\":\"/services/data/v23.0/sobjects/QwikScore_Question_Group__c/a0MK0000005Etb1MAC\"},\"Name\":\"Testing\",\"QwikScore_Questions__r\":{\"totalSize\":1,\"done\":true,\"records\":[{\"attributes\":{\"type\":\"QwikScore_Question__c\",\"url\":\"/services/data/v23.0/sobjects/QwikScore_Question__c/a0NK000000CdAIuMAN\"},\"QwikScore_Question_Group__c\":\"a0MK0000005Etb1MAC\",\"Maximum_Value__c\":4,\"Question_Type__c\":\"Numeric\",\"Minimum_Value__c\":1,\"Id\":\"a0NK000000CdAIuMAN\"}]},\"Id\":\"a0MK0000005Etb1MAC\",\"Group_Weight__c\":50},{\"attributes\":{\"type\":\"QwikScore_Question_Group__c\",\"url\":\"/services/data/v23.0/sobjects/QwikScore_Question_Group__c/a0MK0000005Etb2MAC\"},\"Name\":\"Functional\",\"QwikScore_Questions__r\":{\"totalSize\":5,\"done\":true,\"records\":[{\"attributes\":{\"type\":\"QwikScore_Question__c\",\"url\":\"/services/data/v23.0/sobjects/QwikScore_Question__c/a0NK000000CdAIvMAN\"},\"QwikScore_Question_Group__c\":\"a0MK0000005Etb2MAC\",\"Maximum_Value__c\":4,\"Question_Type__c\":\"Numeric\",\"Minimum_Value__c\":1,\"Id\":\"a0NK000000CdAIvMAN\"},{\"attributes\":{\"type\":\"QwikScore_Question__c\",\"url\":\"/services/data/v23.0/sobjects/QwikScore_Question__c/a0NK000000CdAIwMAN\"},\"QwikScore_Question_Group__c\":\"a0MK0000005Etb2MAC\",\"Maximum_Value__c\":2,\"Question_Type__c\":\"Numeric\",\"Minimum_Value__c\":1,\"Id\":\"a0NK000000CdAIwMAN\"},{\"attributes\":{\"type\":\"QwikScore_Question__c\",\"url\":\"/services/data/v23.0/sobjects/QwikScore_Question__c/a0NK000000CdAIxMAN\"},\"QwikScore_Question_Group__c\":\"a0MK0000005Etb2MAC\",\"Maximum_Value__c\":4,\"Question_Type__c\":\"Numeric\",\"Minimum_Value__c\":1,\"Id\":\"a0NK000000CdAIxMAN\"},{\"attributes\":{\"type\":\"QwikScore_Question__c\",\"url\":\"/services/data/v23.0/sobjects/QwikScore_Question__c/a0NK000000CdAIyMAN\"},\"QwikScore_Question_Group__c\":\"a0MK0000005Etb2MAC\",\"Maximum_Value__c\":4,\"Question_Type__c\":\"Numeric\",\"Minimum_Value__c\":1,\"Id\":\"a0NK000000CdAIyMAN\"},{\"attributes\":{\"type\":\"QwikScore_Question__c\",\"url\":\"/services/data/v23.0/sobjects/QwikScore_Question__c/a0NK000000CdAIzMAN\"},\"QwikScore_Question_Group__c\":\"a0MK0000005Etb2MAC\",\"Maximum_Value__c\":4,\"Question_Type__c\":\"Numeric\",\"Minimum_Value__c\":1,\"Id\":\"a0NK000000CdAIzMAN\"}]},\"Id\":\"a0MK0000005Etb2MAC\",\"Group_Weight__c\":50}]", {
+        date: 'Mon, 23 Sep 2013 23:53:39 GMT',
+        'content-type': 'application/json;charset=UTF-8',
+        'transfer-encoding': 'chunked'
+      });
+    done();
+  });
+
+  it('returned count is 2', function(done) {
+    request.get(setup.testUrl + '/challenges/65/scorecard', function(err, response, body) {
+      body = JSON.parse(body);
+      assert.lengthOf(body.response, 2);
+      assert.equal(body.count, 2);
+      done();
+    });
+  });
+
+  xit("responsed object has proper fields", function(done) {
+    request.get(setup.testUrl + '/challenges/65/scorecard', function(err, response, body) {
+      body = JSON.parse(body);
+      var scorecard = body.response;
+      assert.propertyVal(scorecard, "name");
+      assert.propertyVal(scorecard, "id");
+      assert.propertyVal(scorecard, "group_weight");
+      assert.propertyVal(scorecard, "qwikscore_questions__r");
+      done();
+    });
+  });
 });
