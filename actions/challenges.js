@@ -65,3 +65,39 @@ exports.challengesFetch = {
         });
     }
 };
+
+exports.challengesScorecards = {
+  name: "challengesScorecards",
+  description: "Fetches all scorecards for a challenge. Method: GET",
+  inputs: {
+    required: ["id"],
+    optional: []
+  },
+  authenticated: false,
+  outputExample: {},
+  version: 2.0,
+  run: function(api, connection, next) {
+    api.challenges.scorecards(connection.params.id.trim(), function(data) {
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
+
+exports.challengesScorecard = {
+  name: "challengesScorecard",
+  description: "Fetches scorecard of a challenge. Method: GET",
+  inputs: {
+    required: ["id"],
+    optional: []
+  },
+  authenticated: false,
+  outputExample: {},
+  version: 2.0,
+  run: function(api, connection, next) {
+    api.challenges.scorecard(connection.params.id.trim(), function(data) {
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
