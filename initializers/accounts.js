@@ -139,7 +139,7 @@ exports.accounts = function(api, next){
 	getPreferences: function(membername, next){
 		getPreferences(membername, function(err, preferences)  {
         	if (err) { next( { success: false, message: err.message } ); }
-        	if (!err) { next(preferences); }
+        	if (!err) { next( { success: true, response:preferences, count:preferences.length } ); }
 		});
 	}
   } // end api.accounts
@@ -234,34 +234,34 @@ exports.accounts = function(api, next){
     });    
   }  
 	
-	/*
-	 * Fetches preferences for an account by membername from Apex REST service.
-	 *
-	 * membername - the cs member name to get preferences for
-	 *
-	 * Returns JSON containing an array of preferences:
-	 *	[ { attributes:	{	type: String,
-	 *						url: String,
-	 *						event: String,
-	 *						event_per_member: String,
-	 *						notification_method: String,
-	 *						member: String,
-	 *						do_not_notify: Boolean,
-	 *						id: String						}
-	 *	} ]
-	 */
-	 var getPreferences = function(membername, next){
-	 	api.sfdc.org.apexRest({uri:"v.9/notifications/preferences/" + membername, method: 'GET'}, api.sfdc.oauth, function(err,sfdc_resp){
-			if(err) {
-				next(new Error("Could not fetch preferences for '"+membername+"'."));
-			}else{
-				var preferences = [];
-				sfdc_resp.forEach( function(item){
-					preferences.push( forcifier.deforceJson(item) );
-				});
-				next(null, preferences);
-			}
-		})
-	 };
+  /*
+   * Fetches preferences for an account by membername from Apex REST service.
+   *
+   * membername - the cs member name to get preferences for
+   *
+   * Returns JSON containing an array of preferences:
+   *	[ { attributes:	{	type: String,
+   *						url: String,
+   *						event: String,
+   *						event_per_member: String,
+   *						notification_method: String,
+   *						member: String,
+   *						do_not_notify: Boolean,
+   *						id: String						}
+   *	} ]
+   */
+   var getPreferences = function(membername, next){
+   	api.sfdc.org.apexRest({uri:"v.9/notifications/preferences/" + membername, method: 'GET'}, api.sfdc.oauth, function(err,sfdc_resp){
+        if(err) {
+          next(new Error("Could not fetch preferences for '"+membername+"'."));
+        }else{
+          var preferences = [];
+          sfdc_resp.forEach( function(item){
+            preferences.push( forcifier.deforceJson(item) );
+          });
+          next(null, preferences);
+        }
+  	})
+   };
 }
 
