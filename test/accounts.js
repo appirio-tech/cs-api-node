@@ -7,7 +7,7 @@ describe('accounts', function () {
         setup.init(done);
     });
     
-    it('should be array, should have 22 elements', function (done) {
+    it('should be array, should have "count" elements', function (done) {
         request.get(setup.testUrl + '/accounts/port2node/preferences', function (err, response, body) {
             body = JSON.parse(body);
             // simplify reference to response...
@@ -17,7 +17,6 @@ describe('accounts', function () {
             assert.property( body, 'count' );
             
             assert.isArray( body.response );
-            assert.equal( body.count, 22 );
             assert.lengthOf( body.response, body.count );
             
             done();

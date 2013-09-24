@@ -78,7 +78,7 @@ exports.accountsGetPreferences = {
 			id: 'a17K0000000lk3gIAA'
 		}],
 		// count is the length of the preferences array...
-		count: 22
+		count: 1
 	}
   },
   authenticated: true,
