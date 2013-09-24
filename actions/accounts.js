@@ -65,8 +65,9 @@ exports.accountsGetPreferences = {
   blockedConnectionTypes: [],
   outputExample: {
   	success: true,
-  	// preferences is an array of objects following this format...
-  	preferences: [ { attributes:
+  	response: {
+  		// response is an array of objects following this format...
+  		response: [ { attributes:
 			{	type: 'Notification_Settings__c',
 				url: '/services/data/v27.0/sobjects/Notification_Settings__c/a17K0000000lk3gIAA' },
 			event: 'Challenge Ending in 24 Hours',
@@ -75,13 +76,19 @@ exports.accountsGetPreferences = {
 			member: 'a0IK0000007WlmQMAS',
 			do_not_notify: false,
 			id: 'a17K0000000lk3gIAA'
-		}]
+		}],
+		// count is the length of the preferences array...
+		count: 1
+	}
   },
   authenticated: true,
   version: 2.0,
   run: function(api, connection, next){
   	api.accounts.getPreferences( connection.params.membername, function(data){
-      connection.response.response = data;
+      connection.response.response = {
+      	response: data,
+      	count: data.length
+      };
       next(connection, true);
     });
   }

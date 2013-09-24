@@ -7,12 +7,17 @@ describe('accounts', function () {
         setup.init(done);
     });
     
-    it('should be array, should have 22 elements', function (done) {
+    it('should be array, should have "count" elements', function (done) {
         request.get(setup.testUrl + '/accounts/port2node/preferences', function (err, response, body) {
             body = JSON.parse(body);
+            // simplify reference to response...
+            body = body.response;
+            
+            assert.property( body, 'response' );
+            assert.property( body, 'count' );
             
             assert.isArray( body.response );
-            assert.lengthOf( body.response, 22 );
+            assert.lengthOf( body.response, body.count );
             
             done();
         });
@@ -21,8 +26,10 @@ describe('accounts', function () {
     it('each element should be well-formed', function(done) {
     	request.get(setup.testUrl + '/accounts/port2node/preferences', function (err, response, body) {
             body = JSON.parse(body);
+            // simplify reference to response...
+            body = body.response;
             
-            for ( var i = 0; i < body.response.length; i++ ) {
+            for ( var i = 0; i < body.count; i++ ) {
             	var pref = body.response[i];
             	
             	assert.property( pref, 'attributes' );
