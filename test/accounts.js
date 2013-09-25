@@ -69,3 +69,31 @@ describe('PUT /accounts/:membername/marketing', function () {
         });
     });
 });
+
+describe('PUT /accounts/:membername/referred_by', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should set referral by name', function (done) {
+        var reqBody = {
+          referral_id_or_membername: "jeffdonthemic"
+        };
+        request.put({ url: setup.testUrl + '/accounts/chang/referred_by', form: reqBody },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+
+    it('should set referral by id', function (done) {
+        var reqBody = {
+          referral_id_or_membername: "a11K0000000ih7MIAQ"
+        };
+        request.put({ url: setup.testUrl + '/accounts/chang/referred_by', form: reqBody },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});

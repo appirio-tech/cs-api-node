@@ -111,3 +111,24 @@ exports.accountsUpdateMarketingInfo = {
     });
   }
 };
+
+exports.accountsReferredBy = {
+  name: "accountsReferredBy",
+  description: "Sets a member as being referred by another member. Method: PUT",
+  inputs: {
+    required: ["membername", "referral_id_or_membername"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Referral a0IK0000007SVSeMAO assigned to a0IK0000007NIQmMAO."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.accounts.referredBy(connection.params, api, function(data){
+      connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};

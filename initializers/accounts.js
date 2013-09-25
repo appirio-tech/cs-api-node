@@ -193,6 +193,94 @@ exports.accounts = function(api, next){
           }
         })
       })
+    },
+
+    /* 
+    * Sets a member as being referred by another member
+    *
+    * data - { membername, referral_id_or_membername }
+    *
+    * Returns a status message
+    */
+    referredBy: function(data, api, next) {
+      var client = new pg.Client(api.configData.pg.connString);
+      client.connect(function(err) {
+        if (err) { console.log(err); }
+        var sql = "select (select sfid from member__c where name = '" + data.referral_id_or_membername + "') as referred_by_member, (select sfid from member__c where name = '" + data.membername + "') as converted_member";
+        client.query(sql, function(err, rs) {
+          if (!err) {
+            if (rs.rows[0] && !rs.rows[0]['referred_by_member']) {
+              sql = "update referral__c set converted__c = true, converted_to_member__c = '" + rs.rows[0]['converted_member'] + "' where sfid = '" + rs.rows[0]['referred_by_member'] + "'";
+              client.query(sql, function(err, rs2) {
+                if (!err) {
+                  rs2 = {
+                    success: true,
+                    message: "Referral " + data.referral_id_or_membername + " assigned to newly converted member " + rs.rows[0]['converted_member'] + " successfully."
+                  }
+                } else {
+                  rs2 = {
+                    success: false,
+                    message: "Error updating referral."
+                  }
+                  console.log(err);
+                }
+                next(rs2);
+              })
+            } else if (rs.rows[0] && !rs.rows[0]['converted_member']) {
+              var status = {
+                success: false,
+                message: "Member not found."
+              };
+              next(status);
+            } else {
+              sql = "select id from referral__c where converted_to_member__c = '" + rs.rows[0]['converted_member'] + "'";
+              client.query(sql, function(err, rs2) {
+                if (!err) {
+                  if (rs2.rows.length > 0) {
+                    rs2 = {
+                      success: true,
+                      message: "Member already assigned."
+                    }
+                    next(rs2);
+                  } else {
+                    var timestamp = new Date().toISOString();
+                    sql = "insert into referral__c (converted_to_member__c, referred_by_member__c, converted__c, include_in_member_count__c, source__c, createddate, lastmodifieddate) values ('" + rs.rows[0]['converted_member'] + "', '" + rs.rows[0]['referred_by_member'] + "', true, false, 'Member', '" + timestamp + "', '" + timestamp + "')";
+                    client.query(sql, function(err, rs3) {
+                      if (!err) {
+                        rs3 = {
+                          success: true,
+                          message: "Referral " +  rs.rows[0]['converted_member']+ " assigned to " + rs.rows[0]['referred_by_member'] + "."
+                        }
+                      } else {
+                        rs3 = {
+                          success: false,
+                          message: "Error creating referral record."
+                        }
+                        console.log(err);
+                      }
+                      next(rs3);
+                    })
+                  }
+                } else {
+                  rs2 = {
+                    success: false,
+                    message: "Error while trying to assign referral."
+                  }
+                  console.log(err);
+                  next(rs2);
+                }
+              })
+            }
+          } else {
+            rs = {
+              success: false,
+              message: "Error while trying to find members."
+            }
+            console.log(err);
+            next(rs);
+          }
+        })
+      })
     }
   } // end api.accounts
 
