@@ -90,3 +90,45 @@ exports.accountsGetPreferences = {
     });
   }
 };
+
+exports.accountsUpdateMarketingInfo = {
+  name: "accountsUpdateMarketingInfo",
+  description: "Updates the marketing info for a member. Method: PUT",
+  inputs: {
+    required: ["membername", "campaign_source", "campaign_medium", "campaign_name"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Marketing info updated successfully. No matching community."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.accounts.updateMarketingInfo(connection.params, api, function(data){
+      connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};
+
+exports.accountsReferredBy = {
+  name: "accountsReferredBy",
+  description: "Sets a member as being referred by another member. Method: PUT",
+  inputs: {
+    required: ["membername", "referral_id_or_membername"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Referral a0IK0000007SVSeMAO assigned to a0IK0000007NIQmMAO."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.accounts.referredBy(connection.params, api, function(data){
+      connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};

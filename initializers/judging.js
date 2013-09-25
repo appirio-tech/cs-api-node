@@ -107,6 +107,39 @@ exports.judging = function(api, next){
         res.Success = res.Success == "true";
         next(res);
       });
+    },
+    
+    /*
+    * Saves the scorecard for a participant by a judge member
+    *
+    * params - { id, answers, comments, options }
+    *
+    * Returns a status message
+    */
+    update: function(params, next) {
+      var params = [
+        {
+          key: 'participant_id',
+          value: params.id
+        },
+        {
+          key: 'answers',
+          value: params.answers
+        },
+        {
+          key: 'comments',
+          value: params.comments
+        },
+        {
+          key: 'options',
+          value: params.options
+        }
+      ];
+      api.sfdc.org.apexRest({ uri: 'v.9/scorecard', method: 'PUT', urlParams: params }, api.sfdc.oauth, function(err, res) {
+        if (err) { console.error(err); }
+        res.Success = Boolean(res.Success);
+        next(res);
+      });
     }
   }
   next();
