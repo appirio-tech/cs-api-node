@@ -63,3 +63,24 @@ exports.communitiesFetch = {
     });
   }
 };
+
+exports.communitiesAddMember = {
+  name: "communitiesAddMember",
+  description: "Adds a member to a community. Method: POST",
+  inputs: {
+    required: ['membername', 'community_id'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Member added successfully."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.communities.addMember(connection.params, function(data){
+      connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};

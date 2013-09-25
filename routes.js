@@ -61,6 +61,11 @@ exports.routes = {
   ],
 
   put: [
+    { path: "/:apiVersion/accounts/:membername/marketing", action: "accountsUpdateMarketingInfo" },
+    { path: "/:apiVersion/accounts/:membername/referred_by", action: "accountsReferredBy" },
+
+    { path: "/:apiVersion/judging/scorecard/:id", action: "judgingUpdate" },
+
     { path: "/:apiVersion/messages/:id", action: "messagesUpdate" }
 
   ],
@@ -69,6 +74,8 @@ exports.routes = {
     { path: "/:apiVersion/messages/:id/reply", action: "messagesReply" },
     { path: "/:apiVersion/messages", action: "messagesCreate" },
     
+    { path: "/:apiVersion/communities/add_member", action: "communitiesAddMember" },
+
     { path: "/:apiVersion/judging", action: "judgingCreate" },
 
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 

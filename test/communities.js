@@ -29,3 +29,21 @@ describe('GET /communities/:id', function () {
         });
     });
 });
+
+describe('POST /communities/add_member', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should add member', function (done) {
+        var reqBody = {
+          membername: "chang",
+          community_id: "public"
+        };
+        request.post({ url: setup.testUrl + '/communities/add_member', form: reqBody },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});
