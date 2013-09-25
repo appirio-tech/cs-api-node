@@ -50,3 +50,22 @@ describe('GET /accounts/:membername/preferences', function () {
         });
     });
 });
+
+describe('PUT /accounts/:membername/marketing', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should update marketing info successfully', function (done) {
+        var reqBody = {
+          campaign_source: "source",
+          campaign_medium: "medium",
+          campaign_name: "name"
+        };
+        request.put({ url: setup.testUrl + '/accounts/chang/marketing', form: reqBody },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});

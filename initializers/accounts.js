@@ -141,7 +141,61 @@ exports.accounts = function(api, next){
         	if (err) { next( { success: false, message: err.message } ); }
         	if (!err) { next( { success: true, response:preferences, count:preferences.length } ); }
 		});
-	}
+	},
+
+    /* 
+    * Updates the marketing info for a member
+    *
+    * data - { membername, campaign_source, campaign_medium, campaign_name }
+    *
+    * Returns a status message
+    */
+    updateMarketingInfo: function(data, api, next) {
+      var client = new pg.Client(api.configData.pg.connString);
+      client.connect(function(err) {
+        if (err) { console.log(err); }
+        var sql = "update member__c set campaign_source__c = '" + data.campaign_source + "', campaign_medium__c = '" + data.campaign_medium + "', campaign_name__c = '" + data.campaign_name + "' where name = '" + data.membername + "'; select sfid, name from community__c where marketing_campaign__c = '" + data.campaign_name + "'";
+        client.query(sql, function(err, res) {
+          if (!err) {
+            if (res.rows[0] && res.rows[0].sfid) {
+              var params = {
+                membername: data.membername,
+                community_id: res.rows[0].sfid
+              }
+              /* This should be uncommented after the POST /communities/add_member endpoint is implemented.
+
+              api.communities.add_member(params, function(addMemberResponse){
+                if (addMemberResponse.response.success) {
+                  res = {
+                    success: true,
+                    message: "Marketing info updated successfully. Added to community: " + res.rows[0].name
+                  };
+                } else {*/
+                  res = {
+                    success: true,
+                    message: "Marketing info updated successfully. No matching community."
+                  };
+                /*}*/
+                next(res);
+              /*});*/
+            } else {
+              res = {
+                success: true,
+                message: "Marketing info updated successfully. No matching community."
+              };
+              next(res);
+            }
+          } else {
+            res = {
+              success: false,
+              message: "Marketing info not updated."
+            };
+            console.log(err);
+            next(res);
+          }
+        })
+      })
+    }
   } // end api.accounts
 
   next();

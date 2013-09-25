@@ -61,6 +61,8 @@ exports.routes = {
   ],
 
   put: [
+    { path: "/:apiVersion/accounts/:membername/marketing", action: "accountsUpdateMarketingInfo" },
+
     { path: "/:apiVersion/judging/scorecard/:id", action: "judgingUpdate" },
 
     { path: "/:apiVersion/messages/:id", action: "messagesUpdate" }

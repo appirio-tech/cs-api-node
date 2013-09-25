@@ -90,3 +90,24 @@ exports.accountsGetPreferences = {
     });
   }
 };
+
+exports.accountsUpdateMarketingInfo = {
+  name: "accountsUpdateMarketingInfo",
+  description: "Updates the marketing info for a member. Method: PUT",
+  inputs: {
+    required: ["membername", "campaign_source", "campaign_medium", "campaign_name"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Marketing info updated successfully. No matching community."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.accounts.updateMarketingInfo(connection.params, api, function(data){
+      connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};
