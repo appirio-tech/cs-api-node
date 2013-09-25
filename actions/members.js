@@ -39,3 +39,35 @@ exports.membersFetch = {
     });
   }
 };
+
+exports.membersUpdate = {
+  name: "membersUpdate",
+  description: "Updates a specific member. Method: PUT",
+  inputs: {
+  	// fields must be in form of serialized JSON...
+    required: ['membername', 'fields'],
+    optional: []
+  },
+  authenticated: true,
+  outputExample: { success: true },
+  version: 2.0,
+  run: function(api, connection, next){
+  	var fields;
+  	// process fields as a stringified JSON object...
+  	try {
+  		fields = JSON.parse(connection.params.fields);
+  		// TODO: filter fields with white-listed ones!
+		
+		api.members.update(connection.params.membername, fields, function(data){
+			connection.response.response = data;
+			next(connection, true);
+		});
+  	}
+  	catch( error )
+  	{
+  		// TODO: proper error creation!
+  		next(connection, true);
+  	}
+  	next(connection, true);
+  }
+};

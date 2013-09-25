@@ -40,8 +40,26 @@ exports.members = function(api, next){
           next(rs['rows']);
         })
       })
-    }
-
+    },
+	
+	/*
+	* Updates a specific members field(s) in pg (members__c).
+	*
+	* membername - the name of the member to update
+	* fieldsHash - the hash of the fields=values to update. If no fields are defined,
+	* return a "No fields to update!" message with "success:false".
+	*
+	* Returns
+	*/
+	update: function( membername, fieldsHash, next ) {
+		var client = new pg.Client(api.configData.pg.connString);
+		client.connect(function(err) {
+			if (err) { console.log(err); }
+			next('');
+		});
+	}
+	
   }
+  
   next();
 }

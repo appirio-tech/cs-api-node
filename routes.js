@@ -29,11 +29,10 @@ exports.routes = {
   ],
 
   put: [
-  
+  	{ path: "/:apiVersion/members/:membername", action: "membersUpdate" }
   ],
 
   post: [
-
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 
 
   ]  
