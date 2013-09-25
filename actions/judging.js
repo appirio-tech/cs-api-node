@@ -123,7 +123,8 @@ exports.judgingCreate = {
   run: function(api, connection, next){
     api.judging.create(connection.params, function(data){
       connection.response.response = forcifier.deforceJson(data);
-      connection.rawConnection.responseHttpCode = 201;
+      if (connection.response.response.success)
+        connection.rawConnection.responseHttpCode = 201;
       next(connection, true);
     });
   }

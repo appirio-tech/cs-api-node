@@ -154,7 +154,8 @@ exports.messagesCreate = {
   run: function(api, connection, next){
     api.messages.create(connection.params, function(data){
       connection.response.response = forcifier.deforceJson(data);
-      connection.rawConnection.responseHttpCode = 201;  
+      if (connection.response.response)
+        connection.rawConnection.responseHttpCode = 201;  
       next(connection, true);
     });
   }
@@ -176,7 +177,8 @@ exports.messagesReply = {
   run: function(api, connection, next){
     api.messages.reply(connection.params, function(data){
       connection.response.response = forcifier.deforceJson(data);
-      connection.rawConnection.responseHttpCode = 201;  
+      if (connection.response.response)
+        connection.rawConnection.responseHttpCode = 201;  
       next(connection, true);
     });
   }
