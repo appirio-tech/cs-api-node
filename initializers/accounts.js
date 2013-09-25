@@ -162,22 +162,20 @@ exports.accounts = function(api, next){
                 membername: data.membername,
                 community_id: res.rows[0].sfid
               }
-              /* This should be uncommented after the POST /communities/add_member endpoint is implemented.
-
-              api.communities.add_member(params, function(addMemberResponse){
-                if (addMemberResponse.response.success) {
+              api.communities.addMember(params, function(addMemberResponse){
+                if (addMemberResponse.success) {
                   res = {
                     success: true,
                     message: "Marketing info updated successfully. Added to community: " + res.rows[0].name
                   };
-                } else {*/
+                } else {
                   res = {
                     success: true,
                     message: "Marketing info updated successfully. No matching community."
                   };
-                /*}*/
+                }
                 next(res);
-              /*});*/
+              });
             } else {
               res = {
                 success: true,
