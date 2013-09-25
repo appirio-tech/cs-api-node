@@ -137,13 +137,43 @@ exports.accounts = function(api, next){
       })
     },
     
+    /*
+     * Fetches preferences for a specified member
+     *
+     * membername - the username of the member to get the preferences for
+     *
+     * Returns JSON response with the keys: success, count, response.
+	 * 	count is the length of the response array, containing preferences:
+	 *	{ attributes:	{	type: String,
+	 *						url: String		},
+	 *		event: String,
+	 *		event_per_member: String,
+	 *		notification_method: String,
+	 *		member: String,
+	 *		do_not_notify: Boolean,
+	 *		id: String
+	 *	}
+	 */
 	getPreferences: function(membername, next){
-		getPreferences(membername, function(err, preferences)  {
+		getPreferences(membername, function(err, response)  {
         	if (err) { next( { success: false, message: err.message } ); }
-        	if (!err) { next( { success: true, response:preferences, count:preferences.length } ); }
+        	if (!err) { next( response ); }
 		});
 	},
 	
+	
+	/*
+	 * Create an account using APEX REST service.
+	 * First, it creates the options from the input parameters, then makes
+	 * the actual request.
+	 *
+	 * params - hash containing values to use for new user
+	 *		- for third-party: provider, provider_username, username, email, name (can be blank)
+	 *		- for cloudspokes: username, email, password
+	 *
+	 * Returns	JSON with the following keys: success, message
+	 * 	If successful, icludes also keys: username, sfdc_username
+	 */
 	create: function( params, next ){
 		createOptions( params, function( err, options ){
 			if(err) { next( { success: false, message: err.message }); };
@@ -252,16 +282,17 @@ exports.accounts = function(api, next){
 	 *
 	 * membername - the cs member name to get preferences for
 	 *
-	 * Returns JSON containing an array of preferences:
-	 *	[ { attributes:	{	type: String,
-	 *						url: String,
-	 *						event: String,
-	 *						event_per_member: String,
-	 *						notification_method: String,
-	 *						member: String,
-	 *						do_not_notify: Boolean,
-	 *						id: String						}
-	 *	} ]
+	 * Returns JSON response with the keys: success, count, response.
+	 * 	count is the length of the response array, containing preferences:
+	 *	{ attributes:	{	type: String,
+	 *						url: String		},
+	 *		event: String,
+	 *		event_per_member: String,
+	 *		notification_method: String,
+	 *		member: String,
+	 *		do_not_notify: Boolean,
+	 *		id: String
+	 *	}
 	 */
 	 var getPreferences = function(membername, next){
 	 	api.sfdc.org.apexRest({uri:"v.9/notifications/preferences/" + membername, method: 'GET'}, api.sfdc.oauth, function(err,sfdc_resp){
@@ -272,7 +303,14 @@ exports.accounts = function(api, next){
 				sfdc_resp.forEach( function(item){
 					preferences.push( forcifier.deforceJson(item) );
 				});
-				next(null, preferences);
+				
+				var response = {
+					success: true,
+					response:preferences,
+					count:preferences.length
+				};
+				
+				next(null, response );
 			}
 		})
 	 };
@@ -359,7 +397,7 @@ exports.accounts = function(api, next){
 	 };
 	 
 	 /*
-	  * Creates an account using APEX REST service.
+	  * Call to APEX REST service to create an account.
 	  *
 	  * options	the parsed input obtained with createOptions containing the fields
 	  *			to regiter the account with. See method createOptions return value

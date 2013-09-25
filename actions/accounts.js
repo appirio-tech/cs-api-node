@@ -109,7 +109,6 @@ exports.accountsCreate = {
   version: 2.0,
   run: function(api, connection, next){
   	api.accounts.create( connection.params, function(data){
-  		console.log("accountsCreate:", data);
       connection.response.response = data;
       next(connection, true);
     });
