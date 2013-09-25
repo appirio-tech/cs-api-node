@@ -128,3 +128,24 @@ exports.judgingCreate = {
     });
   }
 };
+
+exports.judgingUpdate = {
+  name: "judgingUpdate",
+  description: "Saves the scorecard for a participant by a judge member. Method: PUT",
+  inputs: {
+    required: ["id", "answers", "comments", "options"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Scorecard has been saved successfully."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.judging.update(connection.params, function(data){
+      connection.response.response = forcifier.deforceJson(data);
+      next(connection, true);
+    });
+  }
+};
