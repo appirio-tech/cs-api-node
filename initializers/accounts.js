@@ -149,9 +149,8 @@ exports.accounts = function(api, next){
 			if(err) { next( { success: false, message: err.message }); };
 			if(!err) {
 				createAccount( options, function( err, response ){
-					console.log(err);
-					console.log(response);
-					next();
+					if(err) { next( { success: false, message: err.message }); };
+					if(!err) { next( response ) };
 				});
 			}
 		});
@@ -350,33 +349,37 @@ exports.accounts = function(api, next){
 			var pairs = _.pairs(options);
 			result = "";
 			
+			// no worries about the extra '&' at the end of the result!
 			pairs.forEach( function(item) {
 				result += item[0].toString() + "=" + item[1].toString() + "&";
 			});
-			
-			//result = result.substr(0,result.length-1);
-			console.log(result);
 		}
 		
 		next( error, result );
 	 };
 	 
+	 /*
+	  * Creates an account using APEX REST service.
+	  *
+	  * options	the parsed input obtained with createOptions containing the fields
+	  *			to regiter the account with. See method createOptions return value
+	  *			for details.
+	  *
+	  * Returns	JSON with the following keys: success, message (, username, sfdc_username)
+	  */
 	 var createAccount = function( options, next ) {
-	 	//options = "username__c=jeffdonthemic&email__c=test@test.com&first_name__c=jeff&last_name__c=douglas&password=1234";
 	 	api.sfdc.org.apexRest({uri:"v.9/members", method: 'POST', body: options}, api.sfdc.oauth, function(err,sfdc_resp){
-			if(err) {
-				// default to a generic error in case no useful response...
-				var error = new Error("Error creating account!");
-				
-				if( !_.isArray(sfdc_resp) && _.has(sfdc_resp[0], "message") )
-					error.message = sfdc_resp[0]['message'];
-				
-				console.log(error);
-				next(error);
-				
+			if(	err ) {
+				next(new Error("Error creating account!"));
 			}else{
-				console.log(sfdc_resp);
-				var response = forcifier.deforceJson(sfdc_resp);
+				// normalize 'Success' to Boolean value...
+		 		sfdc_resp['Success'] = ( _.has(sfdc_resp, 'Success') && sfdc_resp['Success'].toLowerCase() === 'true') ? true : false;
+		 		var response = forcifier.deforceJson(sfdc_resp);
+		 		
+		 		if( response.success )
+			 		// filter response to include only whitelisted keys...
+			 		response = _.pick(response, 'success', 'username', 'sfdc_username', 'message');
+		 		
 				next(null, response);
 			}
 		})
