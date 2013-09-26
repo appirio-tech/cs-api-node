@@ -88,7 +88,7 @@ exports.accountsGetPreferences = {
   version: 2.0,
   run: function(api, connection, next){
     api.accounts.getPreferences( connection.params.membername, function(data){
-      connection.response.response = data;
+      utils.processResponse(data, connection, false);
       next(connection, true);
     });
   }
@@ -174,6 +174,31 @@ exports.accountsChangePassWithToken = {
   run: function(api, connection, next){
     api.accounts.changePassWithToken(connection.params, api, function(data){
       connection.response.response = forcifier.deforceJson(data);
+      next(connection, true);
+    });
+  }
+};
+
+exports.accountsCreate = {
+  name: "accountsCreate",
+  description: "Creates a new account. Method: POST",
+  inputs: {
+    required: ["username", "email"],
+    optional: ["password", "provider", "provider_username", "name" ]
+  },
+  blockedConnectionTypes: [],
+  outputExample: {
+    success: true,
+    username: 'username',
+    sfdc_username: 'sfdc_username',
+    message: 'message'
+  },
+  authenticated: true,
+  version: 2.0,
+  run: function(api, connection, next){
+    api.accounts.create( connection.params, function(data){
+      console.log("accountsCreate:", data);
+      connection.response.response = data;
       next(connection, true);
     });
   }

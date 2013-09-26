@@ -75,6 +75,7 @@ exports.routes = {
   ],
 
   post: [
+
     { path: "/:apiVersion/messages/:id/reply", action: "messagesReply" },
     { path: "/:apiVersion/messages", action: "messagesCreate" },
     
@@ -84,8 +85,8 @@ exports.routes = {
 
     { path: "/:apiVersion/judging", action: "judgingCreate" },
     { path: "/:apiVersion/challenges/:challenge_id/survey", action: "surveyInsert"},
-    { path: "/:apiVersion/comments", action: "commentInsert"}    
-
+    { path: "/:apiVersion/comments", action: "commentInsert"},
+    { path: "/:apiVersion/accounts/create", action: "accountsCreate" }
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 
 
   ]  

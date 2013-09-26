@@ -1,5 +1,6 @@
 var pg = require("pg").native
   , forcifier = require("forcifier")
+  , _ = require("underscore")
   , async = require("async");
 
 exports.accounts = function(api, next){
@@ -136,12 +137,54 @@ exports.accounts = function(api, next){
       })
     },
     
+    /*
+     * Fetches preferences for a specified member
+     *
+     * membername - the username of the member to get the preferences for
+     *
+     * Returns JSON response with the keys: success, count, response.
+	 * 	count is the length of the response array, containing preferences:
+	 *	{ attributes:	{	type: String,
+	 *						url: String		},
+	 *		event: String,
+	 *		event_per_member: String,
+	 *		notification_method: String,
+	 *		member: String,
+	 *		do_not_notify: Boolean,
+	 *		id: String
+	 *	}
+	 */
 	getPreferences: function(membername, next){
-		getPreferences(membername, function(err, preferences)  {
+		getPreferences(membername, function(err, response)  {
         	if (err) { next( { success: false, message: err.message } ); }
-        	if (!err) { next( { success: true, response:preferences, count:preferences.length } ); }
+        	if (!err) { next( response ); }
 		});
 	},
+	
+	
+    /*
+     * Create an account using APEX REST service.
+     * First, it creates the options from the input parameters, then makes
+     * the actual request.
+     *
+     * params - hash containing values to use for new user
+     *		- for third-party: provider, provider_username, username, email, name (can be blank)
+     *		- for cloudspokes: username, email, password
+     *
+     * Returns	JSON with the following keys: success, message
+     * 	If successful, icludes also keys: username, sfdc_username
+     */
+    create: function( params, next ){
+      createOptions( params, function( err, options ){
+        if(err) { next( { success: false, message: err.message }); };
+        if(!err) {
+          createAccount( options, function( err, response ){
+            if(err) { next( { success: false, message: err.message }); };
+            if(!err) { next( response ) };
+          });
+        }
+    	});
+    },
 
     /* 
     * Updates the marketing info for a member
@@ -493,13 +536,129 @@ exports.accounts = function(api, next){
         if(err) {
           next(new Error("Could not fetch preferences for '"+membername+"'."));
         }else{
-          var preferences = [];
-          sfdc_resp.forEach( function(item){
-            preferences.push( forcifier.deforceJson(item) );
-          });
-          next(null, preferences);
+          next(null, sfdc_resp);
         }
   	})
    };
+	 
+	 /*
+	  * Sanitizes and prepares data for account registration
+	  *
+	  * params - hash containing values to use for new user
+	  *		- for third-party: provider, provider_username, username, email, name (can be blank)
+	  *		- for cloudspokes: username, email, password
+	  *
+	  * Returns JSON containing the keys: body.username__c, body.email__c,
+	  *		[ 	body.password || body.first_name__c, body.last_name__c,
+	  *			body.third_party_account__c, third_party_username__c	]
+	  */
+	 var createOptions = function( params, next ){
+	 	var options = {
+        	username__c: params.username,
+        	email__c: params.email
+		};
+		
+		var error, new_options;
+		
+		// third party
+		if( params.provider ) {
+			// sanitize data...
+			if ( _.has(params, 'provider_username') ) {
+		    	var names, first_name, last_name;
+		    	
+				// if the name is blank
+				if( params.name ) {
+					// split up the name into a first and last
+					names = params.name.split;
+					first_name = names[0];
+					last_name = names.length > 1 ? names[1] : first_name;
+				} else {
+					first_name = params.username;
+					last_name = params.username;
+				}
+				
+				new_options = {
+					"first_name__c": first_name,
+					"last_name__c": last_name,
+					"third_party_account__c": params.provider,
+					"third_party_username__c":params.provider_username
+				}
+			} else {
+				error = new Error("Third parties need to provide provider_username.");
+			}
+      	}
+      	
+      	// cloudspokes
+		else {
+			// sanitize data...
+			if ( _.isUndefined(params.password) ) {
+				error = new Error("Creation of account as cloudspokes needs a password.");
+			} else {
+				new_options = {
+					first_name__c: params.username,
+					last_name__c: params.username,
+					password: params.password
+				}
+			}
+        }
+		
+		if( !_.isUndefined( new_options ) )
+			_.extend(options, new_options);
+		
+		var result;
+		
+		// if no error so far, convert object into string of "key1=value1, key2=value2"...
+		if( _.isUndefined( error ) ) {
+			var pairs = _.pairs(options);
+			result = "";
+			
+			// no worries about the extra '&' at the end of the result!
+			pairs.forEach( function(item) {
+				result += item[0].toString() + "=" + item[1].toString() + "&";
+			});
+		}
+		
+		next( error, result );
+	 };
+	 
+	 /*
+	  * Call to APEX REST service to create an account.
+	  *
+	  * options	the parsed input obtained with createOptions containing the fields
+	  *			to regiter the account with. See method createOptions return value
+	  *			for details.
+	  *
+	  * Returns	JSON with the following keys: success, message (, username, sfdc_username)
+	  */
+	 var createAccount = function( options, next ) {
+	 	api.sfdc.org.apexRest({uri:"v.9/members", method: 'POST', body: options}, api.sfdc.oauth, function(err,sfdc_resp){
+			if(	err ) {
+				next(new Error("Error creating account!"));
+			}else{
+			
+				/**
+				 *	Successful response example:
+				 *  {
+				 *		"password": "1a2b3c4d",		// should not be included
+				 *		"success": true,
+				 *		"memberid": "a0IK0000007XJurMAG",	// should not be included
+				 *		"sfdc_username": "testuser@m.cloudspokes.com.sandbox",
+				 *		"message": "Member created successfully.",
+				 *		"username": "testuser"
+				 *	}
+				 */
+				 
+				// normalize 'Success' to Boolean value...
+		 		sfdc_resp['Success'] = ( _.has(sfdc_resp, 'Success') && sfdc_resp['Success'].toLowerCase() === 'true') ? true : false;
+		 		var response = forcifier.deforceJson(sfdc_resp);
+		 		
+		 		if( response.success )
+			 		// filter response to include only whitelisted keys...
+			 		response = _.pick(response, 'success', 'username', 'sfdc_username', 'message');
+		 		
+				next(null, response);
+			}
+		})
+	 };
 }
 
