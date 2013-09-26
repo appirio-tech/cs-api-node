@@ -31,6 +31,8 @@ exports.routes = {
   post: [
 
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 
+    { path: "/:apiVersion/challenges/:challenge_id/survey", action: "surveyInsert"},
+    { path: "/:apiVersion/comments", action: "commentInsert"}
 
   ]  
 

@@ -6,7 +6,7 @@ configData.logAccessToken = false;
 configData.logger.transports = [];
 
 module.exports = {
-  testUrl: "http://localhost:" + configData.servers.web.port + "/v1",
+  testUrl: "http://localhost:" + configData.servers.web.port + "/v2",
   configData: configData,
 
   init: function (callback) {
@@ -18,9 +18,6 @@ module.exports = {
             callback();
         });
     } else {
-      callback();
-    }
-    else {
       callback();
     }
   }
