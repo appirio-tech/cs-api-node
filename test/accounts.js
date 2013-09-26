@@ -97,3 +97,38 @@ describe('PUT /accounts/:membername/referred_by', function () {
         });
     });
 });
+
+describe('PUT /accounts/update_password_token/:membername', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should set token successfully', function (done) {
+        var params = {
+          token: "123456"
+        };
+        request.put({ url: setup.testUrl + '/accounts/update_password_token/chang', form: params },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});
+
+describe('PUT /accounts/change_password_with_token/:membername', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should update password successfully', function (done) {
+        var params = {
+          token: "123456",
+          new_password: "mocha123"
+        };
+        request.put({ url: setup.testUrl + '/accounts/change_password_with_token/chang', form: params },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});

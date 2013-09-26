@@ -1,3 +1,6 @@
+var utils = require("../utils")
+  , forcifier = require("forcifier")
+
 exports.accountsFind = {
   name: "accountsFindByName",
   description: "Fetches an account by member name. Method: GET",
@@ -96,6 +99,7 @@ exports.accountsUpdateMarketingInfo = {
   description: "Updates the marketing info for a member. Method: PUT",
   inputs: {
     required: ["membername", "campaign_source", "campaign_medium", "campaign_name"],
+
     optional: [],
   },
   authenticated: false,
@@ -128,6 +132,48 @@ exports.accountsReferredBy = {
   run: function(api, connection, next){
     api.accounts.referredBy(connection.params, api, function(data){
       connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};
+
+exports.accountsUpdatePassToken = {
+  name: "accountsUpdatePassToken",
+  description: "Updates a member's password-reset token. Method: PUT",
+  inputs: {
+    required: ["membername", "token"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Passcode successfully updated."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.accounts.updatePassToken(connection.params, api, function(data){
+      connection.response.response = forcifier.deforceJson(data);
+      next(connection, true);
+    });
+  }
+};
+
+exports.accountsChangePassWithToken = {
+  name: "accountsChangePassWithToken",
+  description: "Resets a member's password. Method: PUT",
+  inputs: {
+    required: ["membername", "token", "new_password"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Password changed successfully."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.accounts.changePassWithToken(connection.params, api, function(data){
+      connection.response.response = forcifier.deforceJson(data);
       next(connection, true);
     });
   }
