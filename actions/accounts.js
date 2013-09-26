@@ -1,4 +1,5 @@
 var utils = require("../utils")
+  , forcifier = require("forcifier")
 
 exports.accountsFind = {
   name: "accountsFindByName",
@@ -98,6 +99,7 @@ exports.accountsUpdateMarketingInfo = {
   description: "Updates the marketing info for a member. Method: PUT",
   inputs: {
     required: ["membername", "campaign_source", "campaign_medium", "campaign_name"],
+
     optional: [],
   },
   authenticated: false,
@@ -150,7 +152,28 @@ exports.accountsUpdatePassToken = {
   version: 2.0,
   run: function(api, connection, next){
     api.accounts.updatePassToken(connection.params, api, function(data){
-      utils.processResponse(data, connection);
+      connection.response.response = forcifier.deforceJson(data);
+      next(connection, true);
+    });
+  }
+};
+
+exports.accountsChangePassWithToken = {
+  name: "accountsChangePassWithToken",
+  description: "Resets a member's password. Method: PUT",
+  inputs: {
+    required: ["membername", "token", "new_password"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Password changed successfully."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.accounts.changePassWithToken(connection.params, api, function(data){
+      connection.response.response = forcifier.deforceJson(data);
       next(connection, true);
     });
   }

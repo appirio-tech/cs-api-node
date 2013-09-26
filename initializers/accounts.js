@@ -328,6 +328,57 @@ exports.accounts = function(api, next){
           }
         })
       })
+    },
+
+    /*
+    * Resets a member's password
+    *
+    * params - { membername, token, new_password }
+    *
+    * Returns a status message
+    */
+    changePassWithToken: function(data, api, next) {
+      var client = new pg.Client(api.configData.pg.connString);
+      client.connect(function(err) {
+        if (err) { console.log(err); }
+        var sql = "select sfdc_user__c as sfid from member__c where name = '" + data.membername + "'";
+        client.query(sql, function(err, res) {
+          if (err) {
+            res = {
+              success: false,
+              message: "Error while trying to find user."
+            };
+            console.log(err);
+            next(res);
+          } else if (!res['rows'] || !res['rows'][0]) {
+            res = {
+              success: false,
+              message: "Member not found."
+            };
+            next(res);
+          } else {
+            var params = [
+              {
+                key: 'id',
+                value: res.rows[0].sfid
+              },
+              {
+                key: 'token',
+                value: data.token
+              },
+              {
+                key: 'password',
+                value: data.new_password
+              }
+            ];
+            api.sfdc.org.apexRest({ uri: 'v.9/password-change', method: 'PUT', urlParams: params }, api.sfdc.oauth, function(err, res) {
+              if (err) { console.error(err); }
+              res.Success = res.Success == "true";
+              next(res);
+            });
+          }
+        })
+      })
     }
   } // end api.accounts
 
