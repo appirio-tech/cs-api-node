@@ -122,3 +122,24 @@ exports.deliverablesDeleteSubmission = {
     });
   }
 };
+
+exports.deliverablesCreateSubmission = {
+  name: "deliverablesCreateSubmission",
+  description: "Adds a submission by a member for the specified challenge. Method: POST",
+  inputs: {
+    required: ['membername', 'challenge_id'],
+    optional: ['link', 'type', 'language', 'comments'],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Submission created successfully."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.deliverables.createSubmission(connection.params, function(data){
+      connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};
