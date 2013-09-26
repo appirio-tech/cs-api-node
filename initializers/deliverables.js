@@ -93,6 +93,58 @@ exports.deliverables = function(api, next){
           next(res);
         })
       })
+    },
+
+    /* 
+    * Adds a submission by a member for the specified challenge
+    *
+    * params - { membername, challenge_id, link, type, language, comments }
+    *
+    * Returns a status message
+    */
+    createSubmission: function(params, next) {
+      var client = new pg.Client(api.configData.pg.connString);
+      client.connect(function(err) {
+        if (err) { console.log(err); }
+        var timestamp = new Date().toISOString();
+        var sql = "select sfid from challenge_participant__c where membername__c = '" + params.membername + "' and challenge__c = (select sfid from challenge__c where id = '" + params.challenge_id + "')";
+        client.query(sql, function(err, rs) {
+          if (!err) {
+            if (rs.rows.length > 0) {
+              var timestamp = new Date().toISOString();
+              sql = "insert into challenge_submission__c (challenge_participant__c, url__c, type__c, language__c, comments__c, createddate, lastmodifieddate) values ('" + rs.rows[0].sfid + "', '" + params.link + "', '" + params.type + "', '" + params.language + "', '" + params.comments + "', '" + timestamp + "', '" + timestamp + "')";
+              client.query(sql, function(err, rs) {
+                if (!err) {
+                  rs = {
+                    success: true,
+                    message: "Submission created successfully."
+                  }
+                } else {
+                  rs = {
+                    success: false,
+                    message: "Error while trying to create submission."
+                  }
+                  console.log(err);
+                }
+                next(rs);
+              })
+            } else {
+              rs = {
+                success: true,
+                message: "Participant not found."
+              }
+              next(rs);
+            }
+          } else {
+            rs = {
+              success: false,
+              message: "Error while trying to find member."
+            }
+            console.log(err);
+            next(rs);
+          }
+        })
+      })
     }
   }
   next();
