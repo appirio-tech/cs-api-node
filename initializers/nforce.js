@@ -1,4 +1,4 @@
-nforce = require("nforce");
+var nforce = require("nforce")
 
 exports.nforce = function(api, next){
 
