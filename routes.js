@@ -49,7 +49,10 @@ exports.routes = {
     { path: "/:apiVersion/tos", action: "tosList" },
     { path: "/:apiVersion/platforms", action: "platformsList"},
 
-    { path: "/:apiVersion/challenges/:challenge_id", action: "challengesFetch"}
+    { path: "/:apiVersion/challenges/search", action: "challengesSearch"},
+    { path: "/:apiVersion/challenges/advsearch", action: "challengesAdvSearch"},
+    { path: "/:apiVersion/challenges/:challenge_id", action: "challengesFetch"},
+
 
   ],
 
