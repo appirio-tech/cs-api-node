@@ -12,13 +12,15 @@ exports.routes = {
     { path: "/:apiVersion/members/search", action: "membersSearch" },
     { path: "/:apiVersion/members/:membername", action: "membersFetch" },    
     
+    { path: "/:apiVersion/challenges/search", action: "challengesSearch"},  
+    { path: "/:apiVersion/challenges/advsearch", action: "challengesAdvSearch"},  
     { path: "/:apiVersion/challenges/:id/scorecards", action: "challengesScorecards" },
     { path: "/:apiVersion/challenges/:id/scorecard", action: "challengesScorecard" },    
     { path: "/:apiVersion/challenges/:id/comments", action: "challengesComments" },
     { path: "/:apiVersion/challenges/:challenge_id/submission_deliverables", action: "challengesListSubmissions" },
     { path: "/:apiVersion/challenges/:challenge_id/participants", action: "challengesParticipantsList" },
     { path: "/:apiVersion/challenges/:challenge_id", action: "challengesFetch"} ,
-    { path: "/:apiVersion/challenges", action: "challengesList" },
+    { path: "/:apiVersion/challenges", action: "challengesList" },    
 
     { path: "/:apiVersion/sponsors/:id", action: "sponsorsFetch" },       
     { path: "/:apiVersion/sponsors", action: "sponsorsList" },
@@ -56,7 +58,7 @@ exports.routes = {
     
     { path: "/:apiVersion/tos/:id", action: "tosFetch" },
     { path: "/:apiVersion/tos", action: "tosList" },
-    { path: "/:apiVersion/platforms", action: "platformsList"}
+    { path: "/:apiVersion/platforms", action: "platformsList"},
 
   ],
 

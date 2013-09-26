@@ -221,6 +221,23 @@ exports.challenges = function(api, next){
           );
         });
       })
+    },
+
+    search: function(keyword, next) {
+      var client = new pg.Client(api.configData.pg.connString);
+      client.connect(function(err) {
+        if (err) { console.log(err); }
+        var query = "select name, status__c, end_date__c, total_prize_money__c," +
+            "registered_members__c, challenge_id__c, challenge_type__c, id, start_date__c, participating_members__c, " +
+            "description__c, days_till_close__c, platforms__c, technologies__c  from challenge__c where name like '%" +keyword + "%' " +
+            "and status__c NOT IN ('hidden','draft') order by name";
+        api.sfdc.org.query(query, api.sfdc.oauth, function (err, resp) {
+            if (err) { console.log(err); }
+            if (!err && resp.records) {
+              next(resp.records);
+            }
+        });
+      })
     }    
     
 
@@ -283,6 +300,4 @@ exports.challenges = function(api, next){
     });
   }
 
-
-  
 }

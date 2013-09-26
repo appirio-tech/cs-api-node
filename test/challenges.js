@@ -459,3 +459,24 @@ describe('comments', function () {
         });
     });
 });
+
+describe('GET /challenges/search', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should not be empty', function (done) {
+        request.get(setup.testUrl + '/challenges/search?keyword=test', function (err, response, body) {
+            body = JSON.parse(body);
+            assert.equal(body.count, 11);
+            done();
+        });
+    });
+    it('should be empty', function (done) {
+        request.get(setup.testUrl + '/challenges/search?keyword=gnihtemos', function (err, response, body) {
+            body = JSON.parse(body);
+            assert.equal(body.error, "not_found");
+            done();
+        });
+    });
+});
