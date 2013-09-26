@@ -79,6 +79,8 @@ exports.routes = {
     { path: "/:apiVersion/communities/add_member", action: "communitiesAddMember" },
 
     { path: "/:apiVersion/judging", action: "judgingCreate" },
+    { path: "/:apiVersion/challenges/:challenge_id/survey", action: "surveyInsert"},
+    { path: "/:apiVersion/comments", action: "commentInsert"}    
 
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 
 
