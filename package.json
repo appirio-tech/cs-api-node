@@ -20,7 +20,8 @@
     "underscore": "~1.4.4",
     "nforce": "~0.5.1",
     "async": "~0.2.9",
-    "actionHero": "~6.3.0"
+    "actionHero": "~6.3.0",
+    "string": "~1.6.0"
   },
   "devDependencies": {
     "mocha": "~1.13.0",
