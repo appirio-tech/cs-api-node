@@ -336,11 +336,8 @@ exports.accounts = function(api, next){
 		
 		// third party
 		if( params.provider ) {
-			
 			// sanitize data...
-			if ( _.isUndefined(params.provider_username) ) {
-				error = new Error("Third parties need to provide provider_username.");
-			} else {
+			if ( _.has(params, 'provider_username') ) {
 		    	var names, first_name, last_name;
 		    	
 				// if the name is blank
@@ -360,6 +357,8 @@ exports.accounts = function(api, next){
 					"third_party_account__c": params.provider,
 					"third_party_username__c":params.provider_username
 				}
+			} else {
+				error = new Error("Third parties need to provide provider_username.");
 			}
       	}
       	
@@ -410,6 +409,19 @@ exports.accounts = function(api, next){
 			if(	err ) {
 				next(new Error("Error creating account!"));
 			}else{
+			
+				/**
+				 *	Successful response example:
+				 *  {
+				 *		"password": "1a2b3c4d",		// should not be included
+				 *		"success": true,
+				 *		"memberid": "a0IK0000007XJurMAG",	// should not be included
+				 *		"sfdc_username": "testuser@m.cloudspokes.com.sandbox",
+				 *		"message": "Member created successfully.",
+				 *		"username": "testuser"
+				 *	}
+				 */
+				 
 				// normalize 'Success' to Boolean value...
 		 		sfdc_resp['Success'] = ( _.has(sfdc_resp, 'Success') && sfdc_resp['Success'].toLowerCase() === 'true') ? true : false;
 		 		var response = forcifier.deforceJson(sfdc_resp);
