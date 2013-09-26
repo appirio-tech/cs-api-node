@@ -1,3 +1,5 @@
+var utils = require("../utils")
+
 exports.accountsFind = {
   name: "accountsFindByName",
   description: "Fetches an account by member name. Method: GET",
@@ -128,6 +130,27 @@ exports.accountsReferredBy = {
   run: function(api, connection, next){
     api.accounts.referredBy(connection.params, api, function(data){
       connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};
+
+exports.accountsUpdatePassToken = {
+  name: "accountsUpdatePassToken",
+  description: "Updates a member's password-reset token. Method: PUT",
+  inputs: {
+    required: ["membername", "token"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "Passcode successfully updated."
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.accounts.updatePassToken(connection.params, api, function(data){
+      utils.processResponse(data, connection);
       next(connection, true);
     });
   }

@@ -61,6 +61,7 @@ exports.routes = {
   ],
 
   put: [
+    { path: "/:apiVersion/accounts/update_password_token/:membername", action: "accountsUpdatePassToken" },
     { path: "/:apiVersion/accounts/:membername/marketing", action: "accountsUpdateMarketingInfo" },
     { path: "/:apiVersion/accounts/:membername/referred_by", action: "accountsReferredBy" },
 
