@@ -57,3 +57,17 @@ describe('GET /participants/:membername/:challenge_id/delete_submission_url_file
         });
     });
 });
+
+describe('POST /participants/:membername/:challenge_id/submission_url_file', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should create submission successfully', function (done) {
+        request.post(setup.testUrl + '/participants/mess/20/submission_url_file', function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});
