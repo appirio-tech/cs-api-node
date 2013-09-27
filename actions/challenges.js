@@ -263,3 +263,21 @@ exports.challengesSearch = {
         });
     }
 };
+
+exports.challengesAdvSearch = {
+    name: "challengesAdvSearch",
+    description: "Searches for a challenges by Adv. Search. Method: GET",
+    inputs: {
+        required: [],
+        optional: []
+    },
+    authenticated: false,
+    outputExample: { },
+    version: 2.0,
+    run: function(api, connection, next){
+        api.challenges.advsearch(connection.rawConnection.parsedURL.search, function(data){
+            utils.processResponse(data, connection);
+            next(connection, true);
+        });
+    }
+};
