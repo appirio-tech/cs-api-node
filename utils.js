@@ -11,15 +11,23 @@ var forcifier = require("forcifier")
 *
 * data - the data to be returned to the client
 * connection - the scoped connection object
-* throw404 - a boolean to determine whether or not to throw
-*   a 404 error if 0 records exist in the data. Default is true
-*   if 'undefined'.
+* options :
+*   throw404 - a boolean to determine whether or not to throw
+*     a 404 error if 0 records exist in the data. Default is true
+*     if 'undefined'.
+*   smartParsing - a boolean to determin whether or not to make the array of size 1 a object.
+*     for example, [{a:1}] will be responded as {a:1}
+*                  [{a:1}, {a:2}] will be responed as [{a:1}, {a:2}]
 */
-function processResponse(data, connection, throw404) {
-  if (typeof(throw404)=="undefined") throw404 = true;
-  if (_.isEmpty(data) && throw404) {
+function processResponse(data, connection, options) {
+  options = _.extend({
+    throw404: true,
+    smartParsing: true
+  }, options);
+
+  if (_.isEmpty(data) && options.throw404) {
     send404(connection);
-  } else if (data.length === 1) {
+  } else if (data.length === 1 && options.smartParsing) {
     connection.response.response = forcifier.deforceJson(_.first(data));
     connection.response.count = 1;
   } else { 

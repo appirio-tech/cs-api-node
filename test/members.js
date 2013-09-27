@@ -102,6 +102,7 @@ describe("GET /members/:membername/referrals", function() {
             request.get(setup.testUrl + '/members/mess/referrals', function (err, response, body) {
                 // console.log(body)
                 body = JSON.parse(body);
+                assert.lengthOf(body.response, 1)
                 assert.equal(body.count, 1);
                 done();
             });
@@ -110,15 +111,16 @@ describe("GET /members/:membername/referrals", function() {
         it("returned object has fields", function(done) {
             request.get(setup.testUrl + '/members/mess/referrals', function (err, response, body) {
                 body = JSON.parse(body);
-                assert.propertyVal(body.response, "signup_date");
-                assert.propertyVal(body.response, "referral_money");
-                assert.propertyVal(body.response, "referral_id");
-                assert.propertyVal(body.response, "profile_pic");
-                assert.propertyVal(body.response, "membername");
-                assert.propertyVal(body.response, "first_year_money");
+                var referral = body.response[0];
+                assert.propertyVal(referral, "signup_date");
+                assert.propertyVal(referral, "referral_money");
+                assert.propertyVal(referral, "referral_id");
+                assert.propertyVal(referral, "profile_pic");
+                assert.propertyVal(referral, "membername");
+                assert.propertyVal(referral, "first_year_money");
                 done();
             });            
-        })
+        });
 
     });
 

@@ -88,7 +88,7 @@ exports.accountsGetPreferences = {
   version: 2.0,
   run: function(api, connection, next){
     api.accounts.getPreferences( connection.params.membername, function(data){
-      utils.processResponse(data, connection, false);
+      utils.processResponse(data, connection, {throw404: false});
       next(connection, true);
     });
   }
