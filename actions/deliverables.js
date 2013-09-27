@@ -1,4 +1,5 @@
-var utils = require("../utils")
+var forcifier = require("forcifier")
+  , utils = require("../utils")
 
 exports.action = {
   name: "deliverablesList",
@@ -139,6 +140,27 @@ exports.deliverablesCreateSubmission = {
   run: function(api, connection, next){
     api.deliverables.createSubmission(connection.params, function(data){
       connection.response.response = data;
+      next(connection, true);
+    });
+  }
+};
+
+exports.deliverablesUpdate = {
+  name: "deliverablesUpdate",
+  description: "Updates a deliverable for a participant. Method: PUT",
+  inputs: {
+    required: ['membername', 'challenge_id', 'data'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "a0DK000000F0gFHMAZ"
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.deliverables.update(connection, function(data){
+      connection.response.response = forcifier.deforceJson(data);
       next(connection, true);
     });
   }

@@ -1,4 +1,5 @@
-var pg = require('pg').native
+var request = require('request')
+  , pg = require('pg').native
 
 exports.deliverables = function(api, next){
 
@@ -145,6 +146,21 @@ exports.deliverables = function(api, next){
           }
         })
       })
+    },
+
+    /* 
+    * Updates a deliverable for a participant
+    *
+    * connection.params - { membername, challenge_id, data }
+    *
+    * Returns a status message
+    */
+    update: function(connection, next) {
+      api.sfdc.org.apexRest({ uri: 'v.9/submissions', method: 'POST', body: connection.params.data }, api.sfdc.oauth, function(err, res) {
+        if (err) { console.error(err); }
+        res.Success = Boolean(res.Success);
+        next(res);
+      });
     }
   }
   next();
