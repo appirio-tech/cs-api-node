@@ -454,7 +454,7 @@ describe('comments', function () {
         request.post({url: setup.testUrl + '/comments', form: comment}, function (err, res, body) {
             if (err) { throw err; }
             var response = JSON.parse(body);
-            assert(response.response.success);
+            assert.notOk(response.response.success)
             done();
         });
     });
