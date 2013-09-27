@@ -40,7 +40,7 @@ exports.challengesParticipantsList = {
   version: 2.0,
   run: function(api, connection, next){
     api.challenges.participants.list(connection.params.challenge_id, function(data){
-      utils.processResponse(data, connection, false);
+      utils.processResponse(data, connection, {throw404: false});
       next(connection, true);
     });
   }
