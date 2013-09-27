@@ -238,8 +238,24 @@ exports.challenges = function(api, next){
             }
         });
       })
-    }    
-    
+    },
+
+    advsearch: function(requestParams, next) {
+
+        var url = "v.9/advchallengesearch" + requestParams;
+
+        var org   = api.sfdc.org,
+            oauth = api.sfdc.oauth;
+
+        org.apexRest({uri: url, method: "GET"}, oauth, function (err, resp) {
+            if (!err && resp) {
+                next(resp);
+            }
+        });
+
+
+      }
+
 
   }
   next();
