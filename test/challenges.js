@@ -480,3 +480,26 @@ describe('GET /challenges/search', function () {
         });
     });
 });
+
+
+
+describe('GET /challenges/advsearch', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should not be empty', function (done) {
+        request.get(setup.testUrl + '/challenges/advsearch?p_min=1&c=all&sort_by=end_date__c&q=node&p=all&state=open&sort_order=ASC&t=all&m_max=1000&m_min=100&p_max=5', function (err, response, body) {
+            body = JSON.parse(body);
+            assert.equal(body.count, 1);
+            done();
+        });
+    });
+    it('should be empty', function (done) {
+        request.get(setup.testUrl + '/challenges/advsearch?c=all&sort_by=end_date__c&p_min=1&p=aws,cloud foundry&state=open&sort_order=DESC&t=all&m_max=1000&m_min=100&p_max=5', function (err, response, body) {
+            body = JSON.parse(body);
+            assert.equal(body.error, "not_found");
+            done();
+        });
+    });
+});

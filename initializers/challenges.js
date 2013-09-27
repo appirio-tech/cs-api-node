@@ -243,7 +243,6 @@ exports.challenges = function(api, next){
     advsearch: function(requestParams, next) {
 
         var url = "v.9/advchallengesearch" + requestParams;
-        console.log("$$$$$$$$   url ", url);
 
         var org   = api.sfdc.org,
             oauth = api.sfdc.oauth;
