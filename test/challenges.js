@@ -503,3 +503,21 @@ describe('GET /challenges/advsearch', function () {
         });
     });
 });
+
+describe('PUT /challenges/:challenge_id', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should update challenge successfully', function (done) {
+        var params = {
+          data: JSON.stringify({"challenge": {"platforms": [{"name": "AWS"}, {"name": "Cloud Foundry"}],"technologies": [{"name": "JavaScript"}, {"name": "Ruby"}, {"name": "iOS"}],"prizes": [{"place__c": "1","prize__c": "$500","points__c": "500","value__c": "500"}, {"place__c": "2","prize__c": "$250","points__c": "250","value__c": "250"}],"assets": [{"filename__c": "1X5RcI1.png"}],"detail": {"account__c": "001K000000f8R8aIAE","contact__c": "jeffdonthemic","winner_announced__c": "2013-10-06","terms_of_service__c": "a0kK0000001rtkRIAQ","submission_details__c": "<p>Upload all your source code as a zip (you can simply zip up your Eclipse project for convenience) and provide any documentation and/or instructions that are needed. Please be clear and concise with any setup instructions.</p>\r\n\r\n<p>A video of your application using Jing or Youtube is required. An unmanaged package for installation is also required.</p>\r\n","status__c": "Draft","start_date__c": "2013-09-25T23:00:00-04:00","requirements__c": "<p>Please implement the following requirements:</p>\r\n","name": "Awesome New Challenge","end_date__c": "2013-09-29T23:00:00-04:00","description__c": "<p>Your overview should describe what you are trying to build within a few simple sentences. Remember, the person reading your overview has no background on what you are trying to build so try to think of the best way to convey the goal of the challenge. You can provide more details in the requirements section. Here is a sample:</p>\r\n\r\n<p>We have an existing Salesforce.com application that is not visually appealing. It&#39;s a simple search and details application which consists of 1-2 Apex Controllers and 3 Visualforce pages. We used a third party service to design a new layout and they have sent us the HTML and CSS for our new application. We need your Visualforce and Apex skills to merge the HTML and CSS with our existing code.</p>\r\n","comments__c": "Ready to go with this!!","additional_info__c": "<p>This is my optional text.</p>\r\n","challenge_type__c": "Code","community_judging__c": "true","auto_announce_winners__c": "false","challenge_id__c": "67","post_reg_info__c": "<p>After you register you&#39;ll see this...</p>\r\n","require_registration__c": "false"}}})
+        };
+        request.put({ url: setup.testUrl + '/challenges/67', form: params },  function (err, response, body) {
+            body = JSON.parse(body);
+            console.log(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});

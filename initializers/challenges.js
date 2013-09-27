@@ -2,6 +2,7 @@ var pg = require('pg').native
   , utils = require("../utils")
   , _ = require("underscore")
   , querystring = require("querystring")
+  , forcifier = require("forcifier")
   , request = require('request');
 
 exports.challenges = function(api, next){
@@ -254,8 +255,25 @@ exports.challenges = function(api, next){
         });
 
 
-      }
+    },
 
+    /* 
+    * Updates an existing challenge
+    *
+    * params - { challenge_id, data }
+    *
+    * Returns a status message
+    */
+    update: function(params, next) {
+      var reqData = params.data;
+      // Deforce then enforce so that already enforced keys won't be enforced twice
+      reqData.challenge = forcifier.enforceJson(forcifier.deforceJson(reqData.challenge));
+      api.sfdc.org.apexRest({ uri: 'v1/admin/challenges', method: 'PUT', body: reqData }, api.sfdc.oauth, function(err, res) {
+        if (err) { console.error(err); }
+        next(res);
+      });
+    }
+    
 
   }
   next();

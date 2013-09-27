@@ -71,7 +71,9 @@ exports.routes = {
     { path: "/:apiVersion/judging/scorecard/:id", action: "judgingUpdate" },
 
     { path: "/:apiVersion/participants/:membername/:challenge_id/deliverable", action: "deliverablesUpdate" },
-
+    
+    { path: "/:apiVersion/challenges/:challenge_id", action: "challengesUpdate" },
+    
     { path: "/:apiVersion/messages/:id", action: "messagesUpdate" }
 
   ],

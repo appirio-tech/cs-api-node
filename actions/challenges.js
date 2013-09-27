@@ -281,3 +281,25 @@ exports.challengesAdvSearch = {
         });
     }
 };
+
+exports.challengesUpdate = {
+  name: "challengesUpdate",
+  description: "Updates an existing challenge. Method: PUT",
+  inputs: {
+    required: ["challenge_id", "data"],
+    optional: []
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "errors": [],
+    "challengeid": "67"
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.challenges.update(connection.params, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
