@@ -105,6 +105,13 @@ configData.defaults = {
   paymentFields: 'p.sfid as id,p.name,c.name as challenge_name,c.challenge_id__c as challenge_id,p.money__c as money,p.place__c as place,p.reason__c as reason,p.status__c as status,p.type__c as type,p.Reference_Number__c,p.payment_sent__c as payment_sent'
 };
 
+/////////////////////////////////////////////
+// Permitted fields to update in member__c //
+/////////////////////////////////////////////
+configData.whiteList = {
+	memberUpdate: [ 'summary_bio__c', 'last_registration_date__c', 'school__c', 'appellate_member__c', 'profile_complete__c', 'email__c', 'github__c', 'jabber__c' ]
+};
+
 //////////
 // FAYE //
 //////////

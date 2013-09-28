@@ -1,6 +1,7 @@
 var forcifier = require("forcifier")
   , utils = require("../utils")
   , _ = require("underscore")
+  , configData = require("../config").configData;
 
 exports.membersList = {
   name: "membersList",
@@ -49,26 +50,45 @@ exports.membersUpdate = {
     optional: []
   },
   authenticated: true,
-  outputExample: { success: true },
+  // returns the updated fields with their new values...
+  outputExample: { "jabber":"new jabber for me", "school": "higher education" },
   version: 2.0,
   run: function(api, connection, next){
-  	var fields;
   	// process fields as a stringified JSON object...
   	try {
-  		fields = JSON.parse(connection.params.fields);
-  		// TODO: filter fields with white-listed ones!
+  		var fields = JSON.parse(connection.params.fields);
+  		
+  		// validate email, if found...
+  		var pattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+  		if( _.has(fields, 'email') && !pattern.test(fields.email) )
+  		{
+  			// this error will be catched below...
+  			throw new Error('Wrong email format.');
+  		}
+  		
+		fields =  forcifier.enforceJson(fields);
 		
-		api.members.update(connection.params.membername, fields, function(data){
-			connection.response.response = data;
+		// filter fields to white-listed ones...
+		fields = _.pick(fields, configData.whiteList.memberUpdate);
+		
+		if( _.size(fields) > 0 )
+		{
+			api.members.update(connection.params.membername, fields, function(data){
+				utils.processResponse(data, connection);
+				next(connection, true);
+			});
+		} else {
+			// save an extra call, if no update-able fields are present...
+			utils.processResponse({}, connection);
 			next(connection, true);
-		});
+		}
   	}
   	catch( error )
   	{
-  		// TODO: proper error creation!
+  		// send the parsing error back to the client...
+  		connection.error = error;
   		next(connection, true);
   	}
-  	next(connection, true);
   }
 };
 
