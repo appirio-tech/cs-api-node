@@ -1,7 +1,7 @@
 var forcifier = require("forcifier")
   , utils = require("../utils")
 
-exports.action = {
+exports.messagesFetch = {
   name: "messagesFetch",
   description: "Fetches a specific message. Method: GET",
   inputs: {

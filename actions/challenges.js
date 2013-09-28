@@ -46,7 +46,7 @@ exports.challengesParticipantsList = {
   }
 };
 
-exports.action = {
+exports.challengesFetch = {
   name: "challengesFetch",
   description: "Fetches a specific challenge. Method: GET",
   inputs: {
