@@ -258,3 +258,20 @@ describe('POST /accounts/create', function () {
         });
     });
 });
+
+describe('PUT /accounts/:membername/preferences', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should update preferences successfully', function (done) {
+        var params = {
+          preferences: "{}"
+        };
+        request.put({ url: setup.testUrl + '/accounts/chang/preferences', form: params },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});

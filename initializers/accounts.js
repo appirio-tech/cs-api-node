@@ -422,6 +422,29 @@ exports.accounts = function(api, next){
           }
         })
       })
+    },
+
+    /*
+    * Updates a member's notification preferences
+    *
+    * params - { membername, preferences }
+    *
+    * Returns a status message
+    */
+    updatePreferences: function(params, next) {
+      try {
+        var preferences = JSON.parse(params.preferences);
+        api.sfdc.org.apexRest({ uri: 'v.9/notifications/preferences/' + params.membername, method: 'PUT', body: preferences }, api.sfdc.oauth, function(err, res) {
+          if (err) { console.error(err); }
+          res.Success = Boolean(res.Success);
+          next(res);
+        });
+      } catch(err) {
+        next({
+          success: false,
+          message: "Invalid json in the 'preferences' parameter"
+        });
+      }
     }
   } // end api.accounts
 

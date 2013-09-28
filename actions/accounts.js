@@ -203,3 +203,25 @@ exports.accountsCreate = {
     });
   }
 };
+
+exports.accountsUpdatePreferences = {
+  name: "accountsUpdatePreferences",
+  description: "Updates a member's notification preferences. Method: PUT",
+  inputs: {
+    required: ["membername", "preferences"],
+    optional: []
+  },
+  blockedConnectionTypes: [],
+  outputExample: {
+    "success": true,
+    "message": "Preferences successfully updated."
+  },
+  authenticated: false,
+  version: 2.0,
+  run: function(api, connection, next){
+    api.accounts.updatePreferences(connection.params, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};

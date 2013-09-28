@@ -67,6 +67,7 @@ exports.routes = {
     { path: "/:apiVersion/accounts/change_password_with_token/:membername", action: "accountsChangePassWithToken" },
     { path: "/:apiVersion/accounts/:membername/marketing", action: "accountsUpdateMarketingInfo" },
     { path: "/:apiVersion/accounts/:membername/referred_by", action: "accountsReferredBy" },
+    { path: "/:apiVersion/accounts/:membername/preferences", action: "accountsUpdatePreferences" },
 
     { path: "/:apiVersion/judging/scorecard/:id", action: "judgingUpdate" },
 
