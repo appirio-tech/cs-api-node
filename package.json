@@ -18,14 +18,16 @@
     "pg": "~2.6.2",
     "forcifier": "*",
     "underscore": "~1.4.4",
-    "nforce": "~0.5.1",
+    "nforce": "~0.5.2",
     "async": "~0.2.9",
-    "actionHero": "~6.3.0"
+    "actionHero": "~6.3.0",
+    "string": "~1.6.0"
   },
   "devDependencies": {
     "mocha": "~1.13.0",
     "request": "~2.27.0",
-    "chai": "~1.8.0"
+    "chai": "~1.8.0",
+    "nock": "~0.22.1"
   },
   "scripts": {
     "start": "npm run actionHero start",

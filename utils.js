@@ -1,8 +1,23 @@
 var forcifier = require("forcifier")
   , _ = require("underscore")
 
-function processResponse(data, connection) {
-  if (_.isEmpty(data)) {
+
+/* 
+* Process the response sent back to the client. If 
+* the data contains 0 records, a 404 will be returned (you can
+* override this by passing false for 'throw404' and it will return
+* and empty array), if only one record exists in the array, that
+* element will be returned, else the entire array is returned.
+*
+* data - the data to be returned to the client
+* connection - the scoped connection object
+* throw404 - a boolean to determine whether or not to throw
+*   a 404 error if 0 records exist in the data. Default is true
+*   if 'undefined'.
+*/
+function processResponse(data, connection, throw404) {
+  if (typeof(throw404)=="undefined") throw404 = true;
+  if (_.isEmpty(data) && throw404) {
     send404(connection);
   } else if (data.length === 1) {
     connection.response.response = forcifier.deforceJson(_.first(data));
@@ -19,5 +34,21 @@ function send404(connection) {
   connection.rawConnection.responseHttpCode = 404;  
 }
 
+// enforce orderBy params.
+// for 'orderBy' params, it could be passed as 'wins desc'
+// so need to enforce 'wins' and not desc
+function enforceOrderByParam(orderBy, defaultValue) {
+  if(!orderBy) { return defaultValue; }
+
+  if(orderBy.indexOf(' ') > 0) {
+    // if orderBu is something like 'wins desc'
+    return orderBy.replace(' ', '__c ');
+  }
+  else {
+    return orderBy + "__c";
+  }
+}
+
 exports.processResponse = processResponse;
 exports.send404 = send404;
+exports.enforceOrderByParam = enforceOrderByParam;
