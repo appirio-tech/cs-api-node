@@ -63,7 +63,7 @@ exports.membersUpdate = {
   		if( _.has(fields, 'email') && !pattern.test(fields.email) )
   		{
   			// this error will be catched below...
-  			throw new Error('Wrong email format.');
+  			throw new Error('Invalid email.');
   		}
   		
 		fields =  forcifier.enforceJson(fields);
