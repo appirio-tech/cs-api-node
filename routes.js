@@ -87,11 +87,13 @@ exports.routes = {
     { path: "/:apiVersion/communities/add_member", action: "communitiesAddMember" },
 
     { path: "/:apiVersion/participants/:membername/:challenge_id/submission_url_file", action: "deliverablesCreateSubmission" },
+    { path: "/:apiVersion/participants/:membername/:challenge_id", action: "participantsCreate" },
 
     { path: "/:apiVersion/judging", action: "judgingCreate" },
     { path: "/:apiVersion/challenges/:challenge_id/survey", action: "surveyInsert"},
     { path: "/:apiVersion/comments", action: "commentInsert"},
     { path: "/:apiVersion/accounts/create", action: "accountsCreate" }
+
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 
 
   ]  

@@ -36,6 +36,21 @@ exports.participants = function(api, next){
           next(rs['rows']);
         })
       })
+    },
+
+    /* 
+    * Creates a new challenge participant record
+    *
+    * data - { membername, challenge_id, fields }
+    *
+    * Returns a status message
+    */
+    create: function(data, next) {
+      api.sfdc.org.apexRest({ uri: 'v.9/participants', method: 'POST', body: data.fields }, api.sfdc.oauth, function(err, res) {
+        if (err) { console.error(err); }
+        res.Success = res.Success == "true";
+        next(res);
+      });
     }
   }
   next();

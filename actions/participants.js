@@ -1,4 +1,5 @@
-var utils = require("../utils")
+var forcifier = require("forcifier")
+  , utils = require("../utils")
 
 exports.action = {
   name: "participantsStatus",
@@ -81,6 +82,27 @@ exports.participantsFetch = {
   version: 2.0,
   run: function(api, connection, next){
     api.participants.fetch(connection.params, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
+
+exports.participantsCreate = {
+  name: "participantsCreate",
+  description: "Creates a new challenge participant record. Method: POST",
+  inputs: {
+    required: ['membername', 'challenge_id'],
+    optional: ['fields'],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "a0AK000000BiJTrMAN"
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.participants.create(connection.params, function(data){
       utils.processResponse(data, connection);
       next(connection, true);
     });
