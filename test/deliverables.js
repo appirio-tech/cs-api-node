@@ -72,7 +72,7 @@ describe('POST /participants/:membername/:challenge_id/submission_url_file', fun
     });
 });
 
-describe('POST /participants/:membername/:challenge_id/deliverables"', function () {
+describe('POST /participants/:membername/:challenge_id/deliverables', function () {
     before(function (done) {
         setup.init(done);
     });
@@ -84,6 +84,23 @@ describe('POST /participants/:membername/:challenge_id/deliverables"', function 
         request.post({ url: setup.testUrl + '/participants/jeffdonthemic/22/deliverables', form: params },  function (err, response, body) {
             body = JSON.parse(body);
             assert.ok(body.response.success);
+            done();
+        });
+    });
+});
+
+describe('PUT /participants/:membername/:challenge_id/deliverables', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should update deliverable successfully', function (done) {
+        var params = {
+          data: "challenge_participant__c=a0AK000000BTelZMAT&url__c=https%3A%2F%2Fs3.amazonaws.com%2Fcs-sandbox%2Fchallenges%2F65%2Fjeffdonthemic%2Fcx-report.pdf&type__c=Code&language__c=Apex%20%2F%20Visualforce&comments__c=test"
+        };
+        request.put({ url: setup.testUrl + '/participants/jeffdonthemic/22/deliverables', form: params },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response);
             done();
         });
     });
