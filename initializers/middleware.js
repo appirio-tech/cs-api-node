@@ -11,7 +11,6 @@ exports.middleware = function(api, next){
       return next(connection, true);
 
       var redis = api.redis.client;
-      var authorized = false;
       var authorization = connection.rawConnection.req.headers.authorization;   
 
       // if authorization found in the header
@@ -46,8 +45,31 @@ exports.middleware = function(api, next){
     }
   }
 
+  /**
+  * With each request, we need to check the header and see
+  * if an access_token was passed. If so, write that token
+  * to the cache to be used for all
+  * calls to salesforce for the request. If an access_token
+  * was not found in the header, then write the 
+  * api.sfdc.oauth.access_token
+  * to be used for all calls to salesforce for the requets.
+  *    header['oauth_token'] = 'some-long-token'
+  **/
   var accessTokenMiddleware = function(connection, actionTemplate, next){
-    // TODO - fetch access token from header and set for request  
+    var oauthToken = connection.rawConnection.req.headers.oauth_token;
+    var cacheKey = "oauth:" + connection.id;
+
+    // check for a passed access token
+    if (typeof(oauthToken) != "undefined") {
+      console.log("[DEBUG] Found oauth token: " + oauthToken);
+    // else use the public access token
+    } else {
+      oauthToken = api.sfdc.oauth
+    }
+    // cache the actual oauth key
+    api.cache.save(cacheKey, oauthToken, api.configData.general.sessionDuration, function(error, results){
+      //console.log("[DEBUG] Saved successfully: " + results);
+    });
     next(connection, true);
   }  
 

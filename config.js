@@ -26,7 +26,8 @@ configData.general = {
   developmentMode: true,                                         // watch for changes in actions and tasks, and reload/restart them on the fly
   pidFileDirectory: process.cwd() + "/pids/",                     // the location of the directory to keep pidfiles
   simultaneousActions: 5,                                          // how many pending actions can a single connection be working on 
-  logAccessToken: true                                          // displays salesforce access token in console from login
+  logAccessToken: true,                                          // displays salesforce access token in console from login
+  sessionDuration: (1000 * 60 * 60 * 1),              // values cached in redis for 1 hour
 };
 
 /////////////
