@@ -203,16 +203,24 @@ exports.deliverables = function(api, next){
     /* 
     * Updates a deliverable for a participant
     *
-    * connection.params - { membername, challenge_id, data }
+    * params - { membername, challenge_id, data }
     *
     * Returns a status message
     */
-    update: function(connection, next) {
-      api.sfdc.org.apexRest({ uri: 'v.9/submissions', method: 'POST', body: connection.params.data }, api.sfdc.oauth, function(err, res) {
-        if (err) { console.error(err); }
-        res.Success = Boolean(res.Success);
-        next(res);
-      });
+    update: function(params, next) {
+      try {
+        var fields = JSON.parse(params.data);
+        api.sfdc.org.apexRest({ uri: 'v.9/submissions', method: 'POST', body: fields }, api.sfdc.oauth, function(err, res) {
+          if (err) { console.error(err); }
+          res.Success = Boolean(res.Success);
+          next(res);
+        });
+      } catch(err) {
+        next({
+          success: false,
+          message: "Invalid json in the 'data' parameter"
+        });
+      }
     }
   }
   next();

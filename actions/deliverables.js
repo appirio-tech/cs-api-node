@@ -182,7 +182,7 @@ exports.deliverablesUpdate = {
   },
   version: 2.0,
   run: function(api, connection, next){
-    api.deliverables.update(connection, function(data){
+    api.deliverables.update(connection.params, function(data){
       connection.response.response = forcifier.deforceJson(data);
       next(connection, true);
     });
