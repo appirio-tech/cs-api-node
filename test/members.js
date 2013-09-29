@@ -1,7 +1,7 @@
 var request = require('request'),
     assert  = require('chai').assert,
     setup   = require('./setup.js'),
-    _       = require("underscore")
+    _       = require("underscore");
 
 var membername = 'jeffdonthemic';
 var nock = require('nock');
@@ -144,4 +144,69 @@ describe("GET /members/:membername/referrals", function() {
             });
         });
     })
+});
+
+describe('PUT /members/:membername', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+    
+    it('update with invalid fields JSON should fail', function(done) {
+    	var query_string = 'fields={"key":wrong"}';
+        
+    	request.put(setup.testUrl + '/members/' + membername + '?' + query_string,
+    		function (err, response, body) {
+            	body = JSON.parse(body);
+            	
+            	assert.propertyVal(body, 'error', 'SyntaxError: Unexpected token w');
+            	
+	    		done();
+    		});
+    });
+    
+    it('update with fields not on the white-list should fail', function(done) {
+    	var fields = { not_on_whitelist_key : "any value" };
+    	
+    	var query_string = "fields=" + JSON.stringify(fields);
+        
+    	request.put(setup.testUrl + '/members/' + membername + '?' + query_string,
+    		function (err, response, body) {
+            	body = JSON.parse(body);
+            	
+            	assert.propertyVal(body, 'error', 'not_found');
+  				assert.propertyVal(body, 'error_description', 'The requested resource could not be found!');
+  				
+	    		done();
+    		});
+    });
+    
+    it('update with invalid email should fail', function(done) {
+    	var fields = { email: "notavalidemail" };
+    	
+    	var query_string = "fields=" + JSON.stringify(fields);
+        
+    	request.put(setup.testUrl + '/members/' + membername + '?' + query_string,
+    		function (err, response, body) {
+            	body = JSON.parse(body);
+            	
+            	assert.propertyVal(body, 'error', 'Error: Invalid email.');
+            	
+	    		done();
+    		});
+    });
+    
+    it('updating should be successful', function(done) {
+    	var fields = { jabber: "jabber for user" };
+    	
+    	var query_string = "fields=" + JSON.stringify(fields);
+        
+    	request.put(setup.testUrl + '/members/' + membername + '?' + query_string,
+    		function (err, response, body) {
+            	body = JSON.parse(body);
+            	
+            	assert.deepEqual(body.response, fields);
+            	
+	    		done();
+    		});
+    });
 });

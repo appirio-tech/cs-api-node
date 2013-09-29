@@ -63,6 +63,7 @@ exports.routes = {
   ],
 
   put: [
+  	
     { path: "/:apiVersion/accounts/update_password_token/:membername", action: "accountsUpdatePassToken" },
     { path: "/:apiVersion/accounts/change_password_with_token/:membername", action: "accountsChangePassWithToken" },
     { path: "/:apiVersion/accounts/:membername/marketing", action: "accountsUpdateMarketingInfo" },
@@ -70,8 +71,10 @@ exports.routes = {
 
     { path: "/:apiVersion/judging/scorecard/:id", action: "judgingUpdate" },
 
-    { path: "/:apiVersion/messages/:id", action: "messagesUpdate" }
-
+    { path: "/:apiVersion/messages/:id", action: "messagesUpdate" },
+    
+    { path: "/:apiVersion/members/:membername", action: "membersUpdate" }
+    
   ],
 
   post: [
@@ -87,6 +90,7 @@ exports.routes = {
     { path: "/:apiVersion/challenges/:challenge_id/survey", action: "surveyInsert"},
     { path: "/:apiVersion/comments", action: "commentInsert"},
     { path: "/:apiVersion/accounts/create", action: "accountsCreate" }
+    
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 
 
   ]  
