@@ -155,7 +155,7 @@ exports.deliverablesCreate = {
   authenticated: false,
   outputExample: {
     "success": true,
-    "message": "a0DK000000F0jAEMAZ"
+    "message": "Deliverable created successfully."
   },
   version: 2.0,
   run: function(api, connection, next){

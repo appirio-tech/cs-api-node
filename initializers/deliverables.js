@@ -1,5 +1,6 @@
 var request = require('request')
   , pg = require('pg').native
+  , _ = require("underscore")
 
 exports.deliverables = function(api, next){
 
@@ -156,11 +157,47 @@ exports.deliverables = function(api, next){
     * Returns a status message
     */
     create: function(params, next) {
-      api.sfdc.org.apexRest({ uri: 'v.9/submissions', method: 'POST', body: params.data }, api.sfdc.oauth, function(err, res) {
-        if (err) { console.error(err); }
-        res.Success = Boolean(res.Success);
-        next(res);
-      });
+      try {
+        var fields = JSON.parse(params.data);
+        var client = new pg.Client(api.configData.pg.connString);
+        client.connect(function(err) {
+          if (err) { console.log(err); }
+          var fieldsKeys = '', fieldsValues = '';
+          var timestamp = new Date().toISOString();
+          fields['createddate'] = fields['lastmodifieddate'] = timestamp;
+
+          _.each(fields, function(value, key) {
+            fieldsKeys += ", " + key;
+            fieldsValues += ", '" + value + "'";
+          });
+
+          // remove ", " from the beginning
+          fieldsKeys = fieldsKeys.substring(2);
+          fieldsValues = fieldsValues.substring(2);
+
+          sql = "insert into submission_deliverable__c (" + fieldsKeys + ") values (" + fieldsValues + ")";
+          client.query(sql, function(err, rs) {
+            if (!err) {
+              rs = {
+                success: true,
+                message: "Deliverable created successfully."
+              }
+            } else {
+              rs = {
+                success: false,
+                message: "Error while trying to create deliverable."
+              }
+              console.log(err);
+            }
+            next(rs);
+          })
+        })
+      } catch(err) {
+        next({
+          success: false,
+          message: "Invalid json in the `data` parameter"
+        });
+      }
     },
 
     /* 
