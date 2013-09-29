@@ -88,6 +88,7 @@ exports.routes = {
     { path: "/:apiVersion/communities/add_member", action: "communitiesAddMember" },
 
     { path: "/:apiVersion/participants/:membername/:challenge_id/submission_url_file", action: "deliverablesCreateSubmission" },
+    { path: "/:apiVersion/participants/:membername/:challenge_id/deliverables", action: "deliverablesCreate" },
     { path: "/:apiVersion/participants/:membername/:challenge_id", action: "participantsCreate" },
 
     { path: "/:apiVersion/judging", action: "judgingCreate" },

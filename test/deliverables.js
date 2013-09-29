@@ -71,3 +71,20 @@ describe('POST /participants/:membername/:challenge_id/submission_url_file', fun
         });
     });
 });
+
+describe('POST /participants/:membername/:challenge_id/deliverables"', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should create deliverable successfully', function (done) {
+        var params = {
+          data: "challenge_participant__c=a0AK000000BiJTrMAN&url__c=https%3A%2F%2Fs3.amazonaws.com%2Fcs-sandbox%2Fchallenges%2F66%2Fjeffdonthemic%2Fpackage.xml&type__c=File&language__c=&comments__c=my%20file"
+        };
+        request.post({ url: setup.testUrl + '/participants/jeffdonthemic/22/deliverables', form: params },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+});

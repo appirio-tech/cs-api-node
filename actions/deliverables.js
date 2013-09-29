@@ -145,6 +145,29 @@ exports.deliverablesCreateSubmission = {
   }
 };
 
+exports.deliverablesCreate = {
+  name: "deliverablesCreate",
+  description: "Creates a new deliverable for a participant. Method: POST",
+  inputs: {
+    required: ['membername', 'challenge_id', 'data'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "a0DK000000F0jAEMAZ"
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.deliverables.create(connection.params, function(data){
+      connection.response.response = forcifier.deforceJson(data);
+      if (connection.response.response.success)
+        connection.rawConnection.responseHttpCode = 201;
+      next(connection, true);
+    });
+  }
+};
+
 exports.deliverablesUpdate = {
   name: "deliverablesUpdate",
   description: "Updates a deliverable for a participant. Method: PUT",

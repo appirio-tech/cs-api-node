@@ -149,6 +149,21 @@ exports.deliverables = function(api, next){
     },
 
     /* 
+    * Creates a new deliverable for a participant
+    *
+    * params - { membername, challenge_id, data }
+    *
+    * Returns a status message
+    */
+    create: function(params, next) {
+      api.sfdc.org.apexRest({ uri: 'v.9/submissions', method: 'POST', body: params.data }, api.sfdc.oauth, function(err, res) {
+        if (err) { console.error(err); }
+        res.Success = Boolean(res.Success);
+        next(res);
+      });
+    },
+
+    /* 
     * Updates a deliverable for a participant
     *
     * connection.params - { membername, challenge_id, data }
