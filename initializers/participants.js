@@ -1,4 +1,6 @@
 var pg = require('pg').native
+  , forcifier = require("forcifier")
+  , _ = require("underscore")
 
 exports.participants = function(api, next){
 
@@ -51,6 +53,40 @@ exports.participants = function(api, next){
         res.Success = res.Success == "true";
         next(res);
       });
+    },
+
+    /* 
+    * Updates an existing challenge participant record
+    *
+    * data - { membername, challenge_id, fields }
+    *
+    * Returns a participant record
+    */
+    update: function(data, next) {
+      try {
+        var fields = JSON.parse(data.fields) || {};
+        if (!fields['challengeid'])
+          fields['challengeid'] = data.challenge_id;
+
+        var params = [];
+        _.each(fields, function(value, key) {
+          params[params.length] = {
+            key: key,
+            value: value
+          };
+        });
+        
+        api.sfdc.org.apexRest({ uri: 'v.9/participants/' + data.membername, method: 'PUT', urlParams: params }, api.sfdc.oauth, function(err, res) {
+          if (err) { console.error(err); }
+          res.Success = Boolean(res.Success);
+          next(res);
+        });
+      } catch(err) {
+        next({
+          success: false,
+          message: "Invalid json in the 'fields' parameter"
+        });
+      }
     }
   }
   next();

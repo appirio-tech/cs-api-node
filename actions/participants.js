@@ -108,3 +108,24 @@ exports.participantsCreate = {
     });
   }
 };
+
+exports.participantsUpdate = {
+  name: "participantsUpdate",
+  description: "Updates an existing challenge participant record. Method: PUT",
+  inputs: {
+    required: ["membername", "challenge_id", "fields"],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "message": "a0AK000000BiJTrMAN"
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.participants.update(connection.params, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};

@@ -63,3 +63,20 @@ describe('POST /participants/:membername/:challenge_id"', function () {
         });
     });
 });
+
+describe('PUT /participants/:membername/:challenge_id"', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should update participant record successfully', function (done) {
+        var params = {
+          fields: "{\"status__c\":\"Registered\", \"challengeid\":\"22\"}"
+        };
+        request.put({ url: setup.testUrl + '/participants/jeffdonthemic/66', form: params },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response);
+            done();
+        });
+    });
+});
