@@ -59,6 +59,7 @@ exports.middleware = function(api, next){
     var oauthToken = connection.rawConnection.req.headers.oauth_token;
     var cacheKey = "oauth:" + connection.id;
 
+    // TODO -- this needs more work with sessions
     // check for a passed access token
     if (typeof(oauthToken) != "undefined") {
       console.log("[DEBUG] Found oauth token: " + oauthToken);
@@ -66,10 +67,15 @@ exports.middleware = function(api, next){
     } else {
       oauthToken = api.sfdc.oauth
     }
-    // cache the actual oauth key
-    api.cache.save(cacheKey, oauthToken, api.configData.general.sessionDuration, function(error, results){
-      //console.log("[DEBUG] Saved successfully: " + results);
-    });
+
+    // create a session for this request and cache it
+    connection.session = {
+      id: connection.id,
+      org: api.sfdc.oauth,
+      orgType: 'public'
+    };
+    api.session.save(connection, next);
+
     next(connection, true);
   }  
 
