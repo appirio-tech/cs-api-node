@@ -1,6 +1,7 @@
 var forcifier = require("forcifier")
   , utils = require("../utils")
   , _ = require("underscore")
+  , configData = require("../config").configData;
 
 exports.membersList = {
   name: "membersList",
@@ -37,6 +38,57 @@ exports.membersFetch = {
       utils.processResponse(data, connection);
       next(connection, true);
     });
+  }
+};
+
+exports.membersUpdate = {
+  name: "membersUpdate",
+  description: "Updates a specific member. Method: PUT",
+  inputs: {
+  	// fields must be in form of serialized JSON...
+    required: ['membername', 'fields'],
+    optional: []
+  },
+  authenticated: true,
+  // returns the updated fields with their new values...
+  outputExample: { "jabber":"new jabber for me", "school": "higher education" },
+  version: 2.0,
+  run: function(api, connection, next){
+  	// process fields as a stringified JSON object...
+  	try {
+  		var fields = JSON.parse(connection.params.fields);
+  		
+  		// validate email, if found...
+  		var pattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+  		if( _.has(fields, 'email') && !pattern.test(fields.email) )
+  		{
+  			// this error will be catched below...
+  			throw new Error('Invalid email.');
+  		}
+  		
+		fields =  forcifier.enforceJson(fields);
+		
+		// filter fields to white-listed ones...
+		fields = _.pick(fields, configData.whiteList.memberUpdate);
+		
+		if( _.size(fields) > 0 )
+		{
+			api.members.update(connection.params.membername, fields, function(data){
+				utils.processResponse(data, connection);
+				next(connection, true);
+			});
+		} else {
+			// save an extra call, if no update-able fields are present...
+			utils.processResponse({}, connection);
+			next(connection, true);
+		}
+  	}
+  	catch( error )
+  	{
+  		// send the parsing error back to the client...
+  		connection.error = error;
+  		next(connection, true);
+  	}
   }
 };
 

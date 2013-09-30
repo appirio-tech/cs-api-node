@@ -468,7 +468,7 @@ describe('GET /challenges/search', function () {
     it('should not be empty', function (done) {
         request.get(setup.testUrl + '/challenges/search?keyword=test', function (err, response, body) {
             body = JSON.parse(body);
-            assert.equal(body.count, 11);
+            assert.notEqual(body.count, 0);
             done();
         });
     });

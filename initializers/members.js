@@ -1,4 +1,5 @@
-var pg = require('pg').native
+var pg = require('pg').native,
+	_ = require("underscore");
 
 exports.members = function(api, next){
 
@@ -41,6 +42,45 @@ exports.members = function(api, next){
         })
       })
     },
+
+	/*
+	* Updates a specific members field(s) in pg (members__c).
+	*
+	* membername - the name of the member to update
+	* fieldsHash - the hash of the fields=values to update. If no fields are defined,
+	* return a "No fields to update!" message with "success:false".
+	*
+	* Returns
+	*/
+	update: function( membername, fieldsHash, next ) {
+		var client = new pg.Client(api.configData.pg.connString);
+		client.connect(function(err) {
+			if (err) { console.log(err); }
+			
+			// construct the string in form of:
+			// key1='value1',key2='value2',keyN='valueN'
+			
+			// chaining with underscore...
+			var updates = _.chain(fieldsHash)
+				// get the pairs in an array as [ key:"value" ]...
+				.pairs()
+				// map it to [ "key='value'" ]...
+				.map(function(field){
+					return field[0] + "=\'" + field[1] + "\'";
+				})
+				// return the value as string...
+				.value().toString();
+			
+			// create the psql statement, defining as return value the fields
+			// that are being updated with their new values...
+			var sql = "UPDATE member__c SET " + updates + " WHERE name=\'" + membername + "\' "
+					+ "RETURNING " + _.keys(fieldsHash).toString() + ";";
+
+		    client.query(sql, function(err, rs) {
+		      	next(rs['rows']);
+		    });
+		});
+	},
 
     /*
     * Returns payments of a specific member from pg by membername
@@ -132,5 +172,6 @@ exports.members = function(api, next){
     }
 
   }
+  
   next();
 }
