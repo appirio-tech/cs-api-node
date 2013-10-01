@@ -82,7 +82,6 @@ exports.routes = {
   ],
 
   post: [
-
     { path: "/:apiVersion/messages/:id/reply", action: "messagesReply" },
     { path: "/:apiVersion/messages", action: "messagesCreate" },
     
@@ -92,9 +91,11 @@ exports.routes = {
     { path: "/:apiVersion/participants/:membername/:challenge_id/deliverables", action: "deliverablesCreate" },
     { path: "/:apiVersion/participants/:membername/:challenge_id", action: "participantsCreate" },
 
-    { path: "/:apiVersion/judging", action: "judgingCreate" },
     { path: "/:apiVersion/challenges/:challenge_id/survey", action: "surveyInsert"},
+    { path: "/:apiVersion/challenges", action: "challengesCreate"},
+    
     { path: "/:apiVersion/comments", action: "commentInsert"},
+    { path: "/:apiVersion/judging", action: "judgingCreate" },
     { path: "/:apiVersion/accounts/create", action: "accountsCreate" }
     //{ path: "/:apiVersion/accounts/authenticate", action: "accountsAuthenticate" } 
 
