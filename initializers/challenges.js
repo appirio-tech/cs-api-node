@@ -272,9 +272,29 @@ exports.challenges = function(api, next){
         if (err) { console.error(err); }
         next(res);
       });
-    }
-    
+    },
 
+    /* 
+    * Creates a new challenge
+    *
+    * data - challenge data
+    *
+    * Returns a status message
+    */
+    create: function(data, next) {
+      try {
+        data = JSON.parse(data);
+        api.sfdc.org.apexRest({ uri: 'v1/admin/challenges', method: 'POST', body: data }, api.sfdc.oauth, function(err, res) {
+          if (err) { console.error(err); }
+          next(res);
+        });
+      } catch(err) {
+        next({
+          success: false,
+          message: "Invalid json in the 'data' parameter"
+        });
+      }
+    }
   }
   next();
 

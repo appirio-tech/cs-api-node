@@ -521,3 +521,56 @@ describe('PUT /challenges/:challenge_id', function () {
         });
     });
 });
+
+describe('POST /challenges', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should create a new challenge successfully', function (done) {
+        var params = {
+          data: JSON.stringify({ "challenge": { "detail": { "account__c": "001K000000f8R8aIAE", "contact__c": "jeffdonthemic", "winner_announced__c": "2013-10-03", "terms_of_service__c": "Standard Terms & Conditions", "submission_details__c": "<p>Upload all your source code as a zip (you can simply zip up \n your Eclipse project for convenience) and provide any documentation and/or instructions that \n are needed. Please be clear and concise with any setup instructions.</p><p>A video of your \n application using Jing or Youtube is required. An unmanaged package for installation is also required.</p>", "status__c": "Draft", "start_date__c": "2013-09-25T23:00:00-04:00", "requirements__c": "<p>Please implement the following requirements:</p>", "name": "Awesome New Challenge", "end_date__c": "2013-09-29T23:00:00-04:00", "description__c": "<p>Your \n overview should describe what you are trying to build within a few simple sentences. Remember, \n the person reading your overview has no background on what you are trying to build so try to think \n of the best way to convey the goal of the challenge. You can provide more details in the requirements \n section. Here is a sample:</p><p>We have an existing Salesforce.com application that is not visually \n appealing. It&#39;s a simple search and details application which consists of 1-2 Apex Controllers \n and 3 Visualforce pages. We used a third party service to design a new layout and they have sent us \n the HTML and CSS for our new application. We need your Visualforce and Apex skills to merge the \n HTML and CSS with our existing code.</p>", "comments__c": null, "additional_info__c": null, "challenge_type__c": "Code", "community_judging__c": true, "auto_announce_winners__c": false, "challenge_id__c": null, "post_reg_info__c": null, "require_registration__c": false }, "reviewers": null, "platforms": null, "technologies": null, "prizes": [{ "place__c": 1, "prize__c": "$500", "points__c": 500, "value__c": 500 }, { "place__c": 2, "prize__c": "$250", "points__c": 250, "value__c": 250 }], "commentNotifiers": null, "assets": null } })
+        };
+        request.post({ url: setup.testUrl + '/challenges', form: params },  function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.response.success);
+            done();
+        });
+    });
+
+    /*it('should return error for missing start date', function (done) {
+        var params = {
+          data: JSON.stringify({ "challenge": { "detail": { "account__c": "001K000000f8R8aIAE", "contact__c": "jeffdonthemic", "winner_announced__c": "2013-10-03", "terms_of_service__c": "Standard Terms & Conditions", "submission_details__c": "<p>Upload all your source code as a zip (you can simply zip up \n your Eclipse project for convenience) and provide any documentation and/or instructions that \n are needed. Please be clear and concise with any setup instructions.</p><p>A video of your \n application using Jing or Youtube is required. An unmanaged package for installation is also required.</p>", "status__c": "Draft", "requirements__c": "<p>Please implement the following requirements:</p>", "name": "Awesome New Challenge", "end_date__c": "2013-09-29T23:00:00-04:00", "description__c": "<p>Your \n overview should describe what you are trying to build within a few simple sentences. Remember, \n the person reading your overview has no background on what you are trying to build so try to think \n of the best way to convey the goal of the challenge. You can provide more details in the requirements \n section. Here is a sample:</p><p>We have an existing Salesforce.com application that is not visually \n appealing. It&#39;s a simple search and details application which consists of 1-2 Apex Controllers \n and 3 Visualforce pages. We used a third party service to design a new layout and they have sent us \n the HTML and CSS for our new application. We need your Visualforce and Apex skills to merge the \n HTML and CSS with our existing code.</p>", "comments__c": null, "additional_info__c": null, "challenge_type__c": "Code", "community_judging__c": true, "auto_announce_winners__c": false, "challenge_id__c": null, "post_reg_info__c": null, "require_registration__c": false }, "reviewers": null, "platforms": null, "technologies": null, "prizes": [{ "place__c": 1, "prize__c": "$500", "points__c": 500, "value__c": 500 }, { "place__c": 2, "prize__c": "$250", "points__c": 250, "value__c": 250 }], "commentNotifiers": null, "assets": null } })
+        };
+        request.post({ url: setup.testUrl + '/challenges', form: params },  function (err, response, body) {
+            body = JSON.parse(body);
+            console.log(body);
+            assert.ok(!body.response.success && body.response.errors[0].errorMessage == "Required fields are missing: [Start_Date__c]");
+            done();
+        });
+    });
+
+    it('should return error for missing end date', function (done) {
+        var params = {
+          data: JSON.stringify({ "challenge": { "detail": { "account__c": "001K000000f8R8aIAE", "contact__c": "jeffdonthemic", "winner_announced__c": "2013-10-03", "terms_of_service__c": "Standard Terms & Conditions", "submission_details__c": "<p>Upload all your source code as a zip (you can simply zip up \n your Eclipse project for convenience) and provide any documentation and/or instructions that \n are needed. Please be clear and concise with any setup instructions.</p><p>A video of your \n application using Jing or Youtube is required. An unmanaged package for installation is also required.</p>", "status__c": "Draft", "start_date__c": "2013-09-25T23:00:00-04:00", "requirements__c": "<p>Please implement the following requirements:</p>", "name": "Awesome New Challenge", "description__c": "<p>Your \n overview should describe what you are trying to build within a few simple sentences. Remember, \n the person reading your overview has no background on what you are trying to build so try to think \n of the best way to convey the goal of the challenge. You can provide more details in the requirements \n section. Here is a sample:</p><p>We have an existing Salesforce.com application that is not visually \n appealing. It&#39;s a simple search and details application which consists of 1-2 Apex Controllers \n and 3 Visualforce pages. We used a third party service to design a new layout and they have sent us \n the HTML and CSS for our new application. We need your Visualforce and Apex skills to merge the \n HTML and CSS with our existing code.</p>", "comments__c": null, "additional_info__c": null, "challenge_type__c": "Code", "community_judging__c": true, "auto_announce_winners__c": false, "challenge_id__c": null, "post_reg_info__c": null, "require_registration__c": false }, "reviewers": null, "platforms": null, "technologies": null, "prizes": [{ "place__c": 1, "prize__c": "$500", "points__c": 500, "value__c": 500 }, { "place__c": 2, "prize__c": "$250", "points__c": 250, "value__c": 250 }], "commentNotifiers": null, "assets": null } })
+        };
+        request.post({ url: setup.testUrl + '/challenges', form: params },  function (err, response, body) {
+            body = JSON.parse(body);
+            console.log(body);
+            assert.ok(!body.response.success && body.response.errors[0].errorMessage == "Required fields are missing: [End_Date__c]");
+            done();
+        });
+    });
+
+    it('should return error for missing description', function (done) {
+        var params = {
+          data: JSON.stringify({ "challenge": { "detail": { "account__c": "001K000000f8R8aIAE", "contact__c": "jeffdonthemic", "winner_announced__c": "2013-10-03", "terms_of_service__c": "Standard Terms & Conditions", "submission_details__c": "<p>Upload all your source code as a zip (you can simply zip up \n your Eclipse project for convenience) and provide any documentation and/or instructions that \n are needed. Please be clear and concise with any setup instructions.</p><p>A video of your \n application using Jing or Youtube is required. An unmanaged package for installation is also required.</p>", "status__c": "Draft", "start_date__c": "2013-09-25T23:00:00-04:00", "requirements__c": "<p>Please implement the following requirements:</p>", "name": "Awesome New Challenge", "end_date__c": "2013-09-29T23:00:00-04:00", "comments__c": null, "additional_info__c": null, "challenge_type__c": "Code", "community_judging__c": true, "auto_announce_winners__c": false, "challenge_id__c": null, "post_reg_info__c": null, "require_registration__c": false }, "reviewers": null, "platforms": null, "technologies": null, "prizes": [{ "place__c": 1, "prize__c": "$500", "points__c": 500, "value__c": 500 }, { "place__c": 2, "prize__c": "$250", "points__c": 250, "value__c": 250 }], "commentNotifiers": null, "assets": null } })
+        };
+        request.post({ url: setup.testUrl + '/challenges', form: params },  function (err, response, body) {
+            body = JSON.parse(body);
+            console.log(body);
+            assert.ok(!body.response.success && body.response.errors[0].errorMessage == "Description is required.");
+            done();
+        });
+    });*/
+});

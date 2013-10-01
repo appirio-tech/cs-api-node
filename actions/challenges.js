@@ -303,3 +303,27 @@ exports.challengesUpdate = {
     });
   }
 };
+
+exports.challengesCreate = {
+  name: "challengesCreate",
+  description: "Creates a new challenge. Method: POST",
+  inputs: {
+    required: ['data'],
+    optional: [],
+  },
+  authenticated: false,
+  outputExample: {
+    "success": true,
+    "errors": [],
+    "challengeId": "70"
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    api.challenges.create(connection.params.data, function(data){
+      connection.response.response = forcifier.deforceJson(data);
+      if (connection.response.response)
+        connection.rawConnection.responseHttpCode = 201;
+      next(connection, true);
+    });
+  }
+};
