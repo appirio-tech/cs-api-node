@@ -26,7 +26,8 @@ configData.general = {
   developmentMode: true,                                         // watch for changes in actions and tasks, and reload/restart them on the fly
   pidFileDirectory: process.cwd() + "/pids/",                     // the location of the directory to keep pidfiles
   simultaneousActions: 5,                                          // how many pending actions can a single connection be working on 
-  logAccessToken: true                                          // displays salesforce access token in console from login
+  logAccessToken: true,                                          // displays salesforce access token in console from login
+  sessionDuration: (1000 * 60 * 60 * 1),              // values cached in redis for 1 hour
 };
 
 /////////////
@@ -103,6 +104,13 @@ configData.pg = {
 configData.defaults = {
   memberFields: "sfid as id,name,school__c,years_of_experience__c,gender__c,time_zone__c,profile_pic__c,country__c,summary_bio__c,quote__c,challenges_entered__c,total_money__c,website__c,twitter__c,linkedin__c,icq__c,jabber__c,github__c,facebook__c,digg__c,myspace__c,total_wins__c,total_points__c,total_1st_place__c,total_2nd_place__c,total_3st_place__c,valid_submissions__c,badgeville_id__c,active_challenges__c",
   paymentFields: 'p.sfid as id,p.name,c.name as challenge_name,c.challenge_id__c as challenge_id,p.money__c as money,p.place__c as place,p.reason__c as reason,p.status__c as status,p.type__c as type,p.Reference_Number__c,p.payment_sent__c as payment_sent'
+};
+
+/////////////////////////////////////////////
+// Permitted fields to update in member__c //
+/////////////////////////////////////////////
+configData.whiteList = {
+	memberUpdate: [ 'summary_bio__c', 'last_registration_date__c', 'school__c', 'appellate_member__c', 'profile_complete__c', 'email__c', 'github__c', 'jabber__c' ]
 };
 
 //////////
