@@ -36,8 +36,8 @@ exports.members = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select " + fields+ " from member__c where name = '" +membername+ "'";
-        client.query(sql, function(err, rs) {
+        var sql = "select " + fields+ " from member__c where name = $1";
+        client.query(sql, [membername], function(err, rs) {
           next(rs['rows']);
         })
       })
@@ -73,10 +73,10 @@ exports.members = function(api, next){
 			
 			// create the psql statement, defining as return value the fields
 			// that are being updated with their new values...
-			var sql = "UPDATE member__c SET " + updates + " WHERE name=\'" + membername + "\' "
+			var sql = "UPDATE member__c SET " + updates + " WHERE name= $1 "
 					+ "RETURNING " + _.keys(fieldsHash).toString() + ";";
 
-		    client.query(sql, function(err, rs) {
+		    client.query(sql, [membername], function(err, rs) {
 		      	next(rs['rows']);
 		    });
 		});
@@ -100,9 +100,9 @@ exports.members = function(api, next){
         var sql = "select "+ fields +" from payment__c p"
                 + " inner join member__c m on p.member__c = m.sfid"
                 + " inner join challenge__c c on p.challenge__c = c.sfid"
-                + " where m.name = '" + membername + "' order by " + orderBy;
+                + " where m.name = $1 order by " + orderBy;
 
-        client.query(sql, function(err, rs) {
+        client.query(sql, [membername], function(err, rs) {
           next(rs['rows']);
         })
       })
@@ -153,17 +153,17 @@ exports.members = function(api, next){
     /*
      *Searches for a member from pg by keywords search
      *
-     * keyword - the keyword used in the search
+     * q - the keyword used in the search
      * fields - the list of fields to return.  If no fields are specified then the default
      * are passed in form the action.
      *
      * Returns JSON containing the keys specified from the fields
      */
-    search: function(keyword, fields, next) {
+    search: function(q, fields, next) {
         var client = new pg.Client(api.configData.pg.connString);
         client.connect(function(err) {
             if (err) { console.log(err); }
-            var sql = "select " + fields+ " from member__c where name LIKE '" +keyword+ "%'";
+            var sql = "select " + fields+ " from member__c where name LIKE '" +q+ "%'";
             // console.log('$$$$ sql ', sql);
             client.query(sql, function(err, rs) {
                 next(rs['rows']);
