@@ -195,7 +195,7 @@ exports.membersSearch = {
     name: "membersSearch",
     description: "Searches for a member by keyword. Method: GET",
     inputs: {
-        required: ['keyword'],
+        required: ['q'],
         optional: ['fields']
     },
     authenticated: false,
@@ -204,7 +204,7 @@ exports.membersSearch = {
     run: function(api, connection, next){
         // enforce the pass list of field or if null, use the default member list of fields
         var fields =  connection.params.fields != null ? forcifier.enforceList(connection.params.fields) : api.configData.defaults.memberFields;
-        api.members.search (connection.params.keyword, fields, function(data){
+        api.members.search (connection.params.q, fields, function(data){
             utils.processResponse(data, connection);
             next(connection, true);
         });
