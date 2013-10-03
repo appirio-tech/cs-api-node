@@ -28,6 +28,33 @@ exports.challengesList = {
   }
 };
 
+exports.challengesClosed = {
+  name: "challengesClosed",
+  description: "Fetches all closed challenges. Method: GET",
+  inputs: {
+    required: [],
+    optional: ["technology", "platform", "category", "order_by", "limit", "offset"]
+  },
+  authenticated: false,
+  outputExample: {
+    attributes: {
+      type: "Challenge__c",
+      url: "/services/data/v22.0/sobjects/Challenge__c/a0GK0000008OIRAMA4"
+    },
+    name: "Test for Lazybaer",
+    id: "a0GK0000008OIRAMA4"
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    var options = _.pick(connection.params, "technology", "platform", "category", "order_by", "limit", "offset");
+    options.open = 'false';
+    api.challenges.list(options, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
+
 exports.challengesParticipantsList = {
   name: "challengesParticipantsList",
   description: "Fetches a specific challenge's participants. Method: GET",

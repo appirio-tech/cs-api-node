@@ -12,6 +12,7 @@ exports.routes = {
     { path: "/:apiVersion/members/search", action: "membersSearch" },
     { path: "/:apiVersion/members/:membername", action: "membersFetch" },    
     
+    { path: "/:apiVersion/challenges/closed", action: "challengesClosed"},
     { path: "/:apiVersion/challenges/search", action: "challengesSearch"},  
     { path: "/:apiVersion/challenges/advsearch", action: "challengesAdvSearch"},  
     { path: "/:apiVersion/challenges/:id/scorecards", action: "challengesScorecards" },
