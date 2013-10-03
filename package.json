@@ -36,6 +36,6 @@
     "startCluster": "npm run actionHero startCluster",
     "actionHero": "npm run actionHero",
     "help": "npm run actionHero help",
-    "test": "foreman run node ./node_modules/.bin/mocha"
+    "test": "node ./node_modules/.bin/mocha"
   }
 }
