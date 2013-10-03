@@ -21,7 +21,9 @@
     "nforce": "~0.5.2",
     "async": "~0.2.9",
     "actionHero": "~6.3.0",
-    "string": "~1.6.0"
+    "string": "~1.6.0",
+    "soap": "~0.3.0",
+    "foreman": "0.0.25"
   },
   "devDependencies": {
     "mocha": "~1.13.0",
