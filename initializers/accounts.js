@@ -97,16 +97,16 @@ exports.accounts = function(api, next){
         if (service === "cloudspokes") {
           var sql = "select u.username, m.name as membername, m.profile_pic__c, m.email__c, m.account__c, u.isactive, m.time_zone__c " +
             "from member__c m inner join public.user u on m.sfdc_user__c = u.sfid " +
-            "where m.username__c  = '"+serviceName+"' and u.third_party_username__c is null";
+            "where m.username__c  = $1 and u.third_party_username__c is null";
           var errorMessage = "No user could be found for '"+serviceName+"'."
         } else {
           var sql = "select u.username, m.name as membername, m.profile_pic__c, m.email__c, m.account__c, u.isactive, m.time_zone__c " +
             "from public.user u inner join member__c m on m.sfdc_user__c = u.sfid where u.third_party_account__c = '"+service+"' and " +
-            "u.third_party_username__c = '"+serviceName+"'"; 
+            "u.third_party_username__c = $1"; 
           var errorMessage = "No user could be found for the specified service ("+service+") and name ("+serviceName+")."
         }        
 
-        client.query(sql, function(err, rs) {
+        client.query(sql, [serviceName], function(err, rs) {
 
           if (rs["rows"].length == 0) {
             var user = {
@@ -197,35 +197,38 @@ exports.accounts = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "update member__c set campaign_source__c = '" + data.campaign_source + "', campaign_medium__c = '" + data.campaign_medium + "', campaign_name__c = '" + data.campaign_name + "' where name = '" + data.membername + "'; select sfid, name from community__c where marketing_campaign__c = '" + data.campaign_name + "'";
-        client.query(sql, function(err, res) {
+        var sql = "update member__c set campaign_source__c = $1, campaign_medium__c = $2, campaign_name__c = $3 where name = $4";
+        client.query(sql, [data.campaign_source, data.campaign_medium, data.campaign_name, data.membername], function(err, res) {
           if (!err) {
-            if (res.rows[0] && res.rows[0].sfid) {
-              var params = {
-                membername: data.membername,
-                community_id: res.rows[0].sfid
-              }
-              api.communities.addMember(params, function(addMemberResponse){
-                if (addMemberResponse.success) {
-                  res = {
-                    success: true,
-                    message: "Marketing info updated successfully. Added to community: " + res.rows[0].name
-                  };
-                } else {
-                  res = {
-                    success: true,
-                    message: "Marketing info updated successfully. No matching community."
-                  };
+            var sql = "select sfid, name from community__c where marketing_campaign__c = $1";
+            client.query(sql, [data.campaign_name], function(err, res) {
+              if (res.rows && res.rows[0] && res.rows[0].sfid) {
+                var params = {
+                  membername: data.membername,
+                  community_id: res.rows[0].sfid
                 }
+                api.communities.addMember(params, function(addMemberResponse){
+                  if (addMemberResponse.success) {
+                    res = {
+                      success: true,
+                      message: "Marketing info updated successfully. Added to community: " + res.rows[0].name
+                    };
+                  } else {
+                    res = {
+                      success: true,
+                      message: "Marketing info updated successfully. No matching community."
+                    };
+                  }
+                  next(res);
+                });
+              } else {
+                res = {
+                  success: true,
+                  message: "Marketing info updated successfully. No matching community."
+                };
                 next(res);
-              });
-            } else {
-              res = {
-                success: true,
-                message: "Marketing info updated successfully. No matching community."
-              };
-              next(res);
-            }
+              }
+            });
           } else {
             res = {
               success: false,
@@ -249,12 +252,12 @@ exports.accounts = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select (select sfid from member__c where name = '" + data.referral_id_or_membername + "') as referred_by_member, (select sfid from member__c where name = '" + data.membername + "') as converted_member";
-        client.query(sql, function(err, rs) {
+        var sql = "select (select sfid from member__c where name = $1) as referred_by_member, (select sfid from member__c where name = $2) as converted_member";
+        client.query(sql, [data.referral_id_or_membername, data.membername], function(err, rs) {
           if (!err) {
             if (rs.rows[0] && !rs.rows[0]['referred_by_member']) {
-              sql = "update referral__c set converted__c = true, converted_to_member__c = '" + rs.rows[0]['converted_member'] + "' where sfid = '" + rs.rows[0]['referred_by_member'] + "'";
-              client.query(sql, function(err, rs2) {
+              sql = "update referral__c set converted__c = true, converted_to_member__c = $1 where sfid = $2";
+              client.query(sql, [rs.rows[0]['converted_member'], rs.rows[0]['referred_by_member']], function(err, rs2) {
                 if (!err) {
                   rs2 = {
                     success: true,
@@ -276,8 +279,8 @@ exports.accounts = function(api, next){
               };
               next(status);
             } else {
-              sql = "select id from referral__c where converted_to_member__c = '" + rs.rows[0]['converted_member'] + "'";
-              client.query(sql, function(err, rs2) {
+              sql = "select id from referral__c where converted_to_member__c = $1";
+              client.query(sql, [rs.rows[0]['converted_member']], function(err, rs2) {
                 if (!err) {
                   if (rs2.rows.length > 0) {
                     rs2 = {
@@ -287,8 +290,8 @@ exports.accounts = function(api, next){
                     next(rs2);
                   } else {
                     var timestamp = new Date().toISOString();
-                    sql = "insert into referral__c (converted_to_member__c, referred_by_member__c, converted__c, include_in_member_count__c, source__c, createddate, lastmodifieddate) values ('" + rs.rows[0]['converted_member'] + "', '" + rs.rows[0]['referred_by_member'] + "', true, false, 'Member', '" + timestamp + "', '" + timestamp + "')";
-                    client.query(sql, function(err, rs3) {
+                    sql = "insert into referral__c (converted_to_member__c, referred_by_member__c, converted__c, include_in_member_count__c, source__c, createddate, lastmodifieddate) values ($1, $2, true, false, 'Member', $3, $3)";
+                    client.query(sql, [rs.rows[0]['converted_member'], rs.rows[0]['referred_by_member'], timestamp], function(err, rs3) {
                       if (!err) {
                         rs3 = {
                           success: true,
@@ -337,8 +340,8 @@ exports.accounts = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select sfdc_user__c as sfid from member__c where name = '" + data.membername + "'";
-        client.query(sql, function(err, res) {
+        var sql = "select sfdc_user__c as sfid from member__c where name = $1";
+        client.query(sql, [data.membername], function(err, res) {
           if (err) {
             res = {
               success: false,
@@ -384,8 +387,8 @@ exports.accounts = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select sfdc_user__c as sfid from member__c where name = '" + data.membername + "'";
-        client.query(sql, function(err, res) {
+        var sql = "select sfdc_user__c as sfid from member__c where name = $1";
+        client.query(sql, [data.membername], function(err, res) {
           if (err) {
             res = {
               success: false,
@@ -471,8 +474,8 @@ exports.accounts = function(api, next){
     client.connect(function(err) {
       if (err) { console.log(err); }
       var sql = "select u.username, u.isactive, m.name as membername, m.profile_pic__c, m.email__c, m.account__c, m.time_zone__c " +
-        "from public.user u inner join member__c m on m.sfdc_user__c = u.sfid where m.name = '" + membername + "'";
-      client.query(sql, function(err, rs) {
+        "from public.user u inner join member__c m on m.sfdc_user__c = u.sfid where m.name = $1";
+      client.query(sql, [membername], function(err, rs) {
         if (rs["rows"].length != 1) {
           next (new Error("Account not found for " + membername));
         } else {
