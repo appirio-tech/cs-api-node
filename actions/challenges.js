@@ -28,6 +28,33 @@ exports.challengesList = {
   }
 };
 
+exports.challengesClosed = {
+  name: "challengesClosed",
+  description: "Fetches all closed challenges. Method: GET",
+  inputs: {
+    required: [],
+    optional: ["technology", "platform", "category", "order_by", "limit", "offset"]
+  },
+  authenticated: false,
+  outputExample: {
+    attributes: {
+      type: "Challenge__c",
+      url: "/services/data/v22.0/sobjects/Challenge__c/a0GK0000008OIRAMA4"
+    },
+    name: "Test for Lazybaer",
+    id: "a0GK0000008OIRAMA4"
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    var options = _.pick(connection.params, "technology", "platform", "category", "order_by", "limit", "offset");
+    options.open = 'false';
+    api.challenges.list(options, function(data){
+      utils.processResponse(data, connection);
+      next(connection, true);
+    });
+  }
+};
+
 exports.challengesParticipantsList = {
   name: "challengesParticipantsList",
   description: "Fetches a specific challenge's participants. Method: GET",
@@ -323,6 +350,69 @@ exports.challengesCreate = {
       connection.response.response = forcifier.deforceJson(data);
       if (connection.response.response)
         connection.rawConnection.responseHttpCode = 201;
+      next(connection, true);
+    });
+  }
+};
+
+exports.challengesRecent = {
+  name: "challengesRecent",
+  description: "Fetches all recently closed challenges with winners selected. Method: GET",
+  inputs: {
+    required: [],
+    optional: ["technology", "platform", "category", "limit", "offset"]
+  },
+  authenticated: false,
+  outputExample: {
+    "attributes": {
+      "type": "Challenge__c",
+      "url": "/services/data/v28.0/sobjects/Challenge__c/a0GK0000006i1z3MAA"
+    },
+    "blog_url": null,
+    "blogged": false,
+    "auto_blog_url": "blog.cloudspokes.com/search/label/3",
+    "name": "Test Challenge 1",
+    "challenge_type": "Code",
+    "description": "Pellentesque porttitor",
+    "end_date": "2013-08-31T10:59:00.000+0000",
+    "challenge_id": "3",
+    "license_type__r": null,
+    "source_code_url": null,
+    "total_prize_money": 100,
+    "top_prize": "100",
+    "registered_members": 2,
+    "participating_members": 2,
+    "challenge_participants__r": {
+      "totalsize": 1,
+      "done": true,
+      "records": [
+        {
+          "attributes": {
+            "type": "Challenge_Participant__c",
+            "url": "/services/data/v28.0/sobjects/Challenge_Participant__c/a0AK000000BI2JcMAL"
+          },
+          "money_awarded": 100,
+          "place": null,
+          "member": "a0IK0000007NIQmMAO",
+          "member__r": {
+            "attributes": {
+              "type": "Member__c",
+              "url": "/services/data/v28.0/sobjects/Member__c/a0IK0000007NIQmMAO"
+            },
+            "name": "jeffdonthemic"
+          },
+          "points_awarded": 0,
+          "score": 0,
+          "status": "Submitted"
+        }
+      ]
+    }
+  },
+  version: 2.0,
+  run: function(api, connection, next){
+    var options = _.pick(connection.params, "technology", "platform", "category", "limit", "offset");
+    api.challenges.recent(options, function(data){
+      utils.processResponse(data, connection);
       next(connection, true);
     });
   }
