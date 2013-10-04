@@ -48,8 +48,8 @@ exports.communities = function(api, next){
       client.connect(function(err) {
         if (err) { console.log(err); }
         var timestamp = new Date().toISOString();
-        var sql = "select id from member__c where name = '" + params.membername + "'";
-        client.query(sql, function(err, rs) {
+        var sql = "select id from member__c where name = $1";
+        client.query(sql, [params.membername], function(err, rs) {
           if (!err) {
             if (rs.rows.length > 0) {
               rs = {
@@ -59,8 +59,8 @@ exports.communities = function(api, next){
               next(rs);
             } else {
               var timestamp = new Date().toISOString();
-              sql = "insert into community_member__c (username__c, name, lastmodifieddate, createddate, community__c, isdeleted, user__c) values ((select username__c from member__c where name = '" + params.membername + "'), '" + params.membername + "', '" + timestamp + "', '" + timestamp + "', (select sfid from community__c where community_id__c = '" + params.community_id + "'), false, (select sfid from member__c where name = '" + params.membername + "'))";
-              client.query(sql, function(err, rs) {
+              sql = "insert into community_member__c (username__c, name, lastmodifieddate, createddate, community__c, isdeleted, user__c) values ((select username__c from member__c where name = $1), $1, $2, $2, (select sfid from community__c where community_id__c = $3), false, (select sfid from member__c where name = $1))";
+              client.query(sql, [params.membername, timestamp, params.community_id], function(err, rs) {
                 if (!err) {
                   rs = {
                     success: true,

@@ -19,8 +19,8 @@ exports.deliverables = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select sfid as id, type__c, comments__c, username__c, password__c, language__c, url__c, hosting_platform__c from submission_deliverable__c where deleted__c = false and (select name from member__c where sfid = (select member__c from challenge_participant__c where sfid = challenge_participant__c)) = '" + params.membername + "' and (select challenge_id__c from challenge__c where sfid = (select challenge__c from challenge_participant__c where sfid = challenge_participant__c)) = '" + params.challenge_id + "'";
-        client.query(sql, function(err, rs) {
+        var sql = "select sfid as id, type__c, comments__c, username__c, password__c, language__c, url__c, hosting_platform__c from submission_deliverable__c where deleted__c = false and (select name from member__c where sfid = (select member__c from challenge_participant__c where sfid = challenge_participant__c)) = $1 and (select challenge_id__c from challenge__c where sfid = (select challenge__c from challenge_participant__c where sfid = challenge_participant__c)) = $2";
+        client.query(sql, [params.membername, params.challenge_id], function(err, rs) {
           next(rs['rows']);
         })
       })
@@ -36,9 +36,9 @@ exports.deliverables = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select sfid from challenge_participant__c where member__c = (select sfid from member__c where name = '" + params.membername + "') and challenge__c = (select sfid from challenge__c where challenge_id__c = '" + params.challenge_id +"')";
-        client.query(sql, function(err, rs) {
-          if (!rs['rows'] || !rs['rows'][0]) { next([]); }
+        var sql = "select sfid from challenge_participant__c where member__c = (select sfid from member__c where name = $1) and challenge__c = (select sfid from challenge__c where challenge_id__c = $2)";
+        client.query(sql, [params.membername, params.challenge_id], function(err, rs) {
+          if (rs && (!rs['rows'] || !rs['rows'][0])) { next([]); }
           else {
             var id = rs.rows[0].sfid;
             api.sfdc.org.apexRest({ uri: 'v.9/submissions?participantid=' + id }, api.sfdc.oauth, function(err, res) {
@@ -61,8 +61,8 @@ exports.deliverables = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select sfid as id, comments__c, type__c, url__c, username__c, language__c from challenge_submission__c where sfid = '" + params.submission_id + "' and username__c = '" + params.membername + "' and challenge__c = (select sfid from challenge__c where id = '" + params.challenge_id + "')";
-        client.query(sql, function(err, res) {
+        var sql = "select sfid as id, comments__c, type__c, url__c, username__c, language__c from challenge_submission__c where sfid = $1 and username__c = '" + params.membername + "' and challenge__c = (select sfid from challenge__c where id = $2)";
+        client.query(sql, [params.submission_id, params.challenge_id], function(err, res) {
           next(res['rows']);
         })
       })
@@ -79,8 +79,8 @@ exports.deliverables = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "update challenge_submission__c set deleted__c = true where sfid = '" + params.submission_id + "' and username__c = '" + params.membername + "' and challenge__c = (select sfid from challenge__c where id = '" + params.challenge_id + "')";
-        client.query(sql, function(err, res) {
+        var sql = "update challenge_submission__c set deleted__c = true where sfid = $1 and username__c = $2 and challenge__c = (select sfid from challenge__c where id = $3)";
+        client.query(sql, [params.submission_id, params.membername, params.challenge_id], function(err, res) {
           if (!err) {
             res = {
               success: true,
@@ -109,13 +109,13 @@ exports.deliverables = function(api, next){
       client.connect(function(err) {
         if (err) { console.log(err); }
         var timestamp = new Date().toISOString();
-        var sql = "select sfid from challenge_participant__c where membername__c = '" + params.membername + "' and challenge__c = (select sfid from challenge__c where id = '" + params.challenge_id + "')";
-        client.query(sql, function(err, rs) {
+        var sql = "select sfid from challenge_participant__c where membername__c = $1 and challenge__c = (select sfid from challenge__c where id = $2)";
+        client.query(sql, [params.membername, params.challenge_id], function(err, rs) {
           if (!err) {
             if (rs.rows.length > 0) {
               var timestamp = new Date().toISOString();
-              sql = "insert into challenge_submission__c (challenge_participant__c, url__c, type__c, language__c, comments__c, createddate, lastmodifieddate) values ('" + rs.rows[0].sfid + "', '" + params.link + "', '" + params.type + "', '" + params.language + "', '" + params.comments + "', '" + timestamp + "', '" + timestamp + "')";
-              client.query(sql, function(err, rs) {
+              sql = "insert into challenge_submission__c (challenge_participant__c, url__c, type__c, language__c, comments__c, createddate, lastmodifieddate) values ($1, $2, $3, $4, $5, $6, $6)";
+              client.query(sql, [rs.rows[0].sfid, params.link, params.type, params.language, params.comments, timestamp], function(err, rs) {
                 if (!err) {
                   rs = {
                     success: true,
@@ -162,21 +162,23 @@ exports.deliverables = function(api, next){
         var client = new pg.Client(api.configData.pg.connString);
         client.connect(function(err) {
           if (err) { console.log(err); }
-          var fieldsKeys = '', fieldsValues = '';
+          var fieldsKeys = '', fieldsValues = [], fieldsValuesStr = '', index = 1;
           var timestamp = new Date().toISOString();
           fields['createddate'] = fields['lastmodifieddate'] = timestamp;
 
           _.each(fields, function(value, key) {
             fieldsKeys += ", " + key;
-            fieldsValues += ", '" + value + "'";
+            fieldsValuesStr += ", $" + index;
+            fieldsValues.push(value);
+            index++;
           });
 
           // remove ", " from the beginning
           fieldsKeys = fieldsKeys.substring(2);
-          fieldsValues = fieldsValues.substring(2);
+          fieldsValuesStr = fieldsValuesStr.substring(2);
 
-          sql = "insert into submission_deliverable__c (" + fieldsKeys + ") values (" + fieldsValues + ")";
-          client.query(sql, function(err, rs) {
+          sql = "insert into submission_deliverable__c (" + fieldsKeys + ") values (" + fieldsValuesStr + ")";
+          client.query(sql, fieldsValues, function(err, rs) {
             if (!err) {
               rs = {
                 success: true,
