@@ -3,7 +3,7 @@ var request = require('request'),
   setup   = require('./setup.js'),
   _ = require("underscore"),
   nock = require('nock'),
-  querystring = require("querystring");    
+  querystring = require("querystring");
 
 describe('GET /challenges/:challenge_id/submission_deliverables', function () {
     before(function (done) {
@@ -157,7 +157,7 @@ describe("GET /challenges", function() {
   // The idea of test is verifying sfdc api call.
   // It is not an integration test, but it makes sense to me. My reasoning is like followings.
   // 1. We cant end real request. it takes too long.
-  // 2. Then we have to use nock, set response for a request. 
+  // 2. Then we have to use nock, set response for a request.
   //    It means the api server will retrun the same result for a request.
   // 3. Then why not use just an expectaion? We only need to verify if the request is right.
   describe("order_by parameter test", function() {
@@ -397,7 +397,7 @@ describe('surveys', function () {
         compete_again: 'Most Likely',
         improvements: 'So far so good',
         why_no_submission: 'Because I did not have time to submit :('
-    };    
+    };
 
     it('should insert a new survey', function (done) {
         var challengeId = 2;
@@ -426,9 +426,9 @@ describe('comments', function () {
     var comment = {
         challenge_id: '66',
         comments: 'nothing special, just testing'
-    };        
+    };
 
-    it('should insert a new comment', function (done) {  
+    it('should insert a new comment', function (done) {
         comment.membername = 'jeffdonthemic';
         request.post({url: setup.testUrl + '/comments', form: comment}, function (err, res, body) {
             if (err) { throw err; }
@@ -573,4 +573,39 @@ describe('POST /challenges', function () {
             done();
         });
     });*/
+});
+
+describe('GET /challenges/recent', function () {
+    before(function (done) {
+        setup.init(done);
+    });
+
+    it('should not be empty', function (done) {
+        request.get(setup.testUrl + '/challenges/recent', function (err, response, body) {
+            body = JSON.parse(body);
+            assert.ok(body.count > 0);
+            done();
+        });
+    });
+    it('should return challenges with the correct technology', function(done){
+      request.get(setup.testUrl + '/challenges/recent?technology=Java', function (err, response, body) {
+          body = JSON.parse(body);
+          assert.ok(body.count > 0);
+          done();
+      });
+    });
+    it('should return challenges with the correct platform', function(done){
+      request.get(setup.testUrl + '/challenges/recent?platform=Heroku', function (err, response, body) {
+          body = JSON.parse(body);
+          assert.ok(body.count > 0);
+          done();
+      });
+    });
+    it('should return challenges with the correct category', function(done){
+      request.get(setup.testUrl + '/challenges/recent?category=Code', function (err, response, body) {
+          body = JSON.parse(body);
+          assert.ok(body.count > 0);
+          done();
+      });
+    });
 });
