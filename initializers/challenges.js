@@ -21,8 +21,8 @@ exports.challenges = function(api, next){
     *   category    : the category of challenges to return
     *   order_by    : the field to order the results by. Defaults 'end_date'
     *   limit       : Default 100
-    *   offset      : Default 0 
-    * 
+    *   offset      : Default 0
+    *
     * Returns a collection of challenge records
     */
 
@@ -39,7 +39,44 @@ exports.challenges = function(api, next){
 
         next(res);
       });
-    },    
+    },
+
+    /*
+    * Returns all recently closed challenges with selected winners
+    *
+    * options - the keyword used in the search
+    *   technology  : the technology of challenges to return
+    *   platform    : the platform of challenges to return
+    *   category    : the category of challenges to return
+    *   limit       : Default 100
+    *   offset      : Default 0
+    *
+    * Returns a collection of challenge records
+    */
+    recent: function(options, next) {
+      var org   = api.sfdc.org;
+      var oauth = api.sfdc.oauth;
+
+      var query_where = '';
+      if (options.platform)
+        query_where = query_where + " and id in (select challenge__c from challenge_platform__c where name__c = '" + options.platform + "') ";
+      if (options.technology)
+        query_where = query_where + " and id in (select challenge__c from challenge_technology__c where name__c = '" + options.technology + "') ";
+      if (options.category)
+        query_where = query_where + " and challenge_type__c = '" + options.category + "' ";
+      var query = "SELECT Blog_URL__c, Blogged__c, Auto_Blog_URL__c, Name, challenge_type__c, Description__c, End_Date__c, Challenge_Id__c, License_Type__r.Name, Source_Code_URL__c, " +
+          "Total_Prize_Money__c, Top_Prize__c,registered_members__c, participating_members__c, (SELECT Money_Awarded__c,Place__c,Member__c, " +
+          "Member__r.Name, Points_Awarded__c,Score__c,Status__c FROM Challenge_Participants__r where Has_Submission__c = true), " +
+          "(Select Name, Category__c, Display_Name__c From Challenge_Categories__r), (Select name__c From Challenge_Platforms__r), " +
+          "(Select name__c From Challenge_Technologies__r), platforms__c, technologies__c " +
+          "FROM Challenge__c where Status__c = 'Winner Selected' " + query_where + " Order By End_Date__c DESC LIMIT " + options.limit + " OFFSET " + options.offset;
+
+      org.query(query, oauth, function (err, resp) {
+        if (!err && resp.records) {
+          next(resp.records);
+        }
+      });
+    },
 
     /*
     * Returns a specific challenge from apex rest service
@@ -139,7 +176,7 @@ exports.challenges = function(api, next){
       });
     },
 
-    /* 
+    /*
     * Returns a collection of submissions for a challenge
     *
     * challenge_id - the id of the challenge
@@ -151,7 +188,7 @@ exports.challenges = function(api, next){
         if (err) { console.error(err); }
         next(res);
       });
-    } ,   
+    } ,
 
     /*
      * Returns all comments of a challenges from from sfdc
@@ -172,7 +209,7 @@ exports.challenges = function(api, next){
       });
     },
 
-    /* 
+    /*
     * Creates a survey in salesforce.com for a challenge
     *
     * data - hash of values containing survey responses
@@ -188,8 +225,8 @@ exports.challenges = function(api, next){
           if ( handleError(err, next) ) { return; }
           client.query(
             ' INSERT INTO survey__c (challenge__c, compete_again__c, prize_money__c, requirements__c, timeframe__c, why_no_submission__c, improvements__c) ' +
-            '      VALUES ($1, $2, $3, $4, $5, $6, $7) ', 
-            [challenge.sfid, data.compete_again, data.prize_money, data.requirements, data.timeframe, data.why_no_submission, data.improvements], 
+            '      VALUES ($1, $2, $3, $4, $5, $6, $7) ',
+            [challenge.sfid, data.compete_again, data.prize_money, data.requirements, data.timeframe, data.why_no_submission, data.improvements],
             function(err, result) {
               if ( handleError(err, next) ) { return; }
               next( null, {success: true, message: message} );
@@ -218,7 +255,7 @@ exports.challenges = function(api, next){
         if ( handleError(err, next) ) { return; }
               var err = (success) ? null : new Error(result.Message);
         next( err, {success: success, message: result.Message} );
-      } 
+      }
           );
         });
       })
@@ -257,7 +294,7 @@ exports.challenges = function(api, next){
 
     },
 
-    /* 
+    /*
     * Updates an existing challenge
     *
     * params - { challenge_id, data }
@@ -274,7 +311,7 @@ exports.challenges = function(api, next){
       });
     },
 
-    /* 
+    /*
     * Creates a new challenge
     *
     * data - challenge data
@@ -298,10 +335,10 @@ exports.challenges = function(api, next){
   }
   next();
 
-  /*********************** 
-  * 
+  /***********************
+  *
   * PRIVATE FUNCTIONS
-  *   
+  *
   ************************/
 
   /*
@@ -320,7 +357,7 @@ exports.challenges = function(api, next){
     return true;
   };
 
-  /* 
+  /*
   * Finds a challenge info by their challenge id from pg.
   *
   * challengeId - the cs challenge id to find
@@ -331,8 +368,8 @@ exports.challenges = function(api, next){
   var findByChallengeId = function (challengeId, next) {
     var client = new pg.Client(api.configData.pg.connString);
     client.connect(function(err) {
-      if (err) { 
-        next(err); 
+      if (err) {
+        next(err);
         return;
       }
       var sql = "select * from challenge__c where challenge_id__c = $1 ";
@@ -342,14 +379,14 @@ exports.challenges = function(api, next){
           error.statusCode = 404;
           next(error);
         } else {
-          var challenge = { 
-            success: true, 
-            id: rs["rows"][0].id, 
-            sfid: rs["rows"][0].sfid 
+          var challenge = {
+            success: true,
+            id: rs["rows"][0].id,
+            sfid: rs["rows"][0].sfid
             //add more data when needed
           }
           next(null, challenge);
-        }      
+        }
       });
     });
   }
