@@ -35,8 +35,8 @@ exports.tos = function(api, next){
       client.connect(function(err) {
         if (err) { console.log(err); }
         var sql = "select sfid as id, name, terms__c, default_tos__c " +
-                  "from terms_of_service__c where sfid='" + id + "'";
-        client.query(sql, function(err, rs) {
+                  "from terms_of_service__c where sfid=$1";
+        client.query(sql, [id], function(err, rs) {
           next(rs['rows']);
         })
       })
