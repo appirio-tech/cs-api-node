@@ -26,7 +26,8 @@ configData.general = {
   developmentMode: true,                                         // watch for changes in actions and tasks, and reload/restart them on the fly
   pidFileDirectory: process.cwd() + "/pids/",                     // the location of the directory to keep pidfiles
   simultaneousActions: 5,                                          // how many pending actions can a single connection be working on 
-  logAccessToken: true,                                          // displays salesforce access token in console from login
+  logAccessToken: process.env.LOG_ACCESS_TOKEN || true,    // displays salesforce access token in console from login
+  skipAuthorization: process.env.SKIP_AUTH || false, // determined if the middleware check for an API Key should be skipped
   sessionDuration: (1000 * 60 * 60 * 1),              // values cached in redis for 1 hour
 };
 
@@ -68,7 +69,7 @@ configData.logger.transports.push(function(api, winston){
 ///////////
 
 configData.redis = {
-  fake: true,
+  fake: process.env.USE_FAKE_REDIS || true,
   host: "127.0.0.1",
   port: 6379,
   password: null,
