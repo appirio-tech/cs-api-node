@@ -8,7 +8,7 @@ exports.action = {
     required: ['membername', 'challenge_id'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: [
     {
       "id": "a1LK0000001GHSIMA4",
@@ -47,7 +47,7 @@ exports.deliverablesCurrentSubmissions = {
     required: ['membername', 'challenge_id'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "attributes": {
       "type": "Challenge_Submission__c",
@@ -85,7 +85,7 @@ exports.deliverablesFetch = {
     required: ['membername', 'challenge_id', 'submission_id'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "id": "a0DK000000B7ekAMAR",
     "comments": "test",
@@ -110,7 +110,7 @@ exports.deliverablesDeleteSubmission = {
     required: ['membername', 'challenge_id', 'submission_id'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Submission removed successfully."
@@ -131,7 +131,7 @@ exports.deliverablesCreateSubmission = {
     required: ['membername', 'challenge_id'],
     optional: ['link', 'type', 'language', 'comments'],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Submission created successfully."
@@ -152,7 +152,7 @@ exports.deliverablesCreate = {
     required: ['membername', 'challenge_id', 'data'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Deliverable created successfully."
@@ -175,7 +175,7 @@ exports.deliverablesUpdate = {
     required: ['membername', 'challenge_id', 'data'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "a0DK000000F0gFHMAZ"

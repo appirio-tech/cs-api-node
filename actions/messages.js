@@ -8,7 +8,7 @@ exports.messagesFetch = {
     required: ['id'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "id": "a1FK0000004Ey9xMAC",
     "name": "PVTM-1925",
@@ -46,7 +46,7 @@ exports.messagesInbox = {
     required: ['membername'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "id": "a1FK0000004Ey9xMAC",
     "name": "PVTM-1925",
@@ -79,7 +79,7 @@ exports.messagesTo = {
     required: ['membername'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "id": "a1FK0000004Ey9xMAC",
     "name": "PVTM-1925",
@@ -112,7 +112,7 @@ exports.messagesFrom = {
     required: ['membername'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "id": "a1FK0000004Ey9xMAC",
     "name": "PVTM-1925",
@@ -145,7 +145,7 @@ exports.messagesCreate = {
     required: ['to', 'from', 'subject', 'body'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Notification successfully sent."
@@ -168,7 +168,7 @@ exports.messagesReply = {
     required: ['id', 'from', 'body'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Notification successfully sent."
@@ -191,7 +191,7 @@ exports.messagesUpdate = {
     required: ['id', 'from', 'to', 'subject', 'body'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Message updated successfully."

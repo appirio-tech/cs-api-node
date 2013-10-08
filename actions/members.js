@@ -99,7 +99,7 @@ exports.membersPayments = {
     required: ['membername'],
     optional: ['fields', 'order_by'],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: [
     {
         "id": "a0bU00000078I02IAE",
@@ -171,7 +171,7 @@ exports.membersReferrals = {
     required: ['membername'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: [
     {
         "signup_date": "2013-01-07T20:58:48.000Z",

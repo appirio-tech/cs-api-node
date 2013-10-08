@@ -71,7 +71,7 @@ exports.communitiesAddMember = {
     required: ['membername', 'community_id'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Member added successfully."

@@ -8,7 +8,7 @@ exports.action = {
     required: [],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: [
     {
       attributes:
@@ -77,7 +77,7 @@ exports.judgingScorecardFetch = {
     required: ['participant_id', 'judge_membername'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {},
   version: 2.0,
   run: function(api, connection, next){
@@ -95,7 +95,7 @@ exports.judgingOutstandingFetch = {
     required: ["membername"],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {},
   version: 2.0,
   run: function(api, connection, next){
@@ -114,7 +114,7 @@ exports.judgingCreate = {
     required: ["membername", "challenge_id"],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Thank you! You are now a judge for this challenge."
@@ -137,7 +137,7 @@ exports.judgingUpdate = {
     required: ["id", "answers", "comments", "options"],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Scorecard has been saved successfully."

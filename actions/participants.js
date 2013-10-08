@@ -8,7 +8,7 @@ exports.action = {
     required: ['membername', 'challenge_id'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "attributes": {
       "type": "Challenge_Participant__c",
@@ -59,7 +59,7 @@ exports.participantsFetch = {
     required: ['participant_id'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "id": 1,
     "member": "a0IK0000007VVgFMAW",
@@ -95,7 +95,7 @@ exports.participantsCreate = {
     required: ['membername', 'challenge_id'],
     optional: ['fields'],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "a0AK000000BiJTrMAN"
@@ -116,7 +116,7 @@ exports.participantsUpdate = {
     required: ["membername", "challenge_id", "fields"],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "a0AK000000BiJTrMAN"
