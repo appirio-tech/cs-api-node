@@ -84,37 +84,13 @@ exports.challenges = function(api, next){
     * Returns an object with keys name, id, attributes, challenge_reviewers__r,
     * challenge_comment_notifiers__r and asserts__r
     */
-    fetch: function(challenge_id, for_admin, next) {
-      var org = api.sfdc.org, oauth = api.sfdc.oauth;
-      var url = "v.9/challenges/" + challenge_id;
-      var params = [];
-      if (for_admin) params.push({key: 'comments', value: 'true'});
-      org.apexRest({uri: url, method: "GET", urlParams: params}, oauth, function (err, resp) {
-        if (!err) {
-          if (for_admin) {
-            delete(resp[0].challenge_participants__r);
-            var query = "select id, member__r.name from challenge_reviewer__c " +
-              "where challenge__r.challenge_id__c = '" + challenge_id + "'";
-            org.query(query, oauth, function (err, data) {
-              if (!err) {
-                resp[0].challenge_reviewers__r = data.records;
-                query = "select id, member__r.name from challenge_comment_notifier__c " +
-                  "where challenge__r.challenge_id__c = '" + challenge_id + "'";
-                org.query(query, oauth, function (err, data) {
-                  resp[0].challenge_comment_notifiers__r = data.records;
-                  query = "select id, name, key__c, filename__c from asset__c " +
-                    "where challenge__r.challenge_id__c = '" + challenge_id + "'";
-                  org.query(query, oauth, function (err, data) {
-                    resp[0].assets__r = data.records;
-                    next(resp);
-                  });
-                });
-              }
-            });
-          } else {
-            next(resp);
+    fetch: function(challenge_id, next) {
+      var query = "select " + api.configData.defaults.challengeDetailsFields + " from challenge__c where status__c NOT IN ('hidden') and challenge_id__c = '" +challenge_id+ "'";
+      api.sfdc.org.query(query, api.sfdc.oauth, function (err, resp) {
+          if (err) { console.log(err); }
+          if (!err && resp.records) {
+            next(resp.records);
           }
-        };
       });
     },
 
@@ -262,20 +238,16 @@ exports.challenges = function(api, next){
     },
 
     search: function(keyword, next) {
-      var client = new pg.Client(api.configData.pg.connString);
-      client.connect(function(err) {
-        if (err) { console.log(err); }
-        var query = "select name, status__c, end_date__c, total_prize_money__c," +
-            "registered_members__c, challenge_id__c, challenge_type__c, id, start_date__c, participating_members__c, " +
-            "description__c, days_till_close__c, platforms__c, technologies__c  from challenge__c where name like '%" +keyword + "%' " +
-            "and status__c NOT IN ('hidden','draft') order by name";
-        api.sfdc.org.query(query, api.sfdc.oauth, function (err, resp) {
-            if (err) { console.log(err); }
-            if (!err && resp.records) {
-              next(resp.records);
-            }
-        });
-      })
+      var query = "select name, status__c, end_date__c, total_prize_money__c," +
+          "registered_members__c, challenge_id__c, challenge_type__c, id, start_date__c, participating_members__c, " +
+          "description__c, days_till_close__c, platforms__c, technologies__c  from challenge__c where name like '%" +keyword + "%' " +
+          "and status__c NOT IN ('hidden','draft') order by name";
+      api.sfdc.org.query(query, api.sfdc.oauth, function (err, resp) {
+          if (err) { console.log(err); }
+          if (!err && resp.records) {
+            next(resp.records);
+          }
+      });
     },
 
     advsearch: function(requestParams, next) {
