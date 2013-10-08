@@ -134,7 +134,7 @@ exports.challengesListSubmissions = {
     required: ["challenge_id"],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: [
     {
       "attributes": {
@@ -316,7 +316,7 @@ exports.challengesUpdate = {
     required: ["challenge_id", "data"],
     optional: []
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "errors": [],
@@ -338,7 +338,7 @@ exports.challengesCreate = {
     required: ['data'],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "errors": [],

@@ -102,7 +102,7 @@ exports.accountsUpdateMarketingInfo = {
 
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Marketing info updated successfully. No matching community."
@@ -123,7 +123,7 @@ exports.accountsReferredBy = {
     required: ["membername", "referral_id_or_membername"],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Referral a0IK0000007SVSeMAO assigned to a0IK0000007NIQmMAO."
@@ -144,7 +144,7 @@ exports.accountsUpdatePassToken = {
     required: ["membername", "token"],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Passcode successfully updated."
@@ -165,7 +165,7 @@ exports.accountsChangePassWithToken = {
     required: ["membername", "token", "new_password"],
     optional: [],
   },
-  authenticated: false,
+  authenticated: true,
   outputExample: {
     "success": true,
     "message": "Password changed successfully."
@@ -216,7 +216,7 @@ exports.accountsUpdatePreferences = {
     "success": true,
     "message": "Preferences successfully updated."
   },
-  authenticated: false,
+  authenticated: true,
   version: 2.0,
   run: function(api, connection, next){
     api.accounts.updatePreferences(connection.params, function(data){
