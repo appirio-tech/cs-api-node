@@ -7,8 +7,8 @@ exports.middleware = function(api, next){
   var authorizationMiddleware = function(connection, actionTemplate, next){
     if(actionTemplate.authenticated === true){
 
-      // FOR DEVELOPMENT -- AUTHORIZE EACH REQUEST
-      return next(connection, true);
+      // if for dev we want to skip the API Key authentication for protected routes
+      if (api.configData.general.skipAuthorization === true) { return next(connection, true); }
 
       var redis = api.redis.client;
       var authorization = connection.rawConnection.req.headers.authorization;   
@@ -20,13 +20,13 @@ exports.middleware = function(api, next){
           // parse the apiKey from: 'Token token="THIS-IS-MY-TOKEN"'
           var apiKey = S(authorization.split("=")[1]).replaceAll('"', '').s;
 
-          // does the apiKey exist in the set of api keys in redis?
-          redis.sismember("apiKeys", apiKey, function(error, found){
-            if (found == 0) { 
+          // does the apiKey exist in the hash of api keys in redis?
+          redis.hexists("api:keys", apiKey, function(error, found){
+            if (found === 0) { 
               errorResponse(connection);
               next(connection, false); 
             }
-            if (found == 1) { next(connection, true); }
+            if (found === 1) { next(connection, true); }
           });      
 
         } catch (err) {
