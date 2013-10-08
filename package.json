@@ -23,11 +23,10 @@
     "actionHero": "~6.3.0",
     "string": "~1.6.0",
     "soap": "~0.3.0",
-    "foreman": "0.0.25"
+    "request": "~2.27.0",
   },
   "devDependencies": {
     "mocha": "~1.13.0",
-    "request": "~2.27.0",
     "chai": "~1.8.0",
     "nock": "~0.22.1"
   },
