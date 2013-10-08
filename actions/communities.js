@@ -25,7 +25,7 @@ exports.action = {
   version: 2.0,
   run: function(api, connection, next){
     api.communities.list(function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }

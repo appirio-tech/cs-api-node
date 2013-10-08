@@ -22,7 +22,7 @@ exports.challengesList = {
   run: function(api, connection, next){
     var options = _.pick(connection.params, "open", "technology", "platform", "category", "order_by", "limit", "offset");
     api.challenges.list(options, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }
@@ -49,7 +49,7 @@ exports.challengesClosed = {
     var options = _.pick(connection.params, "technology", "platform", "category", "order_by", "limit", "offset");
     options.open = 'false';
     api.challenges.list(options, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }
@@ -103,7 +103,7 @@ exports.challengesScorecards = {
   version: 2.0,
   run: function(api, connection, next) {
     api.challenges.scorecards(connection.params.id.trim(), function(data) {
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }
@@ -197,7 +197,7 @@ exports.challengesListSubmissions = {
   version: 2.0,
   run: function(api, connection, next){
     api.challenges.listSubmissions(connection.params.challenge_id, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }
@@ -215,7 +215,7 @@ exports.challengesComments = {
   version: 2.0,
   run: function(api, connection, next){
   api.challenges.comments(connection.params.id.trim(), function(data){
-    utils.processResponse(data, connection);
+    utils.processResponse(data, connection, {"throw404": false});
     next(connection, true);
   });
   }
@@ -277,15 +277,15 @@ exports.challengesSearch = {
     name: "challengesSearch",
     description: "Searches for a challenges by keyword. Method: GET",
     inputs: {
-        required: ['keyword'],
+        required: ['q'],
         optional: []
     },
     authenticated: false,
     outputExample: { },
     version: 2.0,
     run: function(api, connection, next){
-        api.challenges.search(connection.params.keyword, function(data){
-            utils.processResponse(data, connection);
+        api.challenges.search(connection.params.q, function(data){
+            utils.processResponse(data, connection, {"throw404": false});
             next(connection, true);
         });
     }
@@ -303,7 +303,7 @@ exports.challengesAdvSearch = {
     version: 2.0,
     run: function(api, connection, next){
         api.challenges.advsearch(connection.rawConnection.parsedURL.search, function(data){
-            utils.processResponse(data, connection);
+            utils.processResponse(data, connection, {"throw404": false});
             next(connection, true);
         });
     }
@@ -412,7 +412,7 @@ exports.challengesRecent = {
   run: function(api, connection, next){
     var options = _.pick(connection.params, "technology", "platform", "category", "limit", "offset");
     api.challenges.recent(options, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }

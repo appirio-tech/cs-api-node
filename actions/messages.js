@@ -99,7 +99,7 @@ exports.messagesTo = {
   version: 2.0,
   run: function(api, connection, next){
     api.messages.to(connection.params.membername, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }
@@ -132,7 +132,7 @@ exports.messagesFrom = {
   version: 2.0,
   run: function(api, connection, next){
     api.messages.from(connection.params.membername, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }

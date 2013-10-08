@@ -28,7 +28,7 @@ exports.task = {
         next(null, true);        
       } else {
         console.log('[FATAL] Error connecting to Salesforce: ' + err.message);
-        next(error, true);
+        next(err, true);
       }
     });
 

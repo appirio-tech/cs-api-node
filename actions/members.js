@@ -15,7 +15,7 @@ exports.membersList = {
   version: 2.0,
   run: function(api, connection, next){
     api.members.list(function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }
@@ -121,7 +121,7 @@ exports.membersPayments = {
     var fields =  connection.params.fields != null ? forcifier.enforceList(connection.params.fields) : api.configData.defaults.paymentFields;
     var orderBy =  connection.params.order_by || "id";
     api.members.payments(connection.params.membername, fields, orderBy, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }
@@ -139,7 +139,7 @@ exports.membersChallenges = {
   version: 2.0,
   run: function(api, connection, next){
     api.members.challenges(connection.params.membername, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }
@@ -157,7 +157,7 @@ exports.membersPastChallenges = {
   version: 2.0,
   run: function(api, connection, next){
     api.members.pastChallenges(connection.params.membername, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }
@@ -205,7 +205,7 @@ exports.membersSearch = {
         // enforce the pass list of field or if null, use the default member list of fields
         var fields =  connection.params.fields != null ? forcifier.enforceList(connection.params.fields) : api.configData.defaults.memberFields;
         api.members.search (connection.params.q, fields, function(data){
-            utils.processResponse(data, connection);
+            utils.processResponse(data, connection, {"throw404": false});
             next(connection, true);
         });
     }

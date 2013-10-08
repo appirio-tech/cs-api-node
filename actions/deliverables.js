@@ -34,7 +34,7 @@ exports.action = {
   version: 2.0,
   run: function(api, connection, next){
     api.deliverables.list(connection.params, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }
@@ -72,7 +72,7 @@ exports.deliverablesCurrentSubmissions = {
   version: 2.0,
   run: function(api, connection, next){
     api.deliverables.current_submissions(connection.params, function(data){
-      utils.processResponse(data, connection);
+      utils.processResponse(data, connection, {"throw404": false});
       next(connection, true);
     });
   }
