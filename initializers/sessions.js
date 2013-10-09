@@ -1,7 +1,12 @@
+/*
+  Maintains a session state for a single recquest (connection) which
+  is stored in redis.
+*/
+
 exports.sessions = function(api, next){
   
   api.session = {
-    prefix: "__session",
+    prefix: "api:session",
     duration: api.configData.general.sessionDuration,
   };
  
