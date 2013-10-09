@@ -22,7 +22,7 @@ exports.challengesList = {
   run: function(api, connection, next){
     var options = _.pick(connection.params, "open", "technology", "platform", "category", "order_by", "limit", "offset");
     api.challenges.list(options, function(data){
-      utils.processResponse(data, connection, {"throw404": false});
+      utils.processResponse(data, connection, {"throw404": false, "smartParsing":false});
       next(connection, true);
     });
   }
