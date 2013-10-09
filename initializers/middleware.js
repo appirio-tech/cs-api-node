@@ -57,25 +57,23 @@ exports.middleware = function(api, next){
   **/
   var accessTokenMiddleware = function(connection, actionTemplate, next){
     var oauthToken = connection.rawConnection.req.headers.oauth_token;
-    var cacheKey = "oauth:" + connection.id;
 
-    // TODO -- this needs more work with sessions
-    // check for a passed access token
-    if (typeof(oauthToken) != "undefined") {
-      console.log("[DEBUG] Found oauth token: " + oauthToken);
-    // else use the public access token
-    } else {
-      oauthToken = api.sfdc.oauth
-    }
-
-    // create a session for this request and cache it
+    // create a session object to hold public sfdc connection
     connection.session = {
       id: connection.id,
-      org: api.sfdc.oauth,
-      orgType: 'public'
-    };
-    api.session.save(connection, next);
+      oauth: api.sfdc.oauth,
+      type: 'public'
+    };    
 
+    // if an oauth token exists, swap it with the one in the connection org
+    if (typeof(oauthToken) != "undefined") {
+      console.log("[DEBUG] Found oauth token: " + oauthToken);
+      connection.session.oauth.access_token = oauthToken;
+      connection.session.type = 'user';
+    }
+
+    // save to cache
+    api.session.save(connection, next);
     next(connection, true);
   }  
 
