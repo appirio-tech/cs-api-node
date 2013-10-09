@@ -34,7 +34,6 @@ exports.challenges = function(api, next){
 
       api.sfdc.org.apexRest({ uri: 'v1/challengeslist?' + querystring.stringify(params) }, api.sfdc.oauth, function(err, res) {
         if (err) { console.log(err); return next(err); }
-        console.log(res);
         next(res);
       });
     },
