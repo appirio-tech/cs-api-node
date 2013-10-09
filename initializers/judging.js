@@ -12,9 +12,6 @@ exports.judging = function(api, next){
     * Returns a collection of challenge records
     */
     list: function(next) {
-      var org   = api.sfdc.org,
-          oauth = api.sfdc.oauth;
-
       var query = "select id, challenge_id__c, name, status__c, number_of_reviewers__c, " +
       "end_date__c, review_date__c, " +
       "(select display_name__c from challenge_categories__r), " +
@@ -23,7 +20,7 @@ exports.judging = function(api, next){
       "from Challenge__c where community_judging__c = true and status__c IN ('Open for Submissions','Review') " +
       "and number_of_reviewers__c < 3 order by end_date__c";
 
-      org.query(query, oauth, function (err, resp) {
+      api.sfdc.org.query(query, api.sfdc.oauth, function (err, resp) {
         if (!err && resp.records) {
           next(resp.records);
         }
@@ -32,16 +29,12 @@ exports.judging = function(api, next){
 
     //An object that has all the scorecard-related initializers
     scorecard: {
-      // methods
 
       /*
       * Returns a specific scorecard from apex rest service
       */
-
       fetch: function (participant_id, judge_membername, next) {
-
        var url = 'v.9/scorecard/' + participant_id;
-
         var params = [{key: 'reviewer', value: judge_membername}];
         api.sfdc.org.apexRest({uri: url, method: 'GET', urlParams: params}, api.sfdc.oauth, function (err, resp) {
           if (resp) {
@@ -52,6 +45,7 @@ exports.judging = function(api, next){
     },
 
     outstanding: {
+
       /*
       * Returns all challenges that member needs to judge
       *
@@ -76,12 +70,8 @@ exports.judging = function(api, next){
           return fixed;
         }
 
-        var org   = api.sfdc.org,
-            oauth = api.sfdc.oauth;
-
         var url = "v1/members/" + membername + "/outstandingscorecards";
-
-        org.apexRest({uri: url, method: "GET"}, oauth, function (err, resp) {
+        api.sfdc.org.apexRest({uri: url, method: "GET"}, api.sfdc.oauth, function (err, resp) {
           if (!err && resp) {
             resp = removeAttributes(resp);
             next(resp);

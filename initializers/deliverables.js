@@ -6,15 +6,6 @@ exports.deliverables = function(api, next){
 
   api.deliverables = {
 
-    // methods
-
-    /* 
-    * Returns all deliverables for a challenge participant from pg
-    *
-    * params - { membername, challenge_id }
-    *
-    * Returns a collection of deliverables
-    */
     list: function(params, next) {
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
@@ -25,6 +16,7 @@ exports.deliverables = function(api, next){
         })
       })
     },
+
     /* 
     * Returns a member's submissions for a specific challenge from pg
     *

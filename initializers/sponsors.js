@@ -15,7 +15,7 @@ exports.sponsors = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select sfid as id, name, can_admin_challenges__c, funds_available__c, logo__c from account where type = 'Sponsor' order by name";
+        var sql = "select " + api.configData.defaults.sponsorsListFields+ " from account where type = 'Sponsor' order by name";
         client.query(sql, function(err, rs) {
           next(rs['rows']);
         })
@@ -33,7 +33,7 @@ exports.sponsors = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select sfid as id, name, can_admin_challenges__c, funds_available__c, logo__c from account where sfid = $1";
+        var sql = "select " + api.configData.defaults.sponsorsDetailsFields + " from account where sfid = $1";
         client.query(sql, [id], function(err, rs) {
           next(rs['rows']);
         })

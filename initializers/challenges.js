@@ -27,16 +27,14 @@ exports.challenges = function(api, next){
     */
 
     list: function(options, next) {
-      console.log(options)
-
       var params = _.pick(options, "open", "technology", "platform", "category", "limit", "offset");
       params.open = options.open || 'true';
       params.orderby = utils.enforceOrderByParam(options.order_by, 'end_date__c');
-      params.fields = 'Id,Challenge_Id__c,Name,Description__c,Total_Prize_Money__c,Challenge_Type__c,Days_till_Close__c,Registered_Members__c,Participating_Members__c,Start_Date__c,End_Date__c,Is_Open__c,Community__r.Name,Community__r.Community_Id__c';
+      params.fields = api.configData.defaults.challengeListFields;
 
-      api.sfdc.org.apexRest({ uri: 'v.9/challengeslist?' + querystring.stringify(params) }, api.sfdc.oauth, function(err, res) {
+      api.sfdc.org.apexRest({ uri: 'v1/challengeslist?' + querystring.stringify(params) }, api.sfdc.oauth, function(err, res) {
         if (err) { console.log(err); return next(err); }
-
+        console.log(res);
         next(res);
       });
     },
@@ -54,8 +52,6 @@ exports.challenges = function(api, next){
     * Returns a collection of challenge records
     */
     recent: function(options, next) {
-      var org   = api.sfdc.org;
-      var oauth = api.sfdc.oauth;
 
       var query_where = '';
       if (options.platform)
@@ -71,7 +67,7 @@ exports.challenges = function(api, next){
           "(Select name__c From Challenge_Technologies__r), platforms__c, technologies__c " +
           "FROM Challenge__c where Status__c = 'Winner Selected' " + query_where + " Order By End_Date__c DESC LIMIT " + options.limit + " OFFSET " + options.offset;
 
-      org.query(query, oauth, function (err, resp) {
+      api.sfdc.org.query(query, api.sfdc.oauth, function (err, resp) {
         if (!err && resp.records) {
           next(resp.records);
         }
@@ -99,17 +95,13 @@ exports.challenges = function(api, next){
       * Return a specific challenge's participants from apex rest service
       */
       list: function (challenge_id, next) {
-        var org = api.sfdc.org, oauth = api.sfdc.oauth;
-
         var url = "v.9/participants?challengeid=" + challenge_id;
-
         var params = [];
-        var fields = "Member__r.Profile_Pic__c,Member__r.Name,Member__r.Total_Wins__c,Member__r.Total_Money__c,Member__r.Country__c,Member__r.summary_bio__c,Status__c,has_submission__c";
-        params.push({key: 'fields', value: fields});
+        params.push({key: 'fields', value: api.configData.defaults.challengeParticipantListFields});
         params.push({key: 'limit', value: 250});
         params.push({key: 'orderby', value: 'member__r.name'});
 
-        org.apexRest({uri: url, method: "GET", urlParams: params}, oauth, function (err, resp) {
+        api.sfdc.org.apexRest({uri: url, method: "GET", urlParams: params}, api.sfdc.oauth, function (err, resp) {
           if (!err && resp) {
             next(resp);
           }
@@ -118,15 +110,12 @@ exports.challenges = function(api, next){
     },
 
     scorecards: function(id, next) {
-
-      api.sfdc.org.apexRest({
-        uri: 'v.9/challenges/' + id + "/scorecards?fields=id,name,member__r.name,member__r.profile_pic__c,member__r.country__c,challenge__c,money_awarded__c,prize_awarded__c,place__c,score__c,submitted_date__c"
-      }, api.sfdc.oauth, function(err, res) {
+      var url = 'v.9/challenges/' + id + "/scorecards?fields=" + api.configData.defaults.scorecardsListFields;
+      api.sfdc.org.apexRest({uri: url}, api.sfdc.oauth, function(err, res) {
         if (err) {
           console.log(err);
           return next(err);
         }
-
         next(res);
       });
     },
@@ -160,7 +149,8 @@ exports.challenges = function(api, next){
     * Returns a collection of submissions
     */
     listSubmissions: function(challenge_id, next) {
-      api.sfdc.org.apexRest({ uri: 'v.9/submissions?challengeid=' + challenge_id + '&fields=id,name,challenge__r.name,url__c,comments__c,type__c,username__c,challenge_participant__r.place__c,challenge_participant__c&orderby=username__c' }, api.sfdc.oauth, function(err, res) {
+      var url = "v.9/submissions?challengeid=" + challenge_id + "&fields=" + api.configData.defaults.submissionListFields
+      api.sfdc.org.apexRest({ uri: url }, api.sfdc.oauth, function(err, res) {
         if (err) { console.error(err); }
         next(res);
       });
@@ -251,19 +241,12 @@ exports.challenges = function(api, next){
     },
 
     advsearch: function(requestParams, next) {
-
-        var url = "v.9/advchallengesearch" + requestParams;
-
-        var org   = api.sfdc.org,
-            oauth = api.sfdc.oauth;
-
-        org.apexRest({uri: url, method: "GET"}, oauth, function (err, resp) {
-            if (!err && resp) {
-                next(resp);
-            }
-        });
-
-
+      var url = "v.9/advchallengesearch" + requestParams;
+      api.sfdc.org.apexRest({uri: url, method: "GET"}, api.sfdc.oauth, function (err, resp) {
+        if (!err && resp) {
+          next(resp);
+        }
+      });
     },
 
     /*
