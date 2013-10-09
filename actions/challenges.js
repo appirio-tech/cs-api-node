@@ -84,9 +84,15 @@ exports.challengesFetch = {
   outputExample: {},
   version: 2.0,
   run: function(api, connection, next){
-    api.challenges.fetch(connection.params.challenge_id, function(data){
-      utils.processResponse(data, connection);
-      next(connection, true);
+    var query = "select " + api.configData.defaults.challengeDetailsFields + " from challenge__c where status__c NOT IN ('hidden') and challenge_id__c = '" +connection.params.challenge_id+ "'";
+    api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+      api.sfdc.org.query(query, session.oauth, function (err, resp) {
+        if (err) { console.log(err); }
+        if (!err && resp.records) {
+          utils.processResponse(resp.records, connection, {"throw404": true});
+          next(connection, true);
+        }
+      });
     });
   }
 };
