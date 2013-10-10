@@ -121,7 +121,7 @@ exports.membersPayments = {
     var fields =  connection.params.fields != null ? forcifier.enforceList(connection.params.fields) : api.configData.defaults.paymentFields;
     var orderBy =  connection.params.order_by || "id";
     api.members.payments(connection.params.membername, fields, orderBy, function(data){
-      utils.processResponse(data, connection, {"throw404": false});
+      utils.processResponse(data, connection, {"throw404": false, "smartParsing": false});
       next(connection, true);
     });
   }

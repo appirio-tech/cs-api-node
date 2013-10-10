@@ -142,7 +142,7 @@ exports.messages = function(api, next){
             };
             api.sfdc.org.apexRest({ uri: 'v.9/notifications', method: 'POST', body: body }, api.sfdc.oauth, function(err, res) {
               if (err) { console.error(err); }
-              res.Success = res.Success == "true";
+              res.success = res.Success;
               next(res);
             });
           }

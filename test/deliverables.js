@@ -8,7 +8,7 @@ describe('GET /participants/:membername/:challenge_id/submission/:submission_id'
     });
 
     it('should return at least one submission', function (done) {
-        request.get(setup.testUrl + '/participants/jeffdonthemic/2/submission/a0DK000000B7ekAMAR', function (err, response, body) {
+        request.get(setup.testUrl + '/participants/jeffdonthemic/2/submission/a0DJ0000005BnEEMA0', function (err, response, body) {
             body = JSON.parse(body);
             assert.ok(body.response);
             done();

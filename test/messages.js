@@ -85,10 +85,10 @@ describe('POST /messages/:id/reply', function () {
 
     it('should send a reply message successfully', function (done) {
         var reqBody = {
-          from: "apextestuser",
+          from: "apextestmember",
           body: "Mocha Test reply body"
         };
-        request.post({ url: setup.testUrl + '/messages/a1GJ0000000tftoMAA/reply', form: reqBody },  function (err, response, body) {
+        request.post({ url: setup.testUrl + '/messages/a1FJ0000000J2A4MAK/reply', form: reqBody },  function (err, response, body) {
             body = JSON.parse(body);
             console.log(body);
             assert.ok(body.response.success);

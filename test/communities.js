@@ -37,11 +37,12 @@ describe('POST /communities/add_member', function () {
 
     it('should add member', function (done) {
         var reqBody = {
-          membername: "chang",
+          membername: "apextestmember",
           community_id: "public"
         };
         request.post({ url: setup.testUrl + '/communities/add_member', form: reqBody },  function (err, response, body) {
             body = JSON.parse(body);
+            console.log(body);
             assert.ok(body.response.success);
             done();
         });

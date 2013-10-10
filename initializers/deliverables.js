@@ -53,8 +53,8 @@ exports.deliverables = function(api, next){
       var client = new pg.Client(api.configData.pg.connString);
       client.connect(function(err) {
         if (err) { console.log(err); }
-        var sql = "select sfid as id, comments__c, type__c, url__c, username__c, language__c from challenge_submission__c where sfid = $1 and username__c = '" + params.membername + "' and challenge__c = (select sfid from challenge__c where id = $2)";
-        client.query(sql, [params.submission_id, params.challenge_id], function(err, res) {
+        var sql = "select sfid as id, comments__c, type__c, url__c, username__c, language__c from challenge_submission__c where sfid = $1 and username__c = $2 and challenge__c = (select sfid from challenge__c where challenge_id__c = $3)";
+        client.query(sql, [params.submission_id, params.membername, params.challenge_id], function(err, res) {
           next(res['rows']);
         })
       })

@@ -124,7 +124,7 @@ describe('PUT /accounts/update_password_token/:membername', function () {
     });
 });
 
-describe('PUT /accounts/apextestmembere_password_with_token/:membername', function () {
+describe('PUT /accounts/update_password_token/:membername', function () {
     before(function (done) {
         setup.init(done);
     });
@@ -134,8 +134,9 @@ describe('PUT /accounts/apextestmembere_password_with_token/:membername', functi
           token: "123456",
           new_password: "mocha123"
         };
-        request.put({ url: setup.testUrl + '/accounts/apextestmembere_password_with_token/apextestmember', form: params },  function (err, response, body) {
+        request.put({ url: setup.testUrl + '/accounts/update_password_token/apextestmember', form: params },  function (err, response, body) {
             body = JSON.parse(body);
+            console.log(body);
             assert.ok(body.response.success);
             done();
         });
