@@ -50,7 +50,7 @@ describe('GET /messages/from/:membername', function () {
     });
 
     it('should return at least 1 message', function (done) {
-        request.get(setup.testUrl + '/messages/from/chang', function (err, response, body) {
+        request.get(setup.testUrl + '/messages/from/mess', function (err, response, body) {
             body = JSON.parse(body);
             assert.ok(body.response);
             done();
@@ -65,7 +65,7 @@ describe('POST /messages', function () {
 
     it('should send a message successfully', function (done) {
         var reqBody = {
-          from: "chang",
+          from: "mess",
           to: "jeffdonthemic",
           subject: "Mocha Test subject",
           body: "Mocha Test body"
@@ -85,11 +85,12 @@ describe('POST /messages/:id/reply', function () {
 
     it('should send a reply message successfully', function (done) {
         var reqBody = {
-          from: "chang",
+          from: "apextestuser",
           body: "Mocha Test reply body"
         };
-        request.post({ url: setup.testUrl + '/messages/a1FK0000004Ey9xMAC/reply', form: reqBody },  function (err, response, body) {
+        request.post({ url: setup.testUrl + '/messages/a1GJ0000000tftoMAA/reply', form: reqBody },  function (err, response, body) {
             body = JSON.parse(body);
+            console.log(body);
             assert.ok(body.response.success);
             done();
         });

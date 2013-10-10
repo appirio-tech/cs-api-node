@@ -22,7 +22,7 @@ describe('GET /accounts/:membername/preferences', function () {
     
 
     it('should be array, should have "count" number of elements', function (done) {
-        request.get(setup.testUrl + '/accounts/port2node/preferences', function (err, response, body) {
+        request.get(setup.testUrl + '/accounts/apextestmember/preferences', function (err, response, body) {
             body = JSON.parse(body);
            
             assert.property( body, 'response' );
@@ -35,7 +35,7 @@ describe('GET /accounts/:membername/preferences', function () {
     });
     
     it('each preference element should be well-formed', function(done) {
-      request.get(setup.testUrl + '/accounts/port2node/preferences', function (err, response, body) {
+      request.get(setup.testUrl + '/accounts/apextestmember/preferences', function (err, response, body) {
         body = JSON.parse(body);
         // simplify reference to response...
         body = body.response;
@@ -71,7 +71,7 @@ describe('PUT /accounts/:membername/marketing', function () {
           campaign_medium: "medium",
           campaign_name: "name"
         };
-        request.put({ url: setup.testUrl + '/accounts/chang/marketing', form: reqBody },  function (err, response, body) {
+        request.put({ url: setup.testUrl + '/accounts/apextestmember/marketing', form: reqBody },  function (err, response, body) {
             body = JSON.parse(body);
             assert.ok(body.response.success);
             done();
@@ -88,7 +88,7 @@ describe('PUT /accounts/:membername/referred_by', function () {
         var reqBody = {
           referral_id_or_membername: "jeffdonthemic"
         };
-        request.put({ url: setup.testUrl + '/accounts/chang/referred_by', form: reqBody },  function (err, response, body) {
+        request.put({ url: setup.testUrl + '/accounts/apextestmember/referred_by', form: reqBody },  function (err, response, body) {
             body = JSON.parse(body);
             assert.ok(body.response.success);
             done();
@@ -99,7 +99,7 @@ describe('PUT /accounts/:membername/referred_by', function () {
         var reqBody = {
           referral_id_or_membername: "a11K0000000ih7MIAQ"
         };
-        request.put({ url: setup.testUrl + '/accounts/chang/referred_by', form: reqBody },  function (err, response, body) {
+        request.put({ url: setup.testUrl + '/accounts/apextestmember/referred_by', form: reqBody },  function (err, response, body) {
             body = JSON.parse(body);
             assert.ok(body.response.success);
             done();
@@ -116,7 +116,7 @@ describe('PUT /accounts/update_password_token/:membername', function () {
         var params = {
           token: "123456"
         };
-        request.put({ url: setup.testUrl + '/accounts/update_password_token/chang', form: params },  function (err, response, body) {
+        request.put({ url: setup.testUrl + '/accounts/update_password_token/apextestmember', form: params },  function (err, response, body) {
             body = JSON.parse(body);
             assert.ok(body.response.success);
             done();
@@ -124,7 +124,7 @@ describe('PUT /accounts/update_password_token/:membername', function () {
     });
 });
 
-describe('PUT /accounts/change_password_with_token/:membername', function () {
+describe('PUT /accounts/apextestmembere_password_with_token/:membername', function () {
     before(function (done) {
         setup.init(done);
     });
@@ -134,7 +134,7 @@ describe('PUT /accounts/change_password_with_token/:membername', function () {
           token: "123456",
           new_password: "mocha123"
         };
-        request.put({ url: setup.testUrl + '/accounts/change_password_with_token/chang', form: params },  function (err, response, body) {
+        request.put({ url: setup.testUrl + '/accounts/apextestmembere_password_with_token/apextestmember', form: params },  function (err, response, body) {
             body = JSON.parse(body);
             assert.ok(body.response.success);
             done();
@@ -268,7 +268,7 @@ describe('PUT /accounts/:membername/preferences', function () {
         var params = {
           preferences: "{}"
         };
-        request.put({ url: setup.testUrl + '/accounts/chang/preferences', form: params },  function (err, response, body) {
+        request.put({ url: setup.testUrl + '/accounts/apextestmember/preferences', form: params },  function (err, response, body) {
             body = JSON.parse(body);
             assert.ok(body.response.success);
             done();

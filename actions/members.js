@@ -145,25 +145,6 @@ exports.membersChallenges = {
   }
 };
 
-exports.membersPastChallenges = {
-  name: "membersPastChallenges",
-  description: "Fetches a specific member's past challenges. Method: GET",
-  inputs: {
-    required: ['membername'],
-    optional: [],
-  },
-  authenticated: false,
-  outputExample: { "records": { "0" : { "id": "2885", "name": "Port the CloudSpokes API to Node.js", "challenge_type" : "Code", "top_prize": "100" } } },
-  version: 2.0,
-  run: function(api, connection, next){
-    api.members.pastChallenges(connection.params.membername, function(data){
-      utils.processResponse(data, connection, {"throw404": false});
-      next(connection, true);
-    });
-  }
-};
-
-
 exports.membersReferrals = {
   name: "membersReferrals",
   description: "Fetches referrals of a specific member. Method: GET",
@@ -205,7 +186,7 @@ exports.membersSearch = {
         // enforce the pass list of field or if null, use the default member list of fields
         var fields =  connection.params.fields != null ? forcifier.enforceList(connection.params.fields) : api.configData.defaults.memberFields;
         api.members.search (connection.params.q, fields, function(data){
-            utils.processResponse(data, connection, {"throw404": false});
+            utils.processResponse(data, connection, {"throw404": false, "smartParsing": false});
             next(connection, true);
         });
     }

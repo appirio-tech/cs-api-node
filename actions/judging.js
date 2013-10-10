@@ -65,7 +65,7 @@ exports.action = {
   version: 2.0,
   run: function(api, connection, next){
     api.judging.list(function(data){
-      utils.processResponse(data, connection, {"throw404": false});
+      utils.processResponse(data, connection, {"throw404": false, "smartParsing": false});
       next(connection, true);
     });
   }

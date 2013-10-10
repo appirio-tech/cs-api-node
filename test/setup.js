@@ -6,6 +6,8 @@ var nock = require('nock');
 // configData.logAccessToken = false;
 configData.logger.transports = [];
 configData.servers.web.port = process.env.PORT;
+// skip all authorization - do not check for API KEY
+configData.general.skipAuthorization = true;
 
 module.exports = {
   testUrl: "http://localhost:" + configData.servers.web.port + "/v1",

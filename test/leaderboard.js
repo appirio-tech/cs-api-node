@@ -12,7 +12,7 @@ describe('leaderboard', function () {
         request.get(setup.testUrl + '/leaderboard', function (err, response, body) {
             body = JSON.parse(body);
             for (var key in body.response) {
-                assert.ok(body.response[key].length > 0);
+                assert.ok(body.response[key].length > 1);
             }
             done();
         });

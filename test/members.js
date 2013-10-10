@@ -45,21 +45,6 @@ describe('GET /members/:membername/challenges', function () {
 
 });
 
-describe('GET /members/:membername/challenges/past', function () {
-  before(function (done) {
-      setup.init(done);
-  });
-
-  it(membername + ' should have at least 1 past challenge', function (done) {
-      request.get(setup.testUrl + '/members/' + membername + '/challenges/past', function (err, response, body) {
-          body = JSON.parse(body);
-          assert.ok(body.response.total > 0);
-          done();
-      });
-  });
-
-});
-
 describe('GET /members/search', function () {
     before(function (done) {
         setup.init(done);
@@ -68,14 +53,15 @@ describe('GET /members/search', function () {
     it('should not be empty', function (done) {
         request.get(setup.testUrl + '/members/search?q=jeff', function (err, response, body) {
             body = JSON.parse(body);
-            assert.equal(body.count, 3);
+            assert.ok(body.count > 1);
             done();
         });
     });
     it('should be empty', function (done) {
         request.get(setup.testUrl + '/members/search?q=blahblah', function (err, response, body) {
             body = JSON.parse(body);
-            assert.equal(body.error, "not_found");
+            assert.isArray( body.response );
+            assert.equal(body.count, 0);
             done();
         });
     });
@@ -88,18 +74,9 @@ describe("GET /members/:membername/referrals", function() {
     });
 
     describe("When the member has 1 referrals", function() {
-        beforeEach(function(done) {
-            nock('https://cs9.salesforce.com:443')
-                .get('/services/apexrest/v.9/referrals/mess')
-                .reply(200, "[{\"signup_date\":\"2013-07-21T05:33:30.000Z\",\"referral_money\":0.000,\"referral_id\":\"a11K0000000ih7MIAQ\",\"profile_pic\":\"http://cs-public.s3.amazonaws.com/default_cs_member_image.png\",\"membername\":\"GHUASQ34\",\"first_year_money\":0.00}]", { date: 'Sun, 22 Sep 2013 13:34:32 GMT',
-                'content-type': 'application/json;charset=UTF-8',
-                'transfer-encoding': 'chunked' });
-        
-            done();
-        });
 
         it('returned count is 1', function (done) {
-            request.get(setup.testUrl + '/members/mess/referrals', function (err, response, body) {
+            request.get(setup.testUrl + '/members/jeffdonthemic/referrals', function (err, response, body) {
                 // console.log(body)
                 body = JSON.parse(body);
                 assert.lengthOf(body.response, 1)
@@ -109,7 +86,7 @@ describe("GET /members/:membername/referrals", function() {
         });
 
         it("returned object has fields", function(done) {
-            request.get(setup.testUrl + '/members/mess/referrals', function (err, response, body) {
+            request.get(setup.testUrl + '/members/jeffdonthemic/referrals', function (err, response, body) {
                 body = JSON.parse(body);
                 var referral = body.response[0];
                 assert.propertyVal(referral, "signup_date");
@@ -125,18 +102,8 @@ describe("GET /members/:membername/referrals", function() {
     });
 
     describe("when the member has no refferal", function() {
-        beforeEach(function(done) {
-            nock('https://cs9.salesforce.com:443')
-              .get('/services/apexrest/v.9/referrals/jeffdonthemic')
-              .reply(200, "[]", { date: 'Sun, 22 Sep 2013 13:57:14 GMT',
-              'content-type': 'application/json;charset=UTF-8',
-              'transfer-encoding': 'chunked' });            
-
-            done();
-        });
-
         it('it returns an empty array', function (done) {
-            request.get(setup.testUrl + '/members/jeffdonthemic/referrals', function (err, response, body) {
+            request.get(setup.testUrl + '/members/mess/referrals', function (err, response, body) {
                 body = JSON.parse(body);
                 assert.isArray(body.response);
                 assert.equal(body.count,0);

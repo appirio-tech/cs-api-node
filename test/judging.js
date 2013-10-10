@@ -20,8 +20,8 @@ describe('judging', function () {
             it ('should not be empty', function (done) {
                 //Hardcoded values - once the appropriate routes get in place,
                 //this needs to change
-                var userId    = 'a0AK000000BhvmrMAB',
-                    judgeName = 'port2node';
+                var userId    = 'a0AJ0000006XnML', // participant id
+                    judgeName = 'mess';
 
                 var url = setup.testUrl + '/judging/scorecard/' + userId + '?judge_membername=' + judgeName;
 
@@ -39,10 +39,8 @@ describe('judging', function () {
             it('should not be empty', function (done) {
                 //Hardcoded values - once the appropriate routes get in place,
                 //this needs to change
-                var judgeName = 'port2node';
-
+                var judgeName = 'mess';
                 var url = setup.testUrl + '/judging/outstanding/' + judgeName;
-
                 request.get(url, function (err, response, body) {
                     body = JSON.parse(body);
                     assert.ok(body.response.length > 0);
@@ -59,8 +57,8 @@ describe('judging', function () {
 
         it('should add a member as a judge successfully or return an "already added" message', function (done) {
             var reqBody = {
-              challenge_id: "23",
-              membername: "chang"
+              challenge_id: "2",
+              membername: "apextestmember"
             };
             request.post({ url: setup.testUrl + '/judging', form: reqBody },  function (err, response, body) {
                 body = JSON.parse(body);

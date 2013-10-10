@@ -137,19 +137,6 @@ exports.members = function(api, next){
 
 
     /*
-    * Returns a specific member's past challenges from apex by membername
-    *
-    * membername - the name of the member to fetch
-    */
-    pastChallenges: function(membername, next) {
-      var url = 'v1/members/' + membername + '/challenges/past';
-      api.sfdc.org.apexRest({ uri: url }, api.sfdc.oauth, function(err, res) {
-        if (err) { console.error(err); }
-        next(res);
-      });
-    },
-
-    /*
      *Searches for a member from pg by keywords search
      *
      * q - the keyword used in the search

@@ -109,7 +109,7 @@ exports.challengesScorecards = {
   version: 2.0,
   run: function(api, connection, next) {
     api.challenges.scorecards(connection.params.id.trim(), function(data) {
-      utils.processResponse(data, connection, {"throw404": false});
+      utils.processResponse(data, connection, {"throw404": false, "smartParsing": false});
       next(connection, true);
     });
   }
@@ -203,7 +203,7 @@ exports.challengesListSubmissions = {
   version: 2.0,
   run: function(api, connection, next){
     api.challenges.listSubmissions(connection.params.challenge_id, function(data){
-      utils.processResponse(data, connection, {"throw404": false});
+      utils.processResponse(data, connection, {"throw404": false, "smartParsing": false});
       next(connection, true);
     });
   }
@@ -221,7 +221,7 @@ exports.challengesComments = {
   version: 2.0,
   run: function(api, connection, next){
   api.challenges.comments(connection.params.id.trim(), function(data){
-    utils.processResponse(data, connection, {"throw404": false});
+    utils.processResponse(data, connection, {"throw404": false,"smartParsing": false});
     next(connection, true);
   });
   }
@@ -309,7 +309,7 @@ exports.challengesAdvSearch = {
     version: 2.0,
     run: function(api, connection, next){
         api.challenges.advsearch(connection.rawConnection.parsedURL.search, function(data){
-            utils.processResponse(data, connection, {"throw404": false});
+            utils.processResponse(data, connection, {"throw404": false, "smartParsing": false});
             next(connection, true);
         });
     }
@@ -418,7 +418,7 @@ exports.challengesRecent = {
   run: function(api, connection, next){
     var options = _.pick(connection.params, "technology", "platform", "category", "limit", "offset");
     api.challenges.recent(options, function(data){
-      utils.processResponse(data, connection, {"throw404": false});
+      utils.processResponse(data, connection, {"throw404": false, "smartParsing": false});
       next(connection, true);
     });
   }
