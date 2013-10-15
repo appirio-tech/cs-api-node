@@ -134,7 +134,7 @@ exports.participantsUpdate = {
   },
   version: 2.0,
   run: function(api, connection, mainNext){
-    var next = function(connection.params){
+    var next = function(data){
       utils.processResponse(data, connection);
       mainNext(connection, true);
     };
