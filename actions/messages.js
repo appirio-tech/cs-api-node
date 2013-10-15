@@ -208,10 +208,12 @@ exports.messagesCreate = {
             subject: connection.params.subject,
             body: connection.params.body
           };
-          api.sfdc.org.apexRest({ uri: 'v.9/notifications', method: 'POST', body: body }, api.sfdc.oauth, function(err, res) {
-            if (err) { console.error(err); }
-            res.Success = res.Success == "true";
-            next(res);
+          api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+            api.sfdc.org.apexRest({ uri: 'v.9/notifications', method: 'POST', body: body }, session.oauth, function(err, res) {
+              if (err) { console.error(err); }
+              res.Success = res.Success == "true";
+              next(res);
+            });
           });
         }
       })
@@ -255,10 +257,12 @@ exports.messagesReply = {
             body: connection.params.body,
             parentId: connection.params.id
           };
-          api.sfdc.org.apexRest({ uri: 'v.9/notifications', method: 'POST', body: body }, api.sfdc.oauth, function(err, res) {
-            if (err) { console.error(err); }
-            res.success = res.Success;
-            next(res);
+          api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+            api.sfdc.org.apexRest({ uri: 'v.9/notifications', method: 'POST', body: body }, session.oauth, function(err, res) {
+              if (err) { console.error(err); }
+              res.success = res.Success;
+              next(res);
+            });
           });
         }
       })
