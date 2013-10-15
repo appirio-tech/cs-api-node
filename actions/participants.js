@@ -1,5 +1,6 @@
-var forcifier = require("forcifier")
-  , utils = require("../utils")
+var utils = require("../utils")
+  , _ = require("underscore")
+  , pg = require('pg').native
 
 exports.action = {
   name: "participantsStatus",
@@ -45,9 +46,13 @@ exports.action = {
   },
   version: 2.0,
   run: function(api, connection, next){
-    api.participants.status(connection.params, function(data){
-      utils.processResponse(data, connection);
-      next(connection, true);
+    var url =  'v.9/participants/' + connection.params.membername + '?challengeId=' + connection.params.challenge_id + '&fields=' + api.configData.defaults.participantsStatusFields;
+    api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+      api.sfdc.org.apexRest({ uri: url }, session.oauth, function(err, res) {
+        if (err) { console.error(err); }
+        utils.processResponse(res, connection);
+        next(connection, true);
+      });
     });
   }
 };
@@ -81,10 +86,16 @@ exports.participantsFetch = {
   },
   version: 2.0,
   run: function(api, connection, next){
-    api.participants.fetch(connection.params, function(data){
-      utils.processResponse(data, connection);
-      next(connection, true);
-    });
+    var client = new pg.Client(api.configData.pg.connString);
+    client.connect(function(err) {
+      if (err) { console.log(err); }
+      var sql = "select sfid as id, member__c, (select name from member__c where sfid = member__c) as member_name, (select profile_pic__c from member__c where sfid = member__c) as member_profile_pic, (select country__c from member__c where sfid = member__c) as member_country, challenge__c, (select name from challenge__c where sfid = challenge__c) as challenge_name, (select challenge_id__c from challenge__c where sfid = challenge__c) as challenge_id, money_awarded__c, place__c, points_awarded__c, score__c, status__c, has_submission__c, completed_scorecards__c, submitted_date__c, send_discussion_emails__c from challenge_participant__c where sfid = $1";
+      client.query(sql, [connection.params.participant_id], function(err, rs) {
+        var data = rs['rows'];
+        utils.processResponse(data, connection);
+        next(connection, true);
+      })
+    })
   }
 };
 
@@ -122,10 +133,36 @@ exports.participantsUpdate = {
     "message": "a0AK000000BiJTrMAN"
   },
   version: 2.0,
-  run: function(api, connection, next){
-    api.participants.update(connection.params, function(data){
+  run: function(api, connection, mainNext){
+    var next = function(connection.params){
       utils.processResponse(data, connection);
-      next(connection, true);
-    });
+      mainNext(connection, true);
+    };
+
+    try {
+      var fields = JSON.parse(connection.params.fields) || {};
+      if (!fields['challengeid'])
+        fields['challengeid'] = connection.params.challenge_id;
+
+      var params = [];
+      _.each(fields, function(value, key) {
+        params[params.length] = {
+          key: key,
+          value: value
+        };
+      });
+      api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+        api.sfdc.org.apexRest({ uri: 'v.9/participants/' + connection.params.membername, method: 'PUT', urlParams: params }, session.oauth, function(err, res) {
+          if (err) { console.error(err); }
+          res.Success = Boolean(res.Success);
+          next(res);
+        });
+      });
+    } catch(err) {
+      next({
+        success: false,
+        message: "Invalid json in the 'fields' parameter"
+      });
+    }
   }
 };

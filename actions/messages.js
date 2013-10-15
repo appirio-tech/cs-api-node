@@ -1,5 +1,6 @@
 var forcifier = require("forcifier")
   , utils = require("../utils")
+  , pg = require('pg').native
 
 exports.messagesFetch = {
   name: "messagesFetch",
@@ -31,11 +32,27 @@ exports.messagesFetch = {
     ]
   },
   version: 2.0,
-  run: function(api, connection, next){
-    api.messages.fetch(connection.params.id, function(data){
+  run: function(api, connection, mainNext){
+    var next = function(data){
       utils.processResponse(data, connection);
-      next(connection, true);
-    });
+      mainNext(connection, true);
+    };
+
+    var client = new pg.Client(api.configData.pg.connString);
+    client.connect(function(err) {
+      if (err) { console.log(err); }
+      var sql = "select sfid as id, name, createddate as created_date, lastmodifieddate as last_modified_date, to__c as to_id, (select name from member__c where sfid = to__c) as to_name, from__c as from_id, (select name from member__c where sfid = from__c) as from_name, subject__c, status_from__c, status_to__c, replies__c from private_message__c where sfid = $1";
+      client.query(sql, [connection.params.id], function(err, rs) {
+        if (!rs['rows'] || !rs['rows'][0]) { next([]); }
+        else {
+          var sql2 = "select createddate as created_date, lastmodifieddate as last_modified_date, body__c from private_message_text__c where private_message__c = $1 order by createddate desc";
+          client.query(sql2, [connection.params.id], function(err2, rs2) {
+            rs['rows'][0].text = rs2['rows'];
+            next(rs['rows']);
+          })
+        }
+      })
+    })
   }
 };
 
@@ -65,10 +82,16 @@ exports.messagesInbox = {
   },
   version: 2.0,
   run: function(api, connection, next){
-    api.messages.inbox(connection.params.membername, function(data){
-      utils.processResponse(data, connection);
-      next(connection, true);
-    });
+    var client = new pg.Client(api.configData.pg.connString);
+    client.connect(function(err) {
+      if (err) { console.log(err); }
+      var sql = "select sfid as id, name, createddate as created_date, lastmodifieddate as last_modified_date, to__c as to_id, (select name from member__c where sfid = to__c) as to_name, (select profile_pic__c from member__c where sfid = to__c) as to_profile_pic, from__c as from_id, (select name from member__c where sfid = from__c) as from_name, (select profile_pic__c from member__c where sfid = from__c) as from_profile_pic, subject__c, status_from__c, status_to__c, replies__c from private_message__c where to__c = (select sfid from member__c where name = $1) or from__c = (select sfid from member__c where name = $1) order by lastmodifieddate desc";
+      client.query(sql, [connection.params.membername], function(err, rs) {
+        var data = rs['rows'];
+        utils.processResponse(data, connection);
+        next(connection, true);
+      })
+    })
   }
 };
 
@@ -98,10 +121,16 @@ exports.messagesTo = {
   },
   version: 2.0,
   run: function(api, connection, next){
-    api.messages.to(connection.params.membername, function(data){
-      utils.processResponse(data, connection, {"throw404": false});
-      next(connection, true);
-    });
+    var client = new pg.Client(api.configData.pg.connString);
+    client.connect(function(err) {
+      if (err) { console.log(err); }
+      var sql = "select sfid as id, name, createddate as created_date, lastmodifieddate as last_modified_date, to__c as to_id, (select name from member__c where sfid = to__c) as to_name, (select profile_pic__c from member__c where sfid = to__c) as to_profile_pic, from__c as from_id, (select name from member__c where sfid = from__c) as from_name, (select profile_pic__c from member__c where sfid = from__c) as from_profile_pic, subject__c, status_from__c, status_to__c, replies__c from private_message__c where to__c = (select sfid from member__c where name = $1) order by lastmodifieddate desc";
+      client.query(sql, [connection.params.membername], function(err, rs) {
+        var data = rs['rows'];
+        utils.processResponse(data, connection, {"throw404": false});
+        next(connection, true);
+      })
+    })
   }
 };
 
@@ -131,10 +160,16 @@ exports.messagesFrom = {
   },
   version: 2.0,
   run: function(api, connection, next){
-    api.messages.from(connection.params.membername, function(data){
-      utils.processResponse(data, connection, {"throw404": false});
-      next(connection, true);
-    });
+    var client = new pg.Client(api.configData.pg.connString);
+    client.connect(function(err) {
+      if (err) { console.log(err); }
+      var sql = "select sfid as id, name, createddate as created_date, lastmodifieddate as last_modified_date, to__c as to_id, (select name from member__c where sfid = to__c) as to_name, (select profile_pic__c from member__c where sfid = to__c) as to_profile_pic, from__c as from_id, (select name from member__c where sfid = from__c) as from_name, (select profile_pic__c from member__c where sfid = from__c) as from_profile_pic, subject__c, status_from__c, status_to__c, replies__c from private_message__c where from__c = (select sfid from member__c where name = $1) order by lastmodifieddate desc";
+      client.query(sql, [connection.params.membername], function(err, rs) {
+        var data = rs['rows'];
+        utils.processResponse(data, connection, {"throw404": false});
+        next(connection, true);
+      })
+    })
   }
 };
 
@@ -151,13 +186,36 @@ exports.messagesCreate = {
     "message": "Notification successfully sent."
   },
   version: 2.0,
-  run: function(api, connection, next){
-    api.messages.create(connection.params, function(data){
+  run: function(api, connection, mainNext){
+    var next = function(data){
       connection.response.response = forcifier.deforceJson(data);
       if (connection.response.response.success)
         connection.rawConnection.responseHttpCode = 201;  
-      next(connection, true);
-    });
+      mainNext(connection, true);
+    };
+
+    var client = new pg.Client(api.configData.pg.connString);
+    client.connect(function(err) {
+      if (err) { console.log(err); }
+      var sql = "select (select sfid from member__c where name = $1) as from_id, (select sfid from member__c where name = $2) as to_id";
+      client.query(sql, [connection.params.from, connection.params.to], function(err, rs) {
+        if (!rs['rows'][0] || !rs['rows']) { next([]); }
+        else {
+          var body = {
+            fromId: rs.rows[0].from_id,
+            toId: rs.rows[0].to_id,
+            event: 'Private Message',
+            subject: connection.params.subject,
+            body: connection.params.body
+          };
+          api.sfdc.org.apexRest({ uri: 'v.9/notifications', method: 'POST', body: body }, api.sfdc.oauth, function(err, res) {
+            if (err) { console.error(err); }
+            res.Success = res.Success == "true";
+            next(res);
+          });
+        }
+      })
+    })
   }
 };
 
@@ -174,13 +232,37 @@ exports.messagesReply = {
     "message": "Notification successfully sent."
   },
   version: 2.0,
-  run: function(api, connection, next){
-    api.messages.reply(connection.params, function(data){
+  run: function(api, connection, mainNext){
+    var next = function(data){
       connection.response.response = forcifier.deforceJson(data);
       if (connection.response.response.success)
         connection.rawConnection.responseHttpCode = 201;  
-      next(connection, true);
-    });
+      mainNext(connection, true);
+    };
+
+    var client = new pg.Client(api.configData.pg.connString);
+    client.connect(function(err) {
+      if (err) { console.log(err); }
+      var sql = "select subject__c as subject, to__c as to_id, (select sfid from member__c where name = $1) as from_id from private_message__c where sfid = $2";
+      client.query(sql, [connection.params.from, connection.params.id], function(err, rs) {
+        if (!rs['rows'][0] || !rs['rows']) { next([]); }
+        else {
+          var body = {
+            fromId: rs.rows[0].from_id,
+            toId: rs.rows[0].to_id,
+            event: 'Private Message',
+            subject: rs.rows[0].subject,
+            body: connection.params.body,
+            parentId: connection.params.id
+          };
+          api.sfdc.org.apexRest({ uri: 'v.9/notifications', method: 'POST', body: body }, api.sfdc.oauth, function(err, res) {
+            if (err) { console.error(err); }
+            res.success = res.Success;
+            next(res);
+          });
+        }
+      })
+    })
   }
 };
 
@@ -197,10 +279,43 @@ exports.messagesUpdate = {
     "message": "Message updated successfully."
   },
   version: 2.0,
-  run: function(api, connection, next){
-    api.messages.update(connection.params, function(data){
+  run: function(api, connection, mainNext){
+    var next = function(data){
       connection.response.response = forcifier.deforceJson(data);
-      next(connection, true);
-    });
+      mainNext(connection, true);
+    };
+
+    var client = new pg.Client(api.configData.pg.connString);
+    client.connect(function(err) {
+      if (err) { console.log(err); }
+      var sql = "update private_message__c set from__c = (select sfid from member__c where name = $1), to__c = (select sfid from member__c where name = $2), subject__c = $3 where sfid = $4";
+      client.query(sql, [connection.params.from, connection.params.to, connection.params.subject, connection.params.id], function(err, res) {
+        if (!err) {
+          var sql = "update private_message_text__c set body__c = $1 where private_message__c = $2";
+          client.query(sql, [connection.params.body, connection.params.id], function(err, res) {
+            if (!err) {
+              res = {
+                success: true,
+                message: "Message updated successfully."
+              };
+            } else {
+              res = {
+                success: false,
+                message: "Message partially updated."
+              };
+              console.log(err);
+            }
+            next(res);
+          })
+        } else {
+          res = {
+            success: false,
+            message: "Message not updated."
+          };
+          console.log(err);
+          next(res);
+        }
+      })
+    })
   }
 };

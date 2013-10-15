@@ -64,9 +64,20 @@ exports.action = {
   ],
   version: 2.0,
   run: function(api, connection, next){
-    api.judging.list(function(data){
-      utils.processResponse(data, connection, {"throw404": false, "smartParsing": false});
-      next(connection, true);
+    var query = "select id, challenge_id__c, name, status__c, number_of_reviewers__c, " +
+      "end_date__c, review_date__c, " +
+      "(select display_name__c from challenge_categories__r), " +
+      "(select name__c from challenge_platforms__r), " +
+      "(select name__c from challenge_technologies__r) " +
+      "from Challenge__c where community_judging__c = true and status__c IN ('Open for Submissions','Review') " +
+      "and number_of_reviewers__c < 3 order by end_date__c";
+    api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+      api.sfdc.org.query(query, session.oauth, function (err, resp) {
+        if (!err && resp.records) {
+          utils.processResponse(resp.records, connection, {"throw404": false, "smartParsing": false});
+          next(connection, true);
+        }
+      });
     });
   }
 };
@@ -81,9 +92,16 @@ exports.judgingScorecardFetch = {
   outputExample: {},
   version: 2.0,
   run: function(api, connection, next){
-    api.judging.scorecard.fetch(connection.params.participant_id, connection.params.judge_membername, function(data){
-      utils.processResponse(data, connection);
-      next(connection, true);
+    var url = 'v.9/scorecard/' + connection.params.participant_id;
+    var params = [{key: 'reviewer', value: connection.params.judge_membername}];
+    api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+      api.sfdc.org.apexRest({uri: url, method: 'GET', urlParams: params}, session.oauth, function (err, resp) {
+        if (resp) {
+          var data = resp[_.first(_.keys(resp))];
+          utils.processResponse(data, connection);
+          next(connection, true);
+        }
+      });
     });
   }
 };
@@ -99,10 +117,34 @@ exports.judgingOutstandingFetch = {
   outputExample: {},
   version: 2.0,
   run: function(api, connection, next){
-    api.judging.outstanding.fetch(connection.params.membername, function(data){
-      connection.response.response = data;
-      connection.response.count = data.length;
-      next(connection, true);
+    var removeAttributes = function(data) {
+      var fixed = _.isArray(data) ? [] : {};
+      for (key in data) {
+        if (key === 'attributes') continue;
+
+        if (_.isObject(data[key])) {
+          if (_.isArray(data)) {
+            fixed.push(removeAttributes(data[key]));
+          } else {
+            fixed[key] = removeAttributes(data[key]);
+          }
+        } else {
+          fixed[key] = data[key];
+        }
+      }
+      return fixed;
+    };
+
+    var url = "v1/members/" + connection.params.membername + "/outstandingscorecards";
+    api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+      api.sfdc.org.apexRest({uri: url, method: "GET"}, session.oauth, function (err, resp) {
+        if (!err && resp) {
+          var data = removeAttributes(resp);
+          connection.response.response = data;
+          connection.response.count = data.length;
+          next(connection, true);
+        }
+      });
     });
   }
 };
@@ -121,11 +163,20 @@ exports.judgingCreate = {
   },
   version: 2.0,
   run: function(api, connection, next){
-    api.judging.create(connection.params, function(data){
-      connection.response.response = forcifier.deforceJson(data);
-      if (connection.response.response.success)
-        connection.rawConnection.responseHttpCode = 201;
-      next(connection, true);
+    var body = {
+      challenge_id: connection.params.challenge_id,
+      memberName: connection.params.membername
+    };
+    api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+      api.sfdc.org.apexRest({ uri: 'v.9/judging', method: 'POST', body: body }, session.oauth, function(err, res) {
+        if (err) { console.error(err); }
+        res.Success = res.Success == "true";
+        var data = res;
+        connection.response.response = forcifier.deforceJson(data);
+        if (connection.response.response.success)
+          connection.rawConnection.responseHttpCode = 201;
+        next(connection, true);
+      });
     });
   }
 };
@@ -144,9 +195,31 @@ exports.judgingUpdate = {
   },
   version: 2.0,
   run: function(api, connection, next){
-    api.judging.update(connection.params, function(data){
-      connection.response.response = forcifier.deforceJson(data);
-      next(connection, true);
+    var params = [
+      {
+        key: 'participant_id',
+        value: connection.params.id
+      },
+      {
+        key: 'answers',
+        value: connection.params.answers
+      },
+      {
+        key: 'comments',
+        value: connection.params.comments
+      },
+      {
+        key: 'options',
+        value: connection.params.options
+      }
+    ];
+    api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+      api.sfdc.org.apexRest({ uri: 'v.9/scorecard', method: 'PUT', urlParams: params }, session.oauth, function(err, res) {
+        if (err) { console.error(err); }
+        res.Success = Boolean(res.Success);
+        connection.response.response = forcifier.deforceJson(res);
+        next(connection, true);
+      });
     });
   }
 };

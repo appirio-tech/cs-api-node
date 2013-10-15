@@ -1,4 +1,5 @@
 var utils = require("../utils"); 
+var pg = require('pg').native;
 
 exports.tosList = {
   name: "tosList",
@@ -22,9 +23,16 @@ exports.tosList = {
   ],
   version: 2.0,
   run: function(api, connection, next){
-    api.tos.list(function(data){
-      utils.processResponse(data, connection, {"throw404": false});
-      next(connection, true);
+    var client = new pg.Client(api.configData.pg.connString);
+    client.connect(function(err) {
+      if (err) { console.log(err); }
+      var sql = "select sfid as id, name, terms__c, default_tos__c " +
+                "from terms_of_service__c order by name";
+      client.query(sql, function(err, rs) {
+        var data = rs['rows'];
+        utils.processResponse(data, connection, {"throw404": false});
+        next(connection, true);
+      });
     });
   }
 };
@@ -49,9 +57,16 @@ exports.tosFetch = {
   },
   version: 2.0,
   run: function(api, connection, next){
-    api.tos.fetch(connection.params.id, function(data){
-      utils.processResponse(data, connection);
-      next(connection, true);
+    var client = new pg.Client(api.configData.pg.connString);
+    client.connect(function(err) {
+      if (err) { console.log(err); }
+      var sql = "select sfid as id, name, terms__c, default_tos__c " +
+                "from terms_of_service__c where sfid=$1";
+      client.query(sql, [connection.params.id], function(err, rs) {
+        var data = rs['rows'];
+        utils.processResponse(data, connection);
+        next(connection, true);
+      });
     });
   }
 };

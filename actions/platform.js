@@ -1,4 +1,5 @@
-var utils = require("../utils"); 
+var utils = require("../utils");
+var soap = require('soap');
 
 exports.action = {
   name: "platformStats",
@@ -10,10 +11,25 @@ exports.action = {
   blockedConnectionTypes: [],
   outputExample: {},
   version: 2.0,
-  run: function(api, connection, next){
-    api.platform.stats(function(data){
+  run: function(api, connection, mainNext){
+    var next = function(data){
       utils.processResponse(data, connection);
-      next(connection, true);
+      mainNext(connection, true);
+    };
+
+    // construct the header with the session token
+    var header = { "SessionHeader": { "sessionId": api.sfdc.oauth.access_token} }
+    soap.createClient(process.env.STATS_WSDL_URL, function(err, client) {
+      if (err) { 
+        console.log(err); 
+        next();
+      }
+      if (!err) {
+        client.addSoapHeader(header);
+        client.platformStats(null, function(err, result) {
+          next(result.result);
+        });
+      }
     });
   }
 };

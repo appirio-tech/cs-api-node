@@ -45,12 +45,17 @@ exports.leaderboardList = {
   version: 2.0,
   run: function(api, connection, next){
     var params = connection.rawConnection.parsedURL.query;
-    
     var limit = params.limit;
-    
-    api.leaderboard.list(limit, function(data){
-      utils.processResponse(data, connection);
-      next(connection, true);
+    var url = "v.9/leaderboard_all";
+    var reqParams = [];
+    if (limit) reqParams.push({key: 'limit', value: limit});
+    api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+      api.sfdc.org.apexRest({uri: url, method: "GET", urlParams: reqParams}, session.oauth, function (err, resp) {
+        if (!err && resp) {
+          utils.processResponse(resp, connection);
+          next(connection, true);
+        }
+      });
     });
   }
 };
@@ -66,9 +71,17 @@ exports.leaderboardReferralList = {
   outputExample: {},
   version: 2.0,
   run: function(api, connection, next){
-    api.leaderboard.referral.list(function(data){
-      utils.processResponse(data, connection);
-      next(connection, true);
+    var query = "select count(id)total, referred_by_member__r.name, " +
+      "referred_by_member__r.profile_pic__c, referred_by_member__r.country__c from Referral__c " +
+      "where converted__c = true and referred_by_member__r.account__r.name = 'appirio' " +
+      "group by referred_by_member__r.name, referred_by_member__r.profile_pic__c, referred_by_member__r.country__c";
+    api.session.load(connection, function(session, expireTimestamp, createdAt, readAt){
+      api.sfdc.org.query(query, session.oauth, function (err, resp) {
+        if (!err && resp && resp.records) {
+          utils.processResponse(resp.records, connection);
+          next(connection, true);
+        }
+      });
     });
   }
 };
