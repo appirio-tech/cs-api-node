@@ -23,7 +23,7 @@
     "actionHero": "~6.3.0",
     "string": "~1.6.0",
     "soap": "~0.3.0",
-    "request": "~2.27.0"
+    "request": "~2.88.2"
   },
   "devDependencies": {
     "mocha": "~1.13.0",
